@@ -191,79 +191,6 @@ html.rb-cursor-on, html.rb-cursor-on * { cursor: none !important; }
   box-shadow: 0 6px 16px rgba(217, 255, 88, .28);
 }
 
-/* ---------- 宣言区滚动渐显（sticky reveal） ---------- */
-
-.m-statement {
-  height: 210vh;
-  min-height: 0;
-  padding: 0;
-  display: block;
-  background: var(--paper);
-}
-.m-statement-sticky {
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  height: 100dvh;
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-}
-.m-statement p {
-  max-width: 1400px;
-  margin: 0;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  color: #111;
-}
-.m-statement p span, .m-statement p small { color: #77756d; }
-
-/* 大字：横向，先渐显再淡出；与小字渐显区间交叉重叠（无空白时刻） */
-.m-statement p .rb-pressure-word {
-  font-size: clamp(56px, 10.5vw, 180px);
-  opacity: calc(clamp(0, calc((var(--reveal-progress, 1) - .02) * 5.5), 1) - clamp(0, calc((var(--reveal-progress, 1) - .3) * 5.5), 1));
-  transform: translateY(clamp(0px, calc((1 - var(--reveal-progress, 1)) * 34px), 34px));
-}
-.m-statement p .rb-pressure-word .rb-pressure-char {
-  font-size: inherit;
-  font-weight: inherit;
-  font-family: inherit;
-}
-
-/* 小字分段渐显：与大字淡出交叉，任意时刻至少一行可见 */
-.m-statement p span {
-  opacity: clamp(0, calc((var(--reveal-progress, 1) - .34) * 4.6), 1);
-  transform: translateY(clamp(0px, calc((1 - var(--reveal-progress, 1)) * 28px), 28px));
-}
-.m-statement p small {
-  opacity: clamp(0, calc((var(--reveal-progress, 1) - .48) * 4.8), 1);
-  transform: translateY(clamp(0px, calc((1 - var(--reveal-progress, 1)) * 22px), 22px));
-}
-
-@media (max-width: 800px) {
-  .m-statement { height: 240vh; }
-  .m-statement p .rb-pressure-word { font-size: clamp(44px, 10vw, 96px); }
-}
-
-/* 横向排列 + 逐字压力 */
-.rb-pressure-word {
-  display: inline-flex;
-  flex-direction: row;
-  gap: .03em;
-  font-weight: 600;
-  line-height: .95;
-  letter-spacing: normal;
-}
-.rb-pressure-char {
-  display: inline-block;
-  transition: transform .32s cubic-bezier(.19, 1, .22, 1);
-  will-change: transform;
-}
-.rb-pressure-char:hover { transform: scaleY(1.5); }
-
 /* ---------- 宣言区文字层级 ---------- */
 
 .m-statement p small {
@@ -272,6 +199,26 @@ html.rb-cursor-on, html.rb-cursor-on * { cursor: none !important; }
   font-size: clamp(13px, 1.3vw, 20px);
   line-height: 1.65;
 }
+
+.m-statement p .rb-pressure-word {
+  display: block;
+  font-size: clamp(56px, 10.5vw, 180px);
+  font-weight: 600;
+  line-height: .92;
+  letter-spacing: -.09em;
+}
+.m-statement p .rb-pressure-word .rb-pressure-char {
+  display: inline-block;
+  font-size: inherit;
+  font-weight: inherit;
+  font-family: inherit;
+}
+.rb-pressure-char {
+  display: inline-block;
+  transition: transform .32s cubic-bezier(.19, 1, .22, 1);
+  will-change: transform;
+}
+.rb-pressure-char:hover { transform: scaleY(1.5); }
 
 /* ---------- 作品卡片集成 ---------- */
 
