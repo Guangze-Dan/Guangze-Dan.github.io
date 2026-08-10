@@ -101,6 +101,7 @@
 /* ---------- 磁吸按钮 ---------- */
 
 .rb-magnet { display: inline-block; }
+.m-intro-copy > .rb-magnet { align-self: flex-end; }
 .rb-magnet-inner { display: inline-block; will-change: transform; transition: transform .18s ease-out; }
 .rb-magnet:hover .rb-magnet-inner { transition: transform .08s ease-out; }
 
@@ -116,25 +117,28 @@
   will-change: transform;
 }
 .rb-cursor-dot {
-  width: 7px;
-  height: 7px;
-  margin: -3.5px 0 0 -3.5px;
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
   background: #d9ff58;
   mix-blend-mode: difference;
+  box-shadow: 0 0 14px rgba(217, 255, 88, .9);
 }
 .rb-cursor-ring {
-  width: 38px;
-  height: 38px;
-  margin: -19px 0 0 -19px;
-  border: 1px solid rgba(217, 255, 88, .65);
+  width: 56px;
+  height: 56px;
+  margin: -28px 0 0 -28px;
+  border: 1.5px solid rgba(217, 255, 88, .75);
+  box-shadow: 0 0 22px rgba(217, 255, 88, .22);
   transition: width .25s ease, height .25s ease, margin .25s ease, border-color .25s ease, background .25s ease;
 }
 .rb-cursor-ring.is-hover {
-  width: 64px;
-  height: 64px;
-  margin: -32px 0 0 -32px;
+  width: 88px;
+  height: 88px;
+  margin: -44px 0 0 -44px;
   border-color: rgba(217, 255, 88, .95);
-  background: rgba(217, 255, 88, .07);
+  background: rgba(217, 255, 88, .08);
+  box-shadow: 0 0 34px rgba(217, 255, 88, .35);
 }
 html.rb-cursor-on, html.rb-cursor-on * { cursor: none !important; }
 
@@ -217,6 +221,18 @@ html.rb-cursor-on, html.rb-cursor-on * { cursor: none !important; }
 }
 
 /* ---------- 触屏与减弱动效 ---------- */
+
+/* ---------- 页脚快速导航 hover 动效 ---------- */
+
+.m-footer-links a {
+  transition: background .25s ease, color .25s ease, transform .25s ease, box-shadow .25s ease;
+}
+.m-footer-links a:hover {
+  background: #d9ff58;
+  color: #111;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(217, 255, 88, .28);
+}
 
 /* ---------- 作品卡片集成 ---------- */
 

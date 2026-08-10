@@ -417,8 +417,8 @@ button, input, textarea { font: inherit; }
 .m-intro-photo { height: 240px; }
 .m-intro-copy { grid-column: 2; grid-row: 1 / span 2; align-self: start; max-width: 560px; }
 .m-intro-copy { min-height: 465px; display: flex; flex-direction: column; }
-.m-intro-copy .m-underlink { align-self: flex-end; margin-top: -28px; padding: 8px 17px; display: inline-flex; align-items: center; gap: 9px; line-height: 1; transform: translateY(var(--works-align-shift, 0px)); }
-.m-intro-copy .m-underlink:hover { transform: translateY(calc(var(--works-align-shift, 0px) - 4px)); }
+.m-intro-copy .m-underlink { align-self: flex-end; margin-top: 6px; padding: 8px 17px; display: inline-flex; align-items: center; gap: 9px; line-height: 1; }
+.m-intro-copy .m-underlink:hover { transform: translateY(-4px); }
 .m-intro-copy .m-underlink small { display: inline; margin: 0; }
 .m-detail-back { position: absolute; z-index: 3; top: 110px; left: 3.5vw; display: inline-flex; align-items: center; gap: 10px; color: inherit; border-bottom: 1px solid currentColor; padding-bottom: 8px; font: 11px 'DM Mono'; }
 .m-detail-back span { font-size: 18px; line-height: .7; }
