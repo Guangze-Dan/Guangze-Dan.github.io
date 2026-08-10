@@ -160,15 +160,6 @@ function usePageMotion(withFlip = false) {
     const update = () => {
       const x = (window.innerWidth ? window.innerWidth : 1);
       document.documentElement.style.setProperty('--pointer-x', `${(((window.__pointerX || 0) / x) - 0.5) * 2}`);
-      const statement = document.querySelector('.m-statement');
-      if (statement) {
-        const rect = statement.getBoundingClientRect();
-        const progress = Math.max(0, Math.min(1, (window.innerHeight - rect.top) / (window.innerHeight * 0.82)));
-        statement.style.setProperty('--statement-progress', progress.toFixed(3));
-        statement.style.setProperty('--statement-lift', `${((1 - progress) * 36).toFixed(1)}px`);
-        const shade = Math.round(150 - (progress * 132));
-        statement.style.setProperty('--statement-ink', `rgb(${shade} ${shade} ${shade})`);
-      }
       if (withFlip) {
         const progress = Math.max(0, Math.min(1, (window.scrollY - 80) / 760));
         setAvatarRotation(Math.round(progress * 180));

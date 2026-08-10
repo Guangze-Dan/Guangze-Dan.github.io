@@ -217,9 +217,9 @@ html.rb-cursor-on, html.rb-cursor-on * { cursor: none !important; }
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  color: #111;
+  color: #000;
 }
-.m-statement p span, .m-statement p small { color: #77756d; }
+.m-statement p span, .m-statement p small { color: #111; }
 
 /* 大字：横向渐显并保持（不消失） */
 .m-statement p .rb-pressure-word {
