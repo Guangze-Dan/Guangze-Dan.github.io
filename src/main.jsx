@@ -289,7 +289,7 @@ function ProjectVisual({ project, large = false }) {
   return (
     <div className={`m-project-image ${project.tone} ${large ? 'is-large' : ''}`} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
       {!large && project.cover && <img className="m-project-cover" src={coverSrc} alt="" />}
-      {large && project.mediaType === 'video' && <video src={project.media} controls muted loop autoPlay playsInline preload="metadata" />}
+      {large && project.mediaType === 'video' && <video src={project.media} controls loop autoPlay playsInline preload="metadata" />}
       {large && project.mediaType === 'audio' && <AudioVisualizer src={project.media} />}
       {large && project.demoUrl && <iframe src={project.demoUrl} title={project.title} loading="lazy" />}
     </div>
