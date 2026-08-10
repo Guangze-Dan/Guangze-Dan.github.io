@@ -213,12 +213,16 @@ html.rb-cursor-on, html.rb-cursor-on * { cursor: none !important; }
   max-width: 1400px;
   margin: 0;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
 }
 
-/* 大字：进入时快速显现 */
+/* 大字：横向，先渐显再淡出（两幕式） */
 .m-statement p .rb-pressure-word {
-  font-size: clamp(56px, 10vh, 140px);
-  opacity: clamp(0, calc((var(--reveal-progress, 0) - .02) * 6), 1);
+  font-size: clamp(56px, 10.5vw, 180px);
+  opacity: calc(clamp(0, calc((var(--reveal-progress, 0) - .02) * 5.5), 1) - clamp(0, calc((var(--reveal-progress, 0) - .42) * 5.5), 1));
   transform: translateY(clamp(0px, calc((1 - var(--reveal-progress, 0)) * 34px), 34px));
 }
 .m-statement p .rb-pressure-word .rb-pressure-char {
@@ -227,26 +231,26 @@ html.rb-cursor-on, html.rb-cursor-on * { cursor: none !important; }
   font-family: inherit;
 }
 
-/* 小字分段渐显：span 先、small 后 */
+/* 小字分段渐显：大字淡出后，span 先、small 后 */
 .m-statement p span {
-  opacity: clamp(0, calc((var(--reveal-progress, 0) - .16) * 4.6), 1);
+  opacity: clamp(0, calc((var(--reveal-progress, 0) - .55) * 4.5), 1);
   transform: translateY(clamp(0px, calc((1 - var(--reveal-progress, 0)) * 28px), 28px));
 }
 .m-statement p small {
-  opacity: clamp(0, calc((var(--reveal-progress, 0) - .42) * 4.8), 1);
+  opacity: clamp(0, calc((var(--reveal-progress, 0) - .68) * 4.8), 1);
   transform: translateY(clamp(0px, calc((1 - var(--reveal-progress, 0)) * 22px), 22px));
 }
 
 @media (max-width: 800px) {
   .m-statement { height: 240vh; }
-  .m-statement p .rb-pressure-word { font-size: clamp(46px, 8.5vh, 84px); }
+  .m-statement p .rb-pressure-word { font-size: clamp(44px, 10vw, 96px); }
 }
 
-/* 竖排 + 逐字压力 */
+/* 横向排列 + 逐字压力 */
 .rb-pressure-word {
   display: inline-flex;
-  flex-direction: column;
-  gap: .05em;
+  flex-direction: row;
+  gap: .03em;
   font-weight: 600;
   line-height: .95;
   letter-spacing: normal;
