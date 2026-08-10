@@ -457,6 +457,31 @@ function HomePage() {
     window.addEventListener('resize', syncBottom);
     return () => window.removeEventListener('resize', syncBottom);
   }, []);
+  useEffect(() => {
+    const section = document.querySelector('.m-statement');
+    if (!section) return undefined;
+    let ticking = false;
+    const update = () => {
+      const rect = section.getBoundingClientRect();
+      const total = section.offsetHeight - window.innerHeight;
+      const progress = total > 0 ? Math.min(Math.max(-rect.top / total, 0), 1) : 1;
+      section.style.setProperty('--reveal-progress', progress.toFixed(3));
+      ticking = false;
+    };
+    const onScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(update);
+        ticking = true;
+      }
+    };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
+  }, []);
   return (
     <div className="majd-site">
       <SiteNav />
@@ -487,7 +512,15 @@ function HomePage() {
           </div>
         </section>
 
-        <section className="m-statement m-reveal"><p><PressureWord text={`\u4ece\u60f3\u6cd5\u5230\u4f53\u9a8c`} /><span>FROM IDEA TO EXPERIENCE</span><small>{`\u8ba9\u521b\u4f5c\u4fdd\u6301\u6d41\u52a8\u4e0e\u597d\u5947\uff0c\u8ba9\u4e0d\u53ef\u89c1\u4e4b\u7269\u9010\u6e10\u6210\u4e3a\u53ef\u4ee5\u88ab\u611f\u77e5\u7684\u4f53\u9a8c\u3002`}<br />Keeping creativity fluid and curious, I transform invisible ideas into experiences that can be felt.</small></p></section>
+        <section className="m-statement">
+          <div className="m-statement-sticky">
+            <p>
+              <PressureWord text={`\u4ece\u60f3\u6cd5\u5230\u4f53\u9a8c`} />
+              <span>FROM IDEA TO EXPERIENCE</span>
+              <small>{`\u8ba9\u521b\u4f5c\u4fdd\u6301\u6d41\u52a8\u4e0e\u597d\u5947\uff0c\u8ba9\u4e0d\u53ef\u89c1\u4e4b\u7269\u9010\u6e10\u6210\u4e3a\u53ef\u4ee5\u88ab\u611f\u77e5\u7684\u4f53\u9a8c\u3002`}<br />Keeping creativity fluid and curious, I transform invisible ideas into experiences that can be felt.</small>
+            </p>
+          </div>
+        </section>
 
         <section className="m-services" id="services">
           <div className="m-section-kicker"><ShinyText>/ {`\u6211\u7684\u65b9\u6cd5`} <small>MY APPROACH</small></ShinyText></div><h2><SplitText>{`\u670d\u52a1`}</SplitText><i>SERVICES</i></h2>

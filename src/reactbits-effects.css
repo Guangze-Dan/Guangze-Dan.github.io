@@ -191,6 +191,73 @@ html.rb-cursor-on, html.rb-cursor-on * { cursor: none !important; }
   box-shadow: 0 6px 16px rgba(217, 255, 88, .28);
 }
 
+/* ---------- 宣言区滚动渐显（sticky reveal） ---------- */
+
+.m-statement {
+  height: 210vh;
+  min-height: 0;
+  padding: 0;
+  display: block;
+  background: var(--paper);
+}
+.m-statement-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100dvh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+.m-statement p {
+  max-width: 1400px;
+  margin: 0;
+  text-align: center;
+}
+
+/* 大字：进入时快速显现 */
+.m-statement p .rb-pressure-word {
+  font-size: clamp(56px, 10vh, 140px);
+  opacity: clamp(0, calc((var(--reveal-progress, 0) - .02) * 6), 1);
+  transform: translateY(clamp(0px, calc((1 - var(--reveal-progress, 0)) * 34px), 34px));
+}
+.m-statement p .rb-pressure-word .rb-pressure-char {
+  font-size: inherit;
+  font-weight: inherit;
+  font-family: inherit;
+}
+
+/* 小字分段渐显：span 先、small 后 */
+.m-statement p span {
+  opacity: clamp(0, calc((var(--reveal-progress, 0) - .16) * 4.6), 1);
+  transform: translateY(clamp(0px, calc((1 - var(--reveal-progress, 0)) * 28px), 28px));
+}
+.m-statement p small {
+  opacity: clamp(0, calc((var(--reveal-progress, 0) - .42) * 4.8), 1);
+  transform: translateY(clamp(0px, calc((1 - var(--reveal-progress, 0)) * 22px), 22px));
+}
+
+@media (max-width: 800px) {
+  .m-statement { height: 240vh; }
+  .m-statement p .rb-pressure-word { font-size: clamp(46px, 8.5vh, 84px); }
+}
+
+/* 竖排 + 逐字压力 */
+.rb-pressure-word {
+  display: inline-flex;
+  flex-direction: column;
+  gap: .05em;
+  font-weight: 600;
+  line-height: .95;
+  letter-spacing: normal;
+}
+.rb-pressure-char {
+  display: inline-block;
+  transition: transform .32s cubic-bezier(.19, 1, .22, 1);
+  will-change: transform;
+}
+.rb-pressure-char:hover { transform: scaleY(1.5); }
+
 /* ---------- 宣言区文字层级 ---------- */
 
 .m-statement p small {
@@ -199,27 +266,6 @@ html.rb-cursor-on, html.rb-cursor-on * { cursor: none !important; }
   font-size: clamp(13px, 1.3vw, 20px);
   line-height: 1.65;
 }
-
-.m-statement p .rb-pressure-word {
-  display: inline-flex;
-  flex-direction: column;
-  gap: .05em;
-  font-size: clamp(72px, 12vh, 150px);
-  font-weight: 600;
-  line-height: .95;
-  letter-spacing: normal;
-}
-.m-statement p .rb-pressure-word .rb-pressure-char {
-  font-size: inherit;
-  font-weight: inherit;
-  font-family: inherit;
-}
-.rb-pressure-char {
-  display: inline-block;
-  transition: transform .32s cubic-bezier(.19, 1, .22, 1);
-  will-change: transform;
-}
-.rb-pressure-char:hover { transform: scaleY(1.5); }
 
 /* ---------- 作品卡片集成 ---------- */
 
