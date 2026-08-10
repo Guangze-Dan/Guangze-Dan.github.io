@@ -1,0 +1,151 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+  /* applies the following styles to all elements on the page */
+  
+  body{
+    background-color: #e2f5e8;
+    background-image: linear-gradient(45deg, #e2f5e8 0%, #e9e9df 100%);
+    font-family: 'Poppins',sans-serif;
+  }
+  .menu{
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat( auto-fit, minmax(350px,1fr));
+    grid-gap: 20px 40px;
+  }
+  .heading{
+    background-color: #337944;
+    color: #ffffff;
+    margin-bottom: 30px;
+    padding: 120px 0 30px 0;
+    grid-column: 1/-1;
+    text-align: center;
+  }
+  .heading>h1{
+    font-weight: 400;
+    font-size: 30px;
+    letter-spacing: 10px;
+    margin-bottom: 10px;
+  }
+  .heading>h3{
+    font-weight: 600;
+    font-size: 22px;
+    letter-spacing: 5px;
+  }
+  .food-items{
+    display: grid;
+    position: relative;
+    grid-template-rows: auto 1fr;
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    margin: 0 20px;
+  }
+  .food-items img{
+    position: relative;
+    width: 100%;
+    border-radius: 15px 15px 0 0;
+  }
+  
+  .details{
+    padding: 20px 10px;
+    display: grid;
+    grid-template-rows: auto 1fr 50px;
+    grid-row-gap: 15px;
+  }
+
+  .details>p{
+    color: #6f6f6f;
+    font-size: 15px;
+    line-height: 28px;
+    font-weight: 400;
+    align-self: stretch;
+  }
+  .details>button{
+    background-color: #48d2ad;
+    border: none;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 5px;
+    width: 180px;
+    
+  }
+  
+  #scroll-up {
+    position: fixed;
+    top: -120%;
+    right: 20px;
+    padding: 10px;
+    font-size: 25px;
+    background: rgb(0, 0, 0);
+    color: rgb(21, 144, 80);
+    border-radius: 10px;
+    opacity: 0.8;
+    transition: 1s linear;
+  }
+  
+  #scroll-up.active {
+    top: 50%;
+  }
+  .hygiene {
+    display: inline-block;
+    width: 60%;
+    height: auto;
+    font-size: 1.2rem;
+    padding: 0.5rem 1rem;
+    background: rgb(0, 0, 0);
+    color: rgb(21, 144, 80);
+    border-radius: 10px;
+    opacity: 0.8;
+}
+
+@media (max-width: 1280px) {
+    .hygiene {
+        width: 80%;
+        font-size: 1rem;
+        padding: 0.4rem 0.8rem;
+        
+    }
+}
+
+@media (max-width: 800px) {
+    .hygiene {
+        width: 100%;
+        font-size: 0.8rem;
+        padding: 0.3rem 0.6rem;
+    }
+}
+
+.call {
+  color: #ffffff;
+}
+
+#map-container {
+  width: 100%;
+  height: 0;
+  padding-bottom: 56.25%;
+  position: relative;
+}
+
+#map-container iframe {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+button {
+  background-color: #48d2ad;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #3e8e41;
+}

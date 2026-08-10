@@ -1,0 +1,2 @@
+import './RoleSplit.css';
+export default function RoleSplit(){return <div className="role-split" aria-label="Creative roles"><div className="role-panel role-story"><span>01</span><strong>INTERACTIVE<br/>STORYTELLER</strong><small>STORY / SPACE / PEOPLE</small></div><div className="role-panel role-tech"><span>02</span><strong>CREATIVE<br/>TECHNOLOGIST</strong><small>CODE / WORLDS / SYSTEMS</small></div></div>}

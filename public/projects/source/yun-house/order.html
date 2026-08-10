@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YUNhouse</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/order.css">
+</head>
+
+<body>
+    <!--  header -->
+    <header>
+        <a href="restaurant.html" class="logo"><img src="images/logo.png">Yun House</a>
+        <!-- navigation links -->
+        <div id="menu-bar" class="fas fa-bars"></div>
+        <nav class="navbar">
+            <a href="restaurant.html">Home</a>
+            <a href="menu.html">Menu</a>
+            <a href="order.html">Order</a>
+            <a href="images.html">Images</a>
+            <a href="info.html">More</a>
+        </nav>
+
+    </header>
+
+
+<body>
+
+  <div class="wrapper">
+    <h2>Yun House</h2>
+    <p>Custom your order here</p>
+    <ul class="plates">
+      <li>Loading Dishes...</li>
+    </ul>
+    <form class="add-items">
+      <input type="text" name="item" placeholder="Item Name" required>
+      <input type="submit" value="+ Add Item">
+    </form>
+    <button class="check-btn">Check</button>
+    <button class="delete-all-btn">Delete All</button>
+    <div><button class="order-btn">Order Now</button></div>
+  </div>
+  <script src="js/order.js"></script>
+
+  <a href="menu.html"><button class="return-btn" style="background-color: #4CAF50; color: white; padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer;">Check the menu</button></a>
+  <footer style="background-color:rgba(240, 248, 255, 0);"><a href="#" onclick="alert('You are at the -Order- page.'); return false;">Which page am I now?</a></footer>
+</body>
+</body>
+</html>
+

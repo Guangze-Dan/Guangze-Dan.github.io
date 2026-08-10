@@ -1,0 +1,8 @@
+.portrait img { filter: none !important; opacity: 1 !important; }
+.about-copy h2 { font-size: 0 !important; }
+.about-copy h2::after { content: '\\4f46\\5149\\6cfd'; white-space: pre; font-size: clamp(52px, 7vw, 112px); line-height: .9; letter-spacing: -.09em; }
+.about-copy .lead { font-size: 0; }
+.about-copy .lead::after { content: 'I am an interactive designer and creative technologist working across games, web experiences, audiovisual work and creative coding.'; display: block; max-width: 690px; font-size: 24px; line-height: 1.35; }
+.about-copy > p:not(.lead) { font-size: 0 !important; }
+.about-copy > p:not(.lead)::after { content: 'My projects explore how technology can make stories, places and hidden experiences easier to feel and understand. I enjoy moving between the first question and the final interaction.\\A\\A Based at the intersection of UCL London, York and Wuhan, China. Open to creative technology, interaction design, game and audiovisual collaborations.'; display: block; color: var(--muted); font-size: 15px; line-height: 1.8; white-space: pre-wrap; }
+@media (max-width: 800px) { .about-copy h2::after { font-size: 18vw; } .about-copy .lead::after { font-size: 20px; } }

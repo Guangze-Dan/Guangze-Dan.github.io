@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700">
+  <rect width="1200" height="700" fill="#dbe3e5"/>
+  <path d="M0 520h1200" stroke="#17262c" stroke-width="12"/>
+  <path d="M0 570h1200M0 610h1200" stroke="#7b8b8e" stroke-width="8"/>
+  <g transform="translate(120 180)">
+    <rect x="0" y="100" width="850" height="230" rx="18" fill="#c44b35"/>
+    <rect x="58" y="140" width="150" height="105" fill="#24333a"/>
+    <rect x="236" y="140" width="150" height="105" fill="#24333a"/>
+    <rect x="414" y="140" width="150" height="105" fill="#24333a"/>
+    <rect x="592" y="140" width="150" height="105" fill="#24333a"/>
+    <path d="M850 100h90l80 230H850z" fill="#8b3029"/>
+    <circle cx="145" cy="355" r="42" fill="#17262c"/><circle cx="760" cy="355" r="42" fill="#17262c"/>
+  </g>
+  <text x="70" y="90" font-family="Arial, sans-serif" font-size="30" letter-spacing="6" fill="#17262c">NATIONAL RAILWAY MUSEUM</text>
+  <text x="70" y="665" font-family="Arial, sans-serif" font-size="38" font-weight="700" fill="#17262c">DIESEL RAILCAR No.4</text>
+</svg>
