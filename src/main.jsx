@@ -112,9 +112,9 @@ const categoryAnchors = new Set();
 overviewProjects.forEach((project) => { project.categoryAnchor = categoryAnchors.has(project.category) ? undefined : project.category; categoryAnchors.add(project.category); });
 
 const coverBySlug = {
-  'animating-the-invisible': '/projects/covers/p1-invisible.png', wish: '/projects/covers/p2-wish.png', project: '/projects/covers/p3-road.png',
-  'sanhe-drifters': '/projects/covers/p4-sanhe.png', 'guangze-project-demo': '/projects/covers/p5-bim.png', 'solar-hater': '/projects/covers/p6-solar.png',
-  'student-roamer': '/projects/covers/p7-student.png', 'railway-museum-storytelling': '/projects/covers/p8-railway.svg', 'yun-house': '/projects/covers/p9-yun-house.png', 'the-most-of-us': '/projects/covers/p10-the-most-of-us.png', 'ds-final': '/projects/covers/p11-hi.png'
+  'animating-the-invisible': '/projects/covers/p1-invisible.jpg', wish: '/projects/covers/p2-wish.jpg', project: '/projects/covers/p3-road.jpg',
+  'sanhe-drifters': '/projects/covers/p4-sanhe.jpg', 'guangze-project-demo': '/projects/covers/p5-bim.jpg', 'solar-hater': '/projects/covers/p6-solar.jpg',
+  'student-roamer': '/projects/covers/p7-student.jpg', 'railway-museum-storytelling': '/projects/covers/p8-railway.svg', 'yun-house': '/projects/covers/p9-yun-house.jpg', 'the-most-of-us': '/projects/covers/p10-the-most-of-us.jpg', 'ds-final': '/projects/covers/p11-hi.jpg'
 };
 const categoryBySlug = {
   'animating-the-invisible': 'creative-technology', wish: 'game-worlds', project: 'interactive-experiences', 'sanhe-drifters': 'audiovisual-creation',
@@ -123,7 +123,8 @@ const categoryBySlug = {
   'the-most-of-us': 'interactive-experiences', 'yun-house': 'interactive-experiences'
 };
 projects.forEach((project) => Object.assign(project, { cover: coverBySlug[project.slug], category: categoryBySlug[project.slug] }));
-projects.forEach((project) => { if (project.mediaType === 'video' && project.cover) project.gif = project.cover.replace(/\.(png|svg)$/, '.gif'); });
+projects.forEach((project) => { if (project.mediaType === 'video' && project.cover) project.gif = project.cover.replace(/\.(png|svg|jpe?g)$/, '.gif'); });
+projects.forEach((project) => { if (project.mediaType === 'video' && project.media) project.poster = project.media.replace('/media/', '/media/posters/').replace(/\.(mp4|mov)$/, '.jpg'); });
 
 const services = [
   ['01', '\u4ea4\u4e92\u4f53\u9a8c', ['\u7f51\u9875\u4f53\u9a8c', '\u535a\u7269\u9986\u4ea4\u4e92', '\u7a7a\u95f4\u53d9\u4e8b'], '/work#interactive-experiences'],
@@ -200,7 +201,7 @@ function AvatarCard({ rotation = 0, className = '' }) {
   return (
     <div className={`m-avatar-flip ${className}`} style={{ transform: `perspective(1200px) rotateY(${rotation}deg)` }}>
       <div className="m-avatar-face m-avatar-front">
-        <img src="/avatar.png" alt="Portfolio portrait" />
+        <img src="/avatar.jpg" alt="Portfolio portrait" />
         <span className="m-image-tag">{`\u6b66\u6c49 / \u4e2d\u56fd`}</span>
       </div>
       <div className="m-avatar-face m-avatar-back">
@@ -288,8 +289,8 @@ function ProjectVisual({ project, large = false }) {
   const coverSrc = hover && project.gif ? project.gif : project.cover;
   return (
     <div className={`m-project-image ${project.tone} ${large ? 'is-large' : ''}`} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
-      {!large && project.cover && <img className="m-project-cover" src={coverSrc} alt="" />}
-      {large && project.mediaType === 'video' && <video src={project.media} controls loop autoPlay playsInline preload="metadata" />}
+      {!large && project.cover && <img className="m-project-cover" src={coverSrc} alt={project.titleCn} />}
+      {large && project.mediaType === 'video' && <video src={project.media} poster={project.poster} controls loop autoPlay playsInline preload="metadata" />}
       {large && project.mediaType === 'audio' && <AudioVisualizer src={project.media} />}
       {large && project.demoUrl && <iframe src={project.demoUrl} title={project.title} loading="lazy" />}
     </div>
@@ -473,7 +474,7 @@ function HomePage() {
           <div className="m-section-kicker">/ {`\u5173\u4e8e\u6211`}</div>
           <div className="m-intro-grid">
             <div className="m-intro-lead"><h2>{`\u4f60\u597d\uff01`}<small>HELLO!</small></h2><p>{`\u6211\u662f `}<span dangerouslySetInnerHTML={{ __html: name }} />{`\uff0c\u4e00\u540d\u5728\u5730\u65b9\u3001\u5a92\u4ecb\u548c\u60f3\u6cd5\u4e4b\u95f4\u5de5\u4f5c\u7684\u8bbe\u8ba1\u5e08\u3002`}</p></div>
-            <figure className="m-intro-photo"><img src="/about-avatar.png" alt="Portfolio portrait" /></figure>
+                <figure className="m-intro-photo"><img src="/about-avatar.jpg" alt="Portfolio portrait" /></figure>
             <div className="m-intro-copy">
               <p className="m-large">{`\u6211\u662f\u4e00\u540d\u4ea4\u4e92\u8bbe\u8ba1\u5e08\u548c\u521b\u610f\u6280\u672f\u5de5\u4f5c\u8005\uff0c\u6d89\u53ca\u6e38\u620f\u3001\u7f51\u9875\u4f53\u9a8c\u3001\u89c6\u542c\u4f5c\u54c1\u4e0e\u521b\u610f\u7f16\u7a0b\u3002`}</p>
               <p>{`\u6211\u5728\u4f26\u6566 UCL \u7684\u7855\u58eb\u5b66\u4e60\uff0c\u4ee5\u53ca\u5728\u7ea6\u514b\u79ef\u7d2f\u7684\u521b\u610f\u6280\u672f\u7ecf\u9a8c\uff0c\u6784\u6210\u4e86\u6211\u7684\u5b9e\u8df5\u80cc\u666f\u3002\u73b0\u5728\u6211\u4ee5\u6b66\u6c49\u3001\u4e2d\u56fd\u4e3a\u57fa\u5730\uff0c\u5728\u7814\u7a76\u3001\u6982\u5ff5\u548c\u5236\u4f5c\u4e4b\u95f4\u5de5\u4f5c\uff0c\u521b\u9020\u6e05\u6670\u3001\u6709\u6c1b\u56f4\u611f\u5e76\u4e14\u5177\u6709\u4eba\u60c5\u5473\u7684\u4f53\u9a8c\u3002`}</p>
@@ -556,7 +557,7 @@ function ProjectPage({ project }) {
     if (link) link.href = `/work#${project.slug}`;
   }, [project.slug]);
   const next = overviewProjects[(overviewProjects.findIndex((item) => item.slug === project.slug) + 1) % overviewProjects.length];
-  return <div className="majd-site m-project-page"><SiteNav /><main><section className={`m-detail-hero ${project.tone}`}><div className="m-section-kicker">/ {`\u4f5c\u54c1`} {project.n} / {project.year}</div><h1>{project.titleCn}<i>{project.title}</i></h1><p>{project.intro}</p><div className="m-detail-meta"><span>{project.type}</span><span>{project.role}</span><span><span dangerouslySetInnerHTML={{ __html: name }} /> / {`\u6b66\u6c49\uff0c\u4e2d\u56fd`}</span></div></section><section className="m-detail-media"><ProjectVisual project={project} large /><div className="m-detail-caption"><span>{`\u5f71\u50cf\u5360\u4f4d`}</span><p>{`\u9879\u76ee\u56fe\u7247\u3001\u5f71\u7247\u622a\u56fe\u3001\u8fc7\u7a0b\u8bb0\u5f55\u548c\u6700\u7ec8\u6210\u679c\u5c06\u5728\u8fd9\u91cc\u5c55\u793a\u3002`}</p></div></section><section className="m-detail-copy"><div className="m-section-kicker">/ {`\u9879\u76ee\u4ecb\u7ecd`}</div><div><h2>{project.titleCn}{` \u662f\u4e00\u6b21\u8ba9\u60f3\u6cd5 `}<i>{`\u53d8\u5f97\u53ef\u611f\u7684\u5b9e\u8df5\u3002`}</i></h2><p>{project.detail}</p><a className="m-underlink" href="/work">{`\u8fd4\u56de\u5168\u90e8\u4f5c\u54c1`} <Arrow /></a></div></section><section className="m-next-project"><span>{`\u4e0b\u4e00\u4e2a\u4f5c\u54c1`}</span><a href={`/work/${next.slug}`}><small>{next.n} / {next.type}</small><h2>{next.titleCn}<small>{next.title}</small> <Arrow /></h2></a></section></main><SiteFooter /></div>;
+  return <div className="majd-site m-project-page"><SiteNav /><main><section className={`m-detail-hero ${project.tone}`}><div className="m-section-kicker">/ {`\u4f5c\u54c1`} {project.n} / {project.year}</div><h1>{project.titleCn}<i>{project.title}</i></h1><p>{project.intro}</p><div className="m-detail-meta"><span>{project.type}</span><span>{project.role}</span><span><span dangerouslySetInnerHTML={{ __html: name }} /> / {`\u6b66\u6c49\uff0c\u4e2d\u56fd`}</span></div></section><section className="m-detail-media"><ProjectVisual project={project} large /><div className="m-detail-caption"><span>{`\u9879\u76ee\u5f71\u7247`}</span><p>{`\u5f71\u7247\u5c55\u793a\u9879\u76ee\u7684\u5b9e\u9645\u8fd0\u884c\u6548\u679c\uff0c\u70b9\u51fb\u64ad\u653e\u53ef\u542f\u7528\u58f0\u97f3\u3002`}</p></div></section><section className="m-detail-copy"><div className="m-section-kicker">/ {`\u9879\u76ee\u4ecb\u7ecd`}</div><div><h2>{project.titleCn}{` \u662f\u4e00\u6b21\u8ba9\u60f3\u6cd5 `}<i>{`\u53d8\u5f97\u53ef\u611f\u7684\u5b9e\u8df5\u3002`}</i></h2><p>{project.detail}</p><a className="m-underlink" href="/work">{`\u8fd4\u56de\u5168\u90e8\u4f5c\u54c1`} <Arrow /></a></div></section><section className="m-next-project"><span>{`\u4e0b\u4e00\u4e2a\u4f5c\u54c1`}</span><a href={`/work/${next.slug}`}><small>{next.n} / {next.type}</small><h2>{next.titleCn}<small>{next.title}</small> <Arrow /></h2></a></section></main><SiteFooter /></div>;
 }
 
 class AppErrorBoundary extends React.Component {
@@ -583,6 +584,16 @@ class AppErrorBoundary extends React.Component {
 
 function App() {
   const path = window.location.pathname.replace(/\/+$/, '') || '/';
+  useEffect(() => {
+    if (path === '/work') {
+      document.title = `\u4f5c\u54c1 / SELECTED PROJECTS \u00b7 \u4f46\u5149\u6cfd\u4f5c\u54c1\u96c6`;
+    } else if (path.startsWith('/work/')) {
+      const project = projects.find((item) => item.slug === path.slice('/work/'.length));
+      document.title = project ? `${project.titleCn} \u00b7 \u4f46\u5149\u6cfd\u4f5c\u54c1\u96c6` : `\u4f5c\u54c1 / SELECTED PROJECTS \u00b7 \u4f46\u5149\u6cfd\u4f5c\u54c1\u96c6`;
+    } else {
+      document.title = `\u4f46\u5149\u6cfd \u00b7 Guangze Dan \u2014 \u4ea4\u4e92\u8bbe\u8ba1\u5e08 / \u521b\u610f\u6280\u672f\u4f5c\u54c1\u96c6`;
+    }
+  }, [path]);
   if (path === '/work') return <WorkPage />;
   if (path.startsWith('/work/')) {
     const project = projects.find((item) => item.slug === path.slice('/work/'.length));
