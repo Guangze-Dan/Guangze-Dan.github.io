@@ -191,21 +191,45 @@ html.rb-cursor-on, html.rb-cursor-on * { cursor: none !important; }
   box-shadow: 0 6px 16px rgba(217, 255, 88, .28);
 }
 
-/* ---------- 宣言区文字层级 ---------- */
+/* ---------- 宣言区滚动渐显（sticky reveal） ---------- */
 
-.m-statement p small {
+.m-statement {
+  height: 210vh;
+  min-height: 0;
+  padding: 0;
   display: block;
-  margin-top: 24px;
-  font-size: clamp(13px, 1.3vw, 20px);
-  line-height: 1.65;
+  background: var(--paper);
 }
+.m-statement-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100dvh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+.m-statement p {
+  max-width: 1400px;
+  margin: 0;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: #111;
+}
+.m-statement p span, .m-statement p small { color: #77756d; }
 
+/* 大字：横向渐显并保持（不消失） */
 .m-statement p .rb-pressure-word {
   display: block;
   font-size: clamp(56px, 10.5vw, 180px);
   font-weight: 600;
   line-height: .92;
   letter-spacing: -.09em;
+  opacity: clamp(0, calc((var(--reveal-progress, 1) - .02) * 4.6), 1);
+  transform: translateY(clamp(0px, calc((1 - var(--reveal-progress, 1)) * 34px), 34px));
 }
 .m-statement p .rb-pressure-word .rb-pressure-char {
   display: inline-block;
@@ -213,6 +237,27 @@ html.rb-cursor-on, html.rb-cursor-on * { cursor: none !important; }
   font-weight: inherit;
   font-family: inherit;
 }
+
+/* 小字依次渐显并保持：span 先、small 后 */
+.m-statement p span {
+  opacity: clamp(0, calc((var(--reveal-progress, 1) - .32) * 4.4), 1);
+  transform: translateY(clamp(0px, calc((1 - var(--reveal-progress, 1)) * 28px), 28px));
+}
+.m-statement p small {
+  display: block;
+  margin-top: 24px;
+  font-size: clamp(13px, 1.3vw, 20px);
+  line-height: 1.65;
+  opacity: clamp(0, calc((var(--reveal-progress, 1) - .52) * 4.6), 1);
+  transform: translateY(clamp(0px, calc((1 - var(--reveal-progress, 1)) * 22px), 22px));
+}
+
+@media (max-width: 800px) {
+  .m-statement { height: 240vh; }
+  .m-statement p .rb-pressure-word { font-size: clamp(44px, 10vw, 96px); }
+}
+
+/* 逐字压力交互 */
 .rb-pressure-char {
   display: inline-block;
   transition: transform .32s cubic-bezier(.19, 1, .22, 1);
