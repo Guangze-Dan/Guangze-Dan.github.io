@@ -469,8 +469,8 @@ function HomePage() {
           <figure className="m-hero-image"><AvatarCard rotation={avatarRotation} /></figure>
           <div className="m-hero-side m-hero-side-left">&copy; 2026</div>
           <div className="m-hero-side m-hero-side-right"><ShinyText>/ {`\u8de8\u5a92\u4f53\u521b\u4f5c`}</ShinyText><br /><small>/ Transmedia Practice</small></div>
-          <Magnet strength={0.35}><a className="m-hero-cta" href="#about">{`\u5411\u4e0b\u63a2\u7d22`} <Arrow /></a></Magnet>
-          <Magnet strength={0.35}><a className="m-resume-button" href="/guangze-resume.docx" download="Guangze-Resume.docx"><strong>{`\u4e0b\u8f7d\u7b80\u5386`}<small>Download CV</small></strong><Arrow /></a></Magnet>
+          <a className="m-hero-cta" href="#about">{`\u5411\u4e0b\u63a2\u7d22`} <Arrow /></a>
+          <a className="m-resume-button" href="/guangze-resume.docx" download="Guangze-Resume.docx"><strong>{`\u4e0b\u8f7d\u7b80\u5386`}<small>Download CV</small></strong><Arrow /></a>
         </section>
 
         <section className="m-intro" id="about">
