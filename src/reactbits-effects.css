@@ -117,25 +117,25 @@
   will-change: transform;
 }
 .rb-cursor-dot {
-  width: 9px;
-  height: 9px;
-  margin: -4.5px 0 0 -4.5px;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
   background: #fff;
   mix-blend-mode: difference;
 }
 .rb-cursor-ring {
-  width: 40px;
-  height: 40px;
-  margin: -20px 0 0 -20px;
-  border: 1px solid #fff;
+  width: 46px;
+  height: 46px;
+  margin: -23px 0 0 -23px;
+  border: 2px solid #fff;
   mix-blend-mode: difference;
   transition: width .25s ease, height .25s ease, margin .25s ease, background .25s ease;
 }
 .rb-cursor-ring.is-hover {
-  width: 58px;
-  height: 58px;
-  margin: -29px 0 0 -29px;
-  background: rgba(255, 255, 255, .14);
+  width: 72px;
+  height: 72px;
+  margin: -36px 0 0 -36px;
+  background: rgba(255, 255, 255, .16);
 }
 html.rb-cursor-on, html.rb-cursor-on * { cursor: none !important; }
 
@@ -231,6 +231,15 @@ html.rb-cursor-on, html.rb-cursor-on * { cursor: none !important; }
   box-shadow: 0 6px 16px rgba(217, 255, 88, .28);
 }
 
+/* ---------- 宣言区文字层级 ---------- */
+
+.m-statement p small {
+  display: block;
+  margin-top: 24px;
+  font-size: clamp(13px, 1.3vw, 20px);
+  line-height: 1.65;
+}
+
 /* ---------- 作品卡片集成 ---------- */
 
 .rb-cover-glare { position: absolute; inset: 0; z-index: 0; }
@@ -251,17 +260,6 @@ html.rb-cursor-on, html.rb-cursor-on * { cursor: none !important; }
 
 .m-hero { position: relative; }
 .m-hero-aurora { z-index: 0; }
-.m-hero-badge {
-  position: absolute;
-  z-index: 4;
-  right: 4.5vw;
-  top: 16%;
-  color: #111;
-  opacity: .82;
-}
-@media (max-width: 800px) {
-  .m-hero-badge { display: none; }
-}
 
 /* ---------- 触屏与减弱动效 ---------- */
 

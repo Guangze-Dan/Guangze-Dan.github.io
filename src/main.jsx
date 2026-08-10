@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './majd-theme.css';
 import './reactbits-effects.css';
-import { SplitText, BlurText, ShinyText, GradientText, RotatingText, TextPressure, WordReveal, TiltedCard, GlareHover, Magnet, ScrollProgress, Noise, ClickSpark, CustomCursor, TrailCursor, Aurora } from './reactbits-effects.jsx';
+import { SplitText, BlurText, ShinyText, GradientText, TextPressure, WordReveal, TiltedCard, GlareHover, Magnet, ScrollProgress, Noise, ClickSpark, CustomCursor, TrailCursor, Aurora } from './reactbits-effects.jsx';
 
 const name = '&#20294;&#20809;&#27901;';
 
@@ -470,7 +470,6 @@ function HomePage() {
           <figure className="m-hero-image"><AvatarCard rotation={avatarRotation} /></figure>
           <div className="m-hero-side m-hero-side-left">&copy; 2026</div>
           <div className="m-hero-side m-hero-side-right"><ShinyText>/ {`\u8de8\u5a92\u4f53\u521b\u4f5c`}</ShinyText><br /><small>/ Transmedia Practice</small></div>
-          <div className="m-hero-badge"><RotatingText /></div>
           <Magnet strength={0.35}><a className="m-hero-cta" href="#about">{`\u5411\u4e0b\u63a2\u7d22`} <Arrow /></a></Magnet>
           <Magnet strength={0.35}><a className="m-resume-button" href="/guangze-resume.docx" download="Guangze-Resume.docx"><strong>{`\u4e0b\u8f7d\u7b80\u5386`}<small>Download CV</small></strong><Arrow /></a></Magnet>
         </section>
@@ -489,7 +488,7 @@ function HomePage() {
           </div>
         </section>
 
-        <section className="m-statement m-reveal"><p><TextPressure text={`\u4ece\u60f3\u6cd5\u5230\u4f53\u9a8c`} fontSize={96} pressure={0.7} /><span>FROM IDEA TO EXPERIENCE</span><small>{`\u8ba9\u521b\u4f5c\u4fdd\u6301\u6d41\u52a8\u4e0e\u597d\u5947\uff0c\u8ba9\u4e0d\u53ef\u89c1\u4e4b\u7269\u9010\u6e10\u6210\u4e3a\u53ef\u4ee5\u88ab\u611f\u77e5\u7684\u4f53\u9a8c\u3002`}<br />Keeping creativity fluid and curious, I transform invisible ideas into experiences that can be felt.</small></p></section>
+        <section className="m-statement m-reveal"><p><TextPressure text={`\u4ece\u60f3\u6cd5\u5230\u4f53\u9a8c`} fontSize={168} pressure={0.7} /><span>FROM IDEA TO EXPERIENCE</span><small>{`\u8ba9\u521b\u4f5c\u4fdd\u6301\u6d41\u52a8\u4e0e\u597d\u5947\uff0c\u8ba9\u4e0d\u53ef\u89c1\u4e4b\u7269\u9010\u6e10\u6210\u4e3a\u53ef\u4ee5\u88ab\u611f\u77e5\u7684\u4f53\u9a8c\u3002`}<br />Keeping creativity fluid and curious, I transform invisible ideas into experiences that can be felt.</small></p></section>
 
         <section className="m-services" id="services">
           <div className="m-section-kicker"><ShinyText>/ {`\u6211\u7684\u65b9\u6cd5`} <small>MY APPROACH</small></ShinyText></div><h2><SplitText>{`\u670d\u52a1`}</SplitText><i>SERVICES</i></h2>
