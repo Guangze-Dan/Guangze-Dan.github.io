@@ -102,7 +102,7 @@
 
 .rb-magnet { display: inline-block; }
 .m-intro-copy > .rb-magnet { align-self: flex-end; }
-.rb-magnet-inner { display: inline-block; will-change: transform; transition: transform .18s ease-out; }
+.rb-magnet-inner { display: inline-block; position: static; transition: transform .18s ease-out; }
 .rb-magnet:hover .rb-magnet-inner { transition: transform .08s ease-out; }
 
 /* ---------- 自定义光标 ---------- */
