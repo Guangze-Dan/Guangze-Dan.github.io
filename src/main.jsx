@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './majd-theme.css';
 import './reactbits-effects.css';
-import { SplitText, BlurText, ShinyText, GradientText, TextPressure, WordReveal, TiltedCard, GlareHover, Magnet, ScrollProgress, Noise, ClickSpark, CustomCursor, TrailCursor, Aurora } from './reactbits-effects.jsx';
+import { SplitText, BlurText, ShinyText, GradientText, TextPressure, WordReveal, TiltedCard, GlareHover, Magnet, ScrollProgress, Noise, ClickSpark, CustomCursor, TrailCursor } from './reactbits-effects.jsx';
 
 const name = '&#20294;&#20809;&#27901;';
 
@@ -462,7 +462,6 @@ function HomePage() {
       <SiteNav />
       <main>
         <section className="m-hero" id="home">
-          <Aurora className="m-hero-aurora" />
           <div className="m-hero-meta"><span><BlurText>{`\u4ea4\u4e92\u8bbe\u8ba1\u5e08 / \u521b\u610f\u6280\u672f`}</BlurText></span><span><BlurText delay={90}>{`\u5e38\u9a7b\u6b66\u6c49 / \u4e2d\u56fd`}</BlurText></span></div>
           <div className="m-hero-orbit" aria-hidden="true"><span>{`UCL / \u4f26\u6566`}</span><span>{`\u7ea6\u514b`}</span><span>{`\u6b66\u6c49`}</span></div>
           <div className="m-hero-word m-hero-word-one"><SplitText delay={45}>{`\u521b\u610f\u6280\u672f`}</SplitText></div>
@@ -488,7 +487,7 @@ function HomePage() {
           </div>
         </section>
 
-        <section className="m-statement m-reveal"><p><TextPressure text={`\u4ece\u60f3\u6cd5\u5230\u4f53\u9a8c`} fontSize={168} pressure={0.7} /><span>FROM IDEA TO EXPERIENCE</span><small>{`\u8ba9\u521b\u4f5c\u4fdd\u6301\u6d41\u52a8\u4e0e\u597d\u5947\uff0c\u8ba9\u4e0d\u53ef\u89c1\u4e4b\u7269\u9010\u6e10\u6210\u4e3a\u53ef\u4ee5\u88ab\u611f\u77e5\u7684\u4f53\u9a8c\u3002`}<br />Keeping creativity fluid and curious, I transform invisible ideas into experiences that can be felt.</small></p></section>
+        <section className="m-statement m-reveal"><p><TextPressure text={`\u4ece\u60f3\u6cd5\u5230\u4f53\u9a8c`} fontSize={300} pressure={0.7} /><span>FROM IDEA TO EXPERIENCE</span><small>{`\u8ba9\u521b\u4f5c\u4fdd\u6301\u6d41\u52a8\u4e0e\u597d\u5947\uff0c\u8ba9\u4e0d\u53ef\u89c1\u4e4b\u7269\u9010\u6e10\u6210\u4e3a\u53ef\u4ee5\u88ab\u611f\u77e5\u7684\u4f53\u9a8c\u3002`}<br />Keeping creativity fluid and curious, I transform invisible ideas into experiences that can be felt.</small></p></section>
 
         <section className="m-services" id="services">
           <div className="m-section-kicker"><ShinyText>/ {`\u6211\u7684\u65b9\u6cd5`} <small>MY APPROACH</small></ShinyText></div><h2><SplitText>{`\u670d\u52a1`}</SplitText><i>SERVICES</i></h2>

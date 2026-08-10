@@ -177,46 +177,6 @@ html.rb-cursor-on, html.rb-cursor-on * { cursor: none !important; }
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-.rb-aurora { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
-.rb-aurora-blob {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(90px);
-  mix-blend-mode: screen;
-  opacity: .55;
-  will-change: transform;
-}
-.rb-aurora-a {
-  width: 46vw; height: 46vw;
-  left: -12vw; top: -14vw;
-  background: radial-gradient(circle, rgba(217, 255, 88, .5), transparent 66%);
-  animation: rbAuroraA 16s ease-in-out infinite alternate;
-}
-.rb-aurora-b {
-  width: 38vw; height: 38vw;
-  right: -8vw; top: 6vw;
-  background: radial-gradient(circle, rgba(38, 45, 98, .75), transparent 66%);
-  animation: rbAuroraB 20s ease-in-out infinite alternate;
-}
-.rb-aurora-c {
-  width: 30vw; height: 30vw;
-  left: 30vw; bottom: -12vw;
-  background: radial-gradient(circle, rgba(213, 107, 131, .38), transparent 66%);
-  animation: rbAuroraC 18s ease-in-out infinite alternate;
-}
-@keyframes rbAuroraA {
-  from { transform: translate(0, 0) scale(1); }
-  to { transform: translate(9vw, 7vw) scale(1.22); }
-}
-@keyframes rbAuroraB {
-  from { transform: translate(0, 0) scale(1.08); }
-  to { transform: translate(-8vw, -5vw) scale(.92); }
-}
-@keyframes rbAuroraC {
-  from { transform: translate(0, 0) scale(.94); }
-  to { transform: translate(6vw, -6vw) scale(1.14); }
-}
-
 /* ---------- 触屏与减弱动效 ---------- */
 
 /* ---------- 页脚快速导航 hover 动效 ---------- */
@@ -259,7 +219,6 @@ html.rb-cursor-on, html.rb-cursor-on * { cursor: none !important; }
 /* ---------- Hero 集成 ---------- */
 
 .m-hero { position: relative; }
-.m-hero-aurora { z-index: 0; }
 
 /* ---------- 触屏与减弱动效 ---------- */
 

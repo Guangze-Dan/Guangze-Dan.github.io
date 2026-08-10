@@ -132,7 +132,7 @@ export function TextPressure({ text = '', className = '', fontSize = 90, fontWei
 
     const layout = () => {
       const ratio = Math.min(window.devicePixelRatio || 1, 2);
-      const parentWidth = wrap.parentElement ? wrap.parentElement.clientWidth : window.innerWidth;
+      const parentWidth = Math.min(window.innerWidth * 0.84, 1600);
       ctx.font = `${fontWeight} ${fontSize}px "DM Mono", "Space Grotesk", sans-serif`;
       const total = chars.reduce((sum, ch) => sum + ctx.measureText(ch).width, 0);
       let scale = 1;
