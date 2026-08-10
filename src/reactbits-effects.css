@@ -1,0 +1,265 @@
+/* ============================================================
+   React Bits 风格动效样式 — 适配但光泽作品集主题
+   配色沿用现有体系：纸张 #f1f0eb / 暗色 #08090b / 酸绿 #d9ff58
+   ============================================================ */
+
+/* ---------- 文字动效 ---------- */
+
+.rb-split, .rb-blur { display: inline-block; }
+.rb-split-char {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(1.1em) rotate(4deg);
+  transition: opacity .55s cubic-bezier(.19,1,.22,1), transform .55s cubic-bezier(.19,1,.22,1);
+  will-change: opacity, transform;
+}
+.rb-split.is-in .rb-split-char { opacity: 1; transform: translateY(0) rotate(0); }
+
+.rb-blur-char {
+  display: inline-block;
+  opacity: 0;
+  filter: blur(14px);
+  transform: translateY(.4em);
+  transition: opacity .6s ease, filter .6s ease, transform .6s ease;
+  will-change: opacity, filter, transform;
+}
+.rb-blur.is-in .rb-blur-char { opacity: 1; filter: blur(0); transform: translateY(0); }
+
+.rb-words { display: inline; }
+.rb-words-item {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(.6em);
+  transition: opacity .6s cubic-bezier(.19,1,.22,1), transform .6s cubic-bezier(.19,1,.22,1);
+  margin-right: .28em;
+  will-change: opacity, transform;
+}
+.rb-words.is-in .rb-words-item { opacity: 1; transform: translateY(0); }
+
+.rb-shiny {
+  background: linear-gradient(110deg, currentColor 38%, #d9ff58 50%, currentColor 62%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: rbShine var(--shine-speed, 3.2s) linear infinite;
+  will-change: background-position;
+}
+@keyframes rbShine {
+  0% { background-position: 180% 0; }
+  100% { background-position: -80% 0; }
+}
+
+.rb-gradient {
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.rb-rotating { width: 120px; height: 120px; }
+.rb-rotating svg { width: 100%; height: 100%; overflow: visible; }
+.rb-rotating-text { font: 500 11px 'DM Mono', monospace; letter-spacing: .14em; fill: currentColor; text-transform: uppercase; }
+.rb-rotating textPath {
+  animation: rbSpin 14s linear infinite;
+  transform-origin: center;
+}
+@keyframes rbSpin { to { transform: rotate(360deg); } }
+
+.rb-pressure { display: inline-block; line-height: 1; }
+.rb-pressure canvas { display: block; width: 100%; height: 100%; }
+
+/* ---------- 卡片交互 ---------- */
+
+.rb-spotlight { position: relative; overflow: hidden; }
+.rb-spotlight::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(var(--spot-radius, 340px) circle at var(--mx, 50%) var(--my, 50%), rgba(217, 255, 88, .13), transparent 62%);
+  opacity: 0;
+  transition: opacity .4s ease;
+}
+.rb-spotlight:hover::before { opacity: 1; }
+
+.rb-tilt { transform-style: preserve-3d; will-change: transform; }
+
+.rb-glare { position: relative; overflow: hidden; }
+.rb-glare::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 40%, rgba(241, 240, 235, .22) 50%, transparent 60%);
+  transform: translateX(-120%);
+  transition: transform .7s ease;
+}
+.rb-glare:hover::after { transform: translateX(120%); }
+
+/* ---------- 磁吸按钮 ---------- */
+
+.rb-magnet { display: inline-block; }
+.rb-magnet-inner { display: inline-block; will-change: transform; transition: transform .18s ease-out; }
+.rb-magnet:hover .rb-magnet-inner { transition: transform .08s ease-out; }
+
+/* ---------- 自定义光标 ---------- */
+
+.rb-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 4000;
+  pointer-events: none;
+  border-radius: 50%;
+  will-change: transform;
+}
+.rb-cursor-dot {
+  width: 7px;
+  height: 7px;
+  margin: -3.5px 0 0 -3.5px;
+  background: #d9ff58;
+  mix-blend-mode: difference;
+}
+.rb-cursor-ring {
+  width: 38px;
+  height: 38px;
+  margin: -19px 0 0 -19px;
+  border: 1px solid rgba(217, 255, 88, .65);
+  transition: width .25s ease, height .25s ease, margin .25s ease, border-color .25s ease, background .25s ease;
+}
+.rb-cursor-ring.is-hover {
+  width: 64px;
+  height: 64px;
+  margin: -32px 0 0 -32px;
+  border-color: rgba(217, 255, 88, .95);
+  background: rgba(217, 255, 88, .07);
+}
+html.rb-cursor-on, html.rb-cursor-on * { cursor: none !important; }
+
+.rb-trail {
+  position: fixed;
+  inset: 0;
+  z-index: 3900;
+  pointer-events: none;
+}
+
+.rb-click-spark {
+  position: fixed;
+  inset: 0;
+  z-index: 3800;
+  pointer-events: none;
+}
+
+/* ---------- 页面氛围 ---------- */
+
+.rb-scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 3700;
+  background: linear-gradient(90deg, #d9ff58, #262d62);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  pointer-events: none;
+}
+
+.rb-noise {
+  position: fixed;
+  inset: 0;
+  z-index: 3600;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.rb-aurora { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+.rb-aurora-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  mix-blend-mode: screen;
+  opacity: .55;
+  will-change: transform;
+}
+.rb-aurora-a {
+  width: 46vw; height: 46vw;
+  left: -12vw; top: -14vw;
+  background: radial-gradient(circle, rgba(217, 255, 88, .5), transparent 66%);
+  animation: rbAuroraA 16s ease-in-out infinite alternate;
+}
+.rb-aurora-b {
+  width: 38vw; height: 38vw;
+  right: -8vw; top: 6vw;
+  background: radial-gradient(circle, rgba(38, 45, 98, .75), transparent 66%);
+  animation: rbAuroraB 20s ease-in-out infinite alternate;
+}
+.rb-aurora-c {
+  width: 30vw; height: 30vw;
+  left: 30vw; bottom: -12vw;
+  background: radial-gradient(circle, rgba(213, 107, 131, .38), transparent 66%);
+  animation: rbAuroraC 18s ease-in-out infinite alternate;
+}
+@keyframes rbAuroraA {
+  from { transform: translate(0, 0) scale(1); }
+  to { transform: translate(9vw, 7vw) scale(1.22); }
+}
+@keyframes rbAuroraB {
+  from { transform: translate(0, 0) scale(1.08); }
+  to { transform: translate(-8vw, -5vw) scale(.92); }
+}
+@keyframes rbAuroraC {
+  from { transform: translate(0, 0) scale(.94); }
+  to { transform: translate(6vw, -6vw) scale(1.14); }
+}
+
+/* ---------- 触屏与减弱动效 ---------- */
+
+/* ---------- 作品卡片集成 ---------- */
+
+.rb-cover-glare { position: absolute; inset: 0; z-index: 0; }
+.rb-cover-tilt { position: absolute; inset: 0; }
+
+.rb-card-spotlight {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: radial-gradient(360px circle at var(--mx, 50%) var(--my, 50%), rgba(217, 255, 88, .13), transparent 62%);
+  opacity: 0;
+  transition: opacity .4s ease;
+}
+.m-project:hover .rb-card-spotlight { opacity: 1; }
+
+/* ---------- Hero 集成 ---------- */
+
+.m-hero { position: relative; }
+.m-hero-aurora { z-index: 0; }
+.m-hero-badge {
+  position: absolute;
+  z-index: 4;
+  right: 4.5vw;
+  top: 16%;
+  color: #111;
+  opacity: .82;
+}
+@media (max-width: 800px) {
+  .m-hero-badge { display: none; }
+}
+
+/* ---------- 触屏与减弱动效 ---------- */
+
+@media (pointer: coarse) {
+  .rb-cursor, .rb-trail { display: none; }
+  html.rb-cursor-on, html.rb-cursor-on * { cursor: auto !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rb-split-char, .rb-blur-char, .rb-words-item { opacity: 1; transform: none; filter: none; transition: none; }
+  .rb-shiny, .rb-rotating textPath, .rb-aurora-blob { animation: none; }
+  .rb-cursor, .rb-trail, .rb-click-spark { display: none; }
+  html.rb-cursor-on, html.rb-cursor-on * { cursor: auto !important; }
+}

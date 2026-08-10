@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './majd-theme.css';
+import './reactbits-effects.css';
+import { SplitText, BlurText, ShinyText, GradientText, RotatingText, TextPressure, WordReveal, TiltedCard, GlareHover, Magnet, ScrollProgress, Noise, ClickSpark, CustomCursor, TrailCursor, Aurora } from './reactbits-effects.jsx';
 
 const name = '&#20294;&#20809;&#27901;';
 
@@ -289,7 +291,7 @@ function ProjectVisual({ project, large = false }) {
   const coverSrc = hover && project.gif ? project.gif : project.cover;
   return (
     <div className={`m-project-image ${project.tone} ${large ? 'is-large' : ''}`} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
-      {!large && project.cover && <img className="m-project-cover" src={coverSrc} alt={project.titleCn} />}
+      {!large && project.cover && <GlareHover className="rb-cover-glare"><TiltedCard className="rb-cover-tilt"><img className="m-project-cover" src={coverSrc} alt={project.titleCn} /></TiltedCard></GlareHover>}
       {large && project.mediaType === 'video' && <video src={project.media} poster={project.poster} controls loop autoPlay playsInline preload="metadata" />}
       {large && project.mediaType === 'audio' && <AudioVisualizer src={project.media} />}
       {large && project.demoUrl && <iframe src={project.demoUrl} title={project.title} loading="lazy" />}
@@ -298,8 +300,21 @@ function ProjectVisual({ project, large = false }) {
 }
 
 function ProjectCard({ project }) {
+  const cardRef = useRef(null);
+  useEffect(() => {
+    const el = cardRef.current;
+    if (!el) return undefined;
+    const onMove = (event) => {
+      const rect = el.getBoundingClientRect();
+      el.style.setProperty('--mx', `${event.clientX - rect.left}px`);
+      el.style.setProperty('--my', `${event.clientY - rect.top}px`);
+    };
+    el.addEventListener('pointermove', onMove);
+    return () => el.removeEventListener('pointermove', onMove);
+  }, []);
   return (
-    <a id={project.categoryAnchor} data-category={project.category} className={`m-project m-reveal ${project.tone}`} href={`/work/${project.slug}`}>
+    <a ref={cardRef} id={project.categoryAnchor} data-category={project.category} className={`m-project m-reveal ${project.tone}`} href={`/work/${project.slug}`}>
+      <span className="rb-card-spotlight" aria-hidden="true" />
       <ProjectVisual project={project} />
       <div className="m-project-meta">
         <div><small>{project.type}</small><h3>{project.titleCn}<small>{project.title}</small></h3></div>
@@ -400,14 +415,10 @@ function HomePage() {
     const all = (selector, values) => document.querySelectorAll(selector).forEach((element, index) => { if (values[index]) element.innerHTML = values[index]; });
     html('.m-logo', '\u4f46\u5149\u6cfd <small>Guangze Dan</small>');
     all('.m-menu-panel a', ['\u5173\u4e8e\u6211 <small>About Me</small> <span class="m-arrow">-&gt;</span>', '\u670d\u52a1 <small>Services</small> <span class="m-arrow">-&gt;</span>', '\u4f5c\u54c1 <small>Works</small> <span class="m-arrow">-&gt;</span>', '\u8054\u7cfb <small>Contact</small> <span class="m-arrow">-&gt;</span>']);
-    html('.m-hero-meta span:first-child', '\u4ea4\u4e92\u8bbe\u8ba1\u5e08 / \u521b\u610f\u6280\u672f\u5de5\u4f5c\u8005<br><small>Interaction Designer / Creative Technologist</small>');
-    html('.m-hero-meta span:last-child', '\u5e38\u9a7b\u6b66\u6c49\uff0c\u4e2d\u56fd<br><small>Based in Wuhan, China</small>');
-    all('.m-hero-orbit span', ['UCL - London', 'UOY - York, UK', 'Wuhan, China']);
-    html('.m-hero-side-right', '/ \u8de8\u5a92\u4f53\u521b\u4f5c<br><small>/ Transmedia Practice</small>');
+    html('.m-hero-orbit span', ['UCL - London', 'UOY - York, UK', 'Wuhan, China']);
     html('.m-resume-button', '<strong>\u4e0b\u8f7d\u7b80\u5386<br><small>Download CV</small></strong><span class="m-arrow">-&gt;</span>');
     html('.m-avatar-back-name', '\u4f46\u5149\u6cfd<br><small>Guangze Dan</small>');
     html('.m-footer-top h2', '\u4f46\u5149\u6cfd<small>Guangze Dan</small>');
-    html('.m-intro .m-section-kicker', '/ \u5173\u4e8e\u6211 <small>About Me</small>');
     html('.m-intro-lead p', '\u6211\u662f\u4f46\u5149\u6cfd\uff0c\u4e00\u540d\u5728\u5730\u65b9\u3001\u5a92\u4ecb\u4e0e\u60f3\u6cd5\u4e4b\u95f4\u8fdb\u884c\u521b\u4f5c\u7684\u8bbe\u8ba1\u5e08\u3002<br><small>I\'m Guangze Dan, a designer working across places, mediums, and ideas.</small>');
     const intro = document.querySelectorAll('.m-intro-copy p');
     if (intro[0]) intro[0].innerHTML = '\u6211\u662f\u4e00\u540d\u4ea4\u4e92\u8bbe\u8ba1\u5e08\u548c\u521b\u610f\u6280\u672f\u5de5\u4f5c\u8005\uff0c\u4e13\u6ce8\u4e8e\u6e38\u620f\u3001\u7f51\u9875\u4f53\u9a8c\u3001\u89c6\u542c\u4f5c\u54c1\u4e0e\u521b\u610f\u7f16\u7a0b\u7b49\u8de8\u5a92\u4f53\u5b9e\u8df5\u3002<br><small>I am an Interaction Designer and Creative Technologist working across games, web experiences, audiovisual works, and creative coding.</small>';
@@ -415,16 +426,9 @@ function HomePage() {
     html('.m-location-line', '<span>UCL - London</span><span>UOY - York, UK</span><span>Wuhan, China</span>');
     if (intro[1]) intro[1].innerHTML = intro[1].innerHTML.replace(/<br><br>/g, '<br>');
     html('.m-underlink', '\u67e5\u770b\u4f5c\u54c1 <small>View Works</small> <span class="m-arrow">-&gt;</span>');
-    html('.m-statement p', '\u4ece\u60f3\u6cd5\u5230\u4f53\u9a8c<br><span>FROM IDEA TO EXPERIENCE</span><br><small>\u8ba9\u521b\u4f5c\u4fdd\u6301\u6d41\u52a8\u4e0e\u597d\u5947\uff0c\u8ba9\u4e0d\u53ef\u89c1\u4e4b\u7269\u9010\u6e10\u6210\u4e3a\u53ef\u4ee5\u88ab\u611f\u77e5\u7684\u4f53\u9a8c\u3002<br>Keeping creativity fluid and curious, I transform invisible ideas into experiences that can be felt.</small>');
-    html('.m-services .m-section-kicker', '/ \u6211\u7684\u65b9\u6cd5 <small>MY APPROACH</small>');
-    html('.m-services h2', '\u670d\u52a1<i>SERVICES</i>');
     const serviceEnglish = [['Interactive Experiences', 'Web Experiences', 'Museum Interaction', 'Spatial Narratives'], ['Game Worlds', 'Playable Environments', 'World Building', 'Narrative Systems'], ['Audiovisual Creation', 'Motion Design', 'Sound & Animation', 'Art Direction'], ['Creative\u00a0Technology', 'Creative Coding', 'Research & Prototyping', 'Interaction Design']];
     document.querySelectorAll('.m-service').forEach((service, index) => { const data = serviceEnglish[index]; if (!data) return; service.querySelector('h3').innerHTML = `${service.querySelector('h3').innerText}<small>${data[0]}</small>`; service.querySelectorAll('.m-service-tags span').forEach((tag, tagIndex) => { tag.innerHTML = `${tag.innerText}<small>${data[tagIndex + 1]}</small>`; }); });
-    html('.m-work-head .m-section-kicker', '/ \u7cbe\u9009\u4f5c\u54c1 <small>SELECTED WORKS</small>');
     html('.m-work-head a', '\u67e5\u770b\u5168\u90e8\u4f5c\u54c1 <small>View All Works</small> <span class="m-arrow">-&gt;</span>');
-    html('.m-testimonials .m-section-kicker', '/ \u7cbe\u9009\u601d\u8003 <small>SELECTED THOUGHTS</small>');
-    html('.m-contact .m-section-kicker', '/ \u8054\u7cfb\u6211 <small>CONTACT</small>');
-    html('.m-contact h2', '\u6709\u9879\u76ee\u6216\u60f3\u6cd5\uff1f<i>HAVE AN IDEA?</i>');
     html('.m-contact p', '\u544a\u8bc9\u6211\u4f60\u7684\u60f3\u6cd5\uff0c\u6211\u4f1a\u5c3d\u5feb\u56de\u590d\u3002<br><small>Tell me about your project or idea, and I\'ll get back to you soon.</small>');
     html('.m-footer-top p', '\u4ea4\u4e92\u8bbe\u8ba1\u5e08 / \u521b\u610f\u6280\u672f\u5de5\u4f5c\u8005\u3002<br><small>Interaction Designer / Creative Technologist.</small><br><br>\u521b\u9020\u53ef\u4ee5\u88ab\u4eba\u611f\u53d7\u7684\u6545\u4e8b\u3001\u4e16\u754c\u4e0e\u7cfb\u7edf\u3002<br><small>Creating stories, worlds, and systems that people can experience and feel.</small>');
     html('.m-footer-links span', '/ \u5feb\u901f\u5bfc\u822a <small>QUICK NAVIGATION</small>');
@@ -439,7 +443,6 @@ function HomePage() {
     if (intro[1]) intro[1].innerHTML = '\u6211\u5728\u4f26\u6566 UCL \u7684\u7855\u58eb\u5b66\u4e60\u7ecf\u5386\uff0c\u4ee5\u53ca\u5728\u7ea6\u514b\u79ef\u7d2f\u7684\u521b\u610f\u6280\u672f\u5b9e\u8df5\uff0c\u5171\u540c\u6784\u6210\u4e86\u6211\u7684\u521b\u4f5c\u80cc\u666f\u3002<br><small>My master\'s study at UCL - London and my creative technology practice in UOY - York have shaped the foundation of my work.</small><br><br>\u5982\u4eca\uff0c\u6211\u4ee5\u6b66\u6c49\uff0c\u4e2d\u56fd\u4e3a\u521b\u4f5c\u57fa\u5730\uff0c\u5728\u7814\u7a76\u3001\u6982\u5ff5\u4e0e\u5236\u4f5c\u4e4b\u95f4\u63a2\u7d22\uff0c\u521b\u9020\u6e05\u6670\u3001\u6709\u6c1b\u56f4\u611f\uff0c\u5e76\u5177\u6709\u4eba\u60c5\u6e29\u5ea6\u7684\u4f53\u9a8c\u3002<br><small>Now based in Wuhan, China, I work between research, concepts, and making — creating experiences that are clear, atmospheric, and deeply human.</small>';
     set('.m-location-line', '<span>UCL - London</span><span>UOY - York, UK</span><span>Wuhan, China</span>');
     if (intro[1]) intro[1].innerHTML = intro[1].innerHTML.replace(/<br><br>/g, '<br>');
-    set('.m-statement p', '\u4ece\u60f3\u6cd5\u5230\u4f53\u9a8c<br><span>FROM IDEA TO EXPERIENCE</span><br><small>\u8ba9\u521b\u4f5c\u4fdd\u6301\u6d41\u52a8\u4e0e\u597d\u5947\uff0c\u8ba9\u4e0d\u53ef\u89c1\u4e4b\u7269\u9010\u6e10\u6210\u4e3a\u53ef\u4ee5\u88ab\u611f\u77e5\u7684\u4f53\u9a8c\u3002<br>Keeping creativity fluid and curious, I transform invisible ideas into experiences that can be felt.</small>');
     document.querySelectorAll('.m-testimonials article > span').forEach((item, index) => { const labels = ['\u65b9\u6cd5 / APPROACH', '\u8fc7\u7a0b / PROCESS', '\u5f53\u4e0b / PRESENT']; if (labels[index]) item.textContent = `${String(index + 1).padStart(2, '0')} / ${labels[index]}`; });
   }, []);
   useEffect(() => {
@@ -459,44 +462,46 @@ function HomePage() {
       <SiteNav />
       <main>
         <section className="m-hero" id="home">
-          <div className="m-hero-meta"><span>{`\u4ea4\u4e92\u8bbe\u8ba1\u5e08 / \u521b\u610f\u6280\u672f`}</span><span>{`\u5e38\u9a7b\u6b66\u6c49 / \u4e2d\u56fd`}</span></div>
+          <Aurora className="m-hero-aurora" />
+          <div className="m-hero-meta"><span><BlurText>{`\u4ea4\u4e92\u8bbe\u8ba1\u5e08 / \u521b\u610f\u6280\u672f`}</BlurText></span><span><BlurText delay={90}>{`\u5e38\u9a7b\u6b66\u6c49 / \u4e2d\u56fd`}</BlurText></span></div>
           <div className="m-hero-orbit" aria-hidden="true"><span>{`UCL / \u4f26\u6566`}</span><span>{`\u7ea6\u514b`}</span><span>{`\u6b66\u6c49`}</span></div>
-          <div className="m-hero-word m-hero-word-one">{`\u521b\u610f\u6280\u672f`}</div>
-          <div className="m-hero-word m-hero-word-two"><i>CREATIVE TECHNOLOGY</i></div>
+          <div className="m-hero-word m-hero-word-one"><SplitText delay={45}>{`\u521b\u610f\u6280\u672f`}</SplitText></div>
+          <div className="m-hero-word m-hero-word-two"><i><SplitText delay={28}>{`CREATIVE TECHNOLOGY`}</SplitText></i></div>
           <figure className="m-hero-image"><AvatarCard rotation={avatarRotation} /></figure>
           <div className="m-hero-side m-hero-side-left">&copy; 2026</div>
-          <div className="m-hero-side m-hero-side-right">/ {`\u8de8\u5a92\u4f53\u521b\u4f5c`}</div>
-          <a className="m-hero-cta" href="#about">{`\u5411\u4e0b\u63a2\u7d22`} <Arrow /></a>
-          <a className="m-resume-button" href="/guangze-resume.docx" download="Guangze-Resume.docx"><strong>{`\u4e0b\u8f7d\u7b80\u5386`}<small>Download CV</small></strong><Arrow /></a>
+          <div className="m-hero-side m-hero-side-right"><ShinyText>/ {`\u8de8\u5a92\u4f53\u521b\u4f5c`}</ShinyText><br /><small>/ Transmedia Practice</small></div>
+          <div className="m-hero-badge"><RotatingText /></div>
+          <Magnet strength={0.35}><a className="m-hero-cta" href="#about">{`\u5411\u4e0b\u63a2\u7d22`} <Arrow /></a></Magnet>
+          <Magnet strength={0.35}><a className="m-resume-button" href="/guangze-resume.docx" download="Guangze-Resume.docx"><strong>{`\u4e0b\u8f7d\u7b80\u5386`}<small>Download CV</small></strong><Arrow /></a></Magnet>
         </section>
 
         <section className="m-intro" id="about">
-          <div className="m-section-kicker">/ {`\u5173\u4e8e\u6211`}</div>
+          <div className="m-section-kicker"><ShinyText>/ {`\u5173\u4e8e\u6211`} <small>About Me</small></ShinyText></div>
           <div className="m-intro-grid">
-            <div className="m-intro-lead"><h2>{`\u4f60\u597d\uff01`}<small>HELLO!</small></h2><p>{`\u6211\u662f `}<span dangerouslySetInnerHTML={{ __html: name }} />{`\uff0c\u4e00\u540d\u5728\u5730\u65b9\u3001\u5a92\u4ecb\u548c\u60f3\u6cd5\u4e4b\u95f4\u5de5\u4f5c\u7684\u8bbe\u8ba1\u5e08\u3002`}</p></div>
+            <div className="m-intro-lead"><h2><SplitText>{`\u4f60\u597d\uff01`}</SplitText><small>HELLO!</small></h2><p>{`\u6211\u662f `}<span dangerouslySetInnerHTML={{ __html: name }} />{`\uff0c\u4e00\u540d\u5728\u5730\u65b9\u3001\u5a92\u4ecb\u548c\u60f3\u6cd5\u4e4b\u95f4\u5de5\u4f5c\u7684\u8bbe\u8ba1\u5e08\u3002`}</p></div>
                 <figure className="m-intro-photo"><img src="/about-avatar.jpg" alt="Portfolio portrait" /></figure>
             <div className="m-intro-copy">
               <p className="m-large">{`\u6211\u662f\u4e00\u540d\u4ea4\u4e92\u8bbe\u8ba1\u5e08\u548c\u521b\u610f\u6280\u672f\u5de5\u4f5c\u8005\uff0c\u6d89\u53ca\u6e38\u620f\u3001\u7f51\u9875\u4f53\u9a8c\u3001\u89c6\u542c\u4f5c\u54c1\u4e0e\u521b\u610f\u7f16\u7a0b\u3002`}</p>
               <p>{`\u6211\u5728\u4f26\u6566 UCL \u7684\u7855\u58eb\u5b66\u4e60\uff0c\u4ee5\u53ca\u5728\u7ea6\u514b\u79ef\u7d2f\u7684\u521b\u610f\u6280\u672f\u7ecf\u9a8c\uff0c\u6784\u6210\u4e86\u6211\u7684\u5b9e\u8df5\u80cc\u666f\u3002\u73b0\u5728\u6211\u4ee5\u6b66\u6c49\u3001\u4e2d\u56fd\u4e3a\u57fa\u5730\uff0c\u5728\u7814\u7a76\u3001\u6982\u5ff5\u548c\u5236\u4f5c\u4e4b\u95f4\u5de5\u4f5c\uff0c\u521b\u9020\u6e05\u6670\u3001\u6709\u6c1b\u56f4\u611f\u5e76\u4e14\u5177\u6709\u4eba\u60c5\u5473\u7684\u4f53\u9a8c\u3002`}</p>
               <div className="m-location-line"><span>{`UCL / \u4f26\u6566`}</span><span>{`\u7ea6\u514b / UK`}</span><span>{`\u6b66\u6c49 / \u4e2d\u56fd`}</span></div>
-              <a className="m-underlink" href="/work">{`\u67e5\u770b\u4f5c\u54c1`} <Arrow /></a>
+              <Magnet strength={0.3}><a className="m-underlink" href="/work">{`\u67e5\u770b\u4f5c\u54c1`} <Arrow /></a></Magnet>
             </div>
           </div>
         </section>
 
-        <section className="m-statement m-reveal"><p>{`\u4ece\u60f3\u6cd5\u5230\u4f53\u9a8c`}<span>FROM IDEA TO EXPERIENCE</span><small>{`\u8ba9\u521b\u4f5c\u4fdd\u6301\u6d41\u52a8\u4e0e\u597d\u5947\uff0c\u8ba9\u4e0d\u53ef\u89c1\u4e4b\u7269\u9010\u6e10\u6210\u4e3a\u53ef\u4ee5\u88ab\u611f\u77e5\u7684\u4f53\u9a8c\u3002`}<br />Keeping creativity fluid and curious, I transform invisible ideas into experiences that can be felt.</small></p></section>
+        <section className="m-statement m-reveal"><p><TextPressure text={`\u4ece\u60f3\u6cd5\u5230\u4f53\u9a8c`} fontSize={96} pressure={0.7} /><span>FROM IDEA TO EXPERIENCE</span><small>{`\u8ba9\u521b\u4f5c\u4fdd\u6301\u6d41\u52a8\u4e0e\u597d\u5947\uff0c\u8ba9\u4e0d\u53ef\u89c1\u4e4b\u7269\u9010\u6e10\u6210\u4e3a\u53ef\u4ee5\u88ab\u611f\u77e5\u7684\u4f53\u9a8c\u3002`}<br />Keeping creativity fluid and curious, I transform invisible ideas into experiences that can be felt.</small></p></section>
 
         <section className="m-services" id="services">
-          <div className="m-section-kicker">/ {`\u6211\u7684\u65b9\u6cd5`}</div><h2>{`\u670d\u52a1`}<i>SERVICES</i></h2>
+          <div className="m-section-kicker"><ShinyText>/ {`\u6211\u7684\u65b9\u6cd5`} <small>MY APPROACH</small></ShinyText></div><h2><SplitText>{`\u670d\u52a1`}</SplitText><i>SERVICES</i></h2>
           <div className="m-service-list">{services.map(([n, title, tags, href]) => <a className="m-service m-reveal" href={href} key={n}><span>{n}</span><h3>{title}</h3><div className="m-service-tags">{tags.map((tag) => <span key={tag}>{tag}</span>)}</div><Arrow /></a>)}</div>
         </section>
 
         <section className="m-work" id="work">
-          <div className="m-work-head"><div className="m-section-kicker">/ {`\u7cbe\u9009\u4f5c\u54c1`}</div><a href="/work">{`\u67e5\u770b\u5168\u90e8\u4f5c\u54c1`} <Arrow /></a></div>
+          <div className="m-work-head"><div className="m-section-kicker"><ShinyText>/ {`\u7cbe\u9009\u4f5c\u54c1`} <small>SELECTED WORKS</small></ShinyText></div><Magnet strength={0.3}><a href="/work">{`\u67e5\u770b\u5168\u90e8\u4f5c\u54c1`} <Arrow /></a></Magnet></div>
           <DepthCarousel items={overviewProjects.slice(0, 5).map((project) => ({ image: project.cover, alt: project.titleCn, titleCn: project.titleCn, title: project.title, href: `/work/${project.slug}` }))} depth={220} spread={90} tilt={22} perspective={1400} visibleCards={4} falloff={.2} blur={6} autoplay loop />
         </section>
 
-        <section className="m-testimonials"><div className="m-section-kicker">/ {`\u7cbe\u9009\u601d\u8003`}</div><div className="m-testimonials-grid"><article className="m-reveal"><span>01 / {`\u65b9\u6cd5`}</span><h3>{`\u8ba9\u4e0d\u53ef\u89c1\u53d8\u5f97\u53ef\u89e6`}<small>MAKE THE INVISIBLE TANGIBLE</small></h3><p>{`\u4f5c\u54c1\u7ecf\u5e38\u4ece\u96be\u4ee5\u88ab\u63e1\u4f4f\u7684\u4e1c\u897f\u5f00\u59cb\uff1a\u4e00\u79cd\u6c1b\u56f4\u3001\u4e00\u6bb5\u8bb0\u5fc6\u3001\u4e00\u4e2a\u7cfb\u7edf\uff0c\u6216\u8005\u4e00\u79cd\u611f\u89c9\u3002`}</p></article><article className="m-reveal"><span>02 / {`\u8fc7\u7a0b`}</span><h3>{`\u7814\u7a76\u4e5f\u662f\u4e00\u79cd\u6750\u6599`}<small>RESEARCH IS A MATERIAL</small></h3><p>{`\u53c2\u8003\u3001\u5bf9\u8bdd\u548c\u89c2\u5bdf\u5e2e\u52a9\u6211\u5728\u786e\u5b9a\u89c6\u89c9\u4e4b\u524d\uff0c\u5148\u627e\u5230\u9879\u76ee\u7684\u8d28\u611f\u3002`}</p></article><article className="m-reveal"><span>03 / {`\u5f53\u4e0b`}</span><h3>{`\u57fa\u5730\uff1a\u6b66\u6c49`}<small>BASED IN WUHAN</small></h3><p>{`\u4f26\u6566 UCL \u548c\u7ea6\u514b\u662f\u6211\u91cd\u8981\u7684\u80cc\u666f\uff0c\u73b0\u5728\u6211\u6b63\u5728\u4e2d\u56fd\u5236\u4f5c\u4e0b\u4e00\u9636\u6bb5\u7684\u4f5c\u54c1\u3002`}</p></article></div></section>
+        <section className="m-testimonials"><div className="m-section-kicker"><ShinyText>/ {`\u7cbe\u9009\u601d\u8003`} <small>SELECTED THOUGHTS</small></ShinyText></div><div className="m-testimonials-grid"><article className="m-reveal"><span>01 / {`\u65b9\u6cd5`}</span><h3>{`\u8ba9\u4e0d\u53ef\u89c1\u53d8\u5f97\u53ef\u89e6`}<small>MAKE THE INVISIBLE TANGIBLE</small></h3><p><WordReveal>{`\u4f5c\u54c1\u7ecf\u5e38\u4ece\u96be\u4ee5\u88ab\u63e1\u4f4f\u7684\u4e1c\u897f\u5f00\u59cb\uff1a\u4e00\u79cd\u6c1b\u56f4\u3001\u4e00\u6bb5\u8bb0\u5fc6\u3001\u4e00\u4e2a\u7cfb\u7edf\uff0c\u6216\u8005\u4e00\u79cd\u611f\u89c9\u3002`}</WordReveal></p></article><article className="m-reveal"><span>02 / {`\u8fc7\u7a0b`}</span><h3>{`\u7814\u7a76\u4e5f\u662f\u4e00\u79cd\u6750\u6599`}<small>RESEARCH IS A MATERIAL</small></h3><p><WordReveal>{`\u53c2\u8003\u3001\u5bf9\u8bdd\u548c\u89c2\u5bdf\u5e2e\u52a9\u6211\u5728\u786e\u5b9a\u89c6\u89c9\u4e4b\u524d\uff0c\u5148\u627e\u5230\u9879\u76ee\u7684\u8d28\u611f\u3002`}</WordReveal></p></article><article className="m-reveal"><span>03 / {`\u5f53\u4e0b`}</span><h3>{`\u57fa\u5730\uff1a\u6b66\u6c49`}<small>BASED IN WUHAN</small></h3><p><WordReveal>{`\u4f26\u6566 UCL \u548c\u7ea6\u514b\u662f\u6211\u91cd\u8981\u7684\u80cc\u666f\uff0c\u73b0\u5728\u6211\u6b63\u5728\u4e2d\u56fd\u5236\u4f5c\u4e0b\u4e00\u9636\u6bb5\u7684\u4f5c\u54c1\u3002`}</WordReveal></p></article></div></section>
 
         <ContactSection />
       </main>
@@ -506,11 +511,11 @@ function HomePage() {
 }
 
 function ContactSection() {
-  return <section className="m-contact" id="contact"><div className="m-section-kicker">/ {`\u8054\u7cfb\u6211`} <small>CONTACT</small></div><h2>{`\u6709\u9879\u76ee\u6216\u60f3\u6cd5\uff1f`}<i>HAVE AN IDEA?</i></h2><p>{`\u544a\u8bc9\u6211\u4f60\u7684\u60f3\u6cd5\uff0c\u6211\u4f1a\u5c3d\u5feb\u56de\u590d\u3002`}<br /><small>Tell me about your project or idea, and I'll get back to you soon.</small></p><div className="m-contact-details"><a href="mailto:guangze.dan.24@alumni.ucl.ac.uk">guangze.dan.24@alumni.ucl.ac.uk</a><a href="mailto:Guangze.Dan@alumni.york.ac.uk">Guangze.Dan@alumni.york.ac.uk</a><a href="mailto:322044089@qq.com">322044089@qq.com</a><a href="tel:+8618083893420">+86 18083893420</a></div></section>;
+  return <section className="m-contact" id="contact"><div className="m-section-kicker"><ShinyText>/ {`\u8054\u7cfb\u6211`} <small>CONTACT</small></ShinyText></div><h2><SplitText>{`\u6709\u9879\u76ee\u6216\u60f3\u6cd5\uff1f`}</SplitText><i>HAVE AN IDEA?</i></h2><p>{`\u544a\u8bc9\u6211\u4f60\u7684\u60f3\u6cd5\uff0c\u6211\u4f1a\u5c3d\u5feb\u56de\u590d\u3002`}<br /><small>Tell me about your project or idea, and I'll get back to you soon.</small></p><div className="m-contact-details"><a href="mailto:guangze.dan.24@alumni.ucl.ac.uk">guangze.dan.24@alumni.ucl.ac.uk</a><a href="mailto:Guangze.Dan@alumni.york.ac.uk">Guangze.Dan@alumni.york.ac.uk</a><a href="mailto:322044089@qq.com">322044089@qq.com</a><a href="tel:+8618083893420">+86 18083893420</a></div></section>;
 }
 
 function SiteFooter() {
-  return <footer className="m-footer"><div className="m-footer-top"><h2 dangerouslySetInnerHTML={{ __html: name }} /><p>{`\u4ea4\u4e92\u8bbe\u8ba1\u5e08 / \u521b\u610f\u6280\u672f\u5de5\u4f5c\u8005\u3002`}<br />{`\u521b\u9020\u53ef\u4ee5\u88ab\u4eba\u611f\u53d7\u7684\u6545\u4e8b\u3001\u4e16\u754c\u548c\u7cfb\u7edf\u3002`}</p></div><div className="m-footer-links"><span>/ {`\u5feb\u901f\u5bfc\u822a`}</span><a href="/#home">{`\u9996\u9875`}</a><a href="/#about">{`\u5173\u4e8e\u6211`}</a><a href="/#services">{`\u670d\u52a1`}</a><a href="/work">{`\u4f5c\u54c1`}</a><a href="/#contact">{`\u8054\u7cfb`}</a></div><small>&copy; 2026 / {`\u4fdd\u6301\u597d\u5947\uff0c\u6301\u7eed\u521b\u4f5c\u3002`}</small></footer>;
+  return <footer className="m-footer"><div className="m-footer-top"><h2 dangerouslySetInnerHTML={{ __html: name }} /><p>{`\u4ea4\u4e92\u8bbe\u8ba1\u5e08 / \u521b\u610f\u6280\u672f\u5de5\u4f5c\u8005\u3002`}<br />{`\u521b\u9020\u53ef\u4ee5\u88ab\u4eba\u611f\u53d7\u7684\u6545\u4e8b\u3001\u4e16\u754c\u548c\u7cfb\u7edf\u3002`}</p></div><div className="m-footer-links"><span>/ {`\u5feb\u901f\u5bfc\u822a`}</span><a href="/#home">{`\u9996\u9875`}</a><a href="/#about">{`\u5173\u4e8e\u6211`}</a><a href="/#services">{`\u670d\u52a1`}</a><a href="/work">{`\u4f5c\u54c1`}</a><a href="/#contact">{`\u8054\u7cfb`}</a></div><small>&copy; 2026 / <GradientText>{`\u4fdd\u6301\u597d\u5947\uff0c\u6301\u7eed\u521b\u4f5c\u3002`}</GradientText></small></footer>;
 }
 
 function WorkPage() {
@@ -521,7 +526,7 @@ function WorkPage() {
     const slug = window.location.hash.slice(1);
     if (slug) requestAnimationFrame(() => (document.getElementById(slug) || document.querySelector(`a[href="/work/${slug}"]`))?.scrollIntoView({ block: 'center', behavior: 'smooth' }));
   }, []);
-  return <div className="majd-site m-work-page"><SiteNav /><main><section className="m-archive-hero"><div className="m-section-kicker">/ {`\u4f5c\u54c1 / SELECTED PROJECTS`}</div><h1>{`\u7cbe\u9009`}<br /><i>SELECTED PROJECTS</i></h1><p>{`\u8fd9\u91cc\u6309\u4ea4\u4e92\u4f53\u9a8c\u3001\u6e38\u620f\u4e16\u754c\u3001\u89c6\u542c\u521b\u4f5c\u548c\u521b\u610f\u6280\u672f\u7f16\u6392\u4f5c\u54c1\uff0c\u4ece\u6700\u91cd\u8981\u7684\u9879\u76ee\u5f00\u59cb\u4e86\u89e3\u6211\u7684\u5b9e\u8df5\u3002`}</p><div className="m-archive-index">{`\u4f7f\u4e0d\u53ef\u89c1\u4e4b\u7269\u663e\u73b0 / \u613f / \u9053\u8def\u88c2\u7f1d\u68c0\u6d4b\u7cfb\u7edf / \u4e09\u548c\u5927\u795e`}</div><nav className="m-category-nav" aria-label={`\u4f5c\u54c1\u5206\u7c7b`}><a href="#interactive-experiences">{`\u4ea4\u4e92\u4f53\u9a8c`}<small>INTERACTIVE</small></a><a href="#game-worlds">{`\u6e38\u620f\u4e16\u754c`}<small>GAME WORLDS</small></a><a href="#audiovisual-creation">{`\u89c6\u542c\u521b\u4f5c`}<small>AUDIOVISUAL</small></a><a href="#creative-technology">{`\u521b\u610f\u6280\u672f`}<small>CREATIVE TECH</small></a></nav></section><div className="m-archive-groups">{archiveGroups.map((group) => <section className="m-archive-group" id={group.id} key={group.id}><div className="m-archive-group-heading"><span>{group.title}</span><small>{group.english}</small></div><div className="m-archive-grid">{group.slugs.map((slug) => overviewProjects.find((project) => project.slug === slug)).filter(Boolean).map((project) => <ProjectCard project={project} key={project.slug} />)}</div></section>)}</div><section className="m-archive-footer"><a href="/#contact">{`\u6709\u60f3\u6cd5\uff1f`} <Arrow /></a><span>{`UCL / \u4f26\u6566 / \u7ea6\u514b / \u6b66\u6c49`}</span></section></main><SiteFooter /></div>;
+  return <div className="majd-site m-work-page"><SiteNav /><main><section className="m-archive-hero"><div className="m-section-kicker"><ShinyText>/ {`\u4f5c\u54c1 / SELECTED PROJECTS`}</ShinyText></div><h1><SplitText>{`\u7cbe\u9009`}</SplitText><br /><i>SELECTED PROJECTS</i></h1><p>{`\u8fd9\u91cc\u6309\u4ea4\u4e92\u4f53\u9a8c\u3001\u6e38\u620f\u4e16\u754c\u3001\u89c6\u542c\u521b\u4f5c\u548c\u521b\u610f\u6280\u672f\u7f16\u6392\u4f5c\u54c1\uff0c\u4ece\u6700\u91cd\u8981\u7684\u9879\u76ee\u5f00\u59cb\u4e86\u89e3\u6211\u7684\u5b9e\u8df5\u3002`}</p><div className="m-archive-index">{`\u4f7f\u4e0d\u53ef\u89c1\u4e4b\u7269\u663e\u73b0 / \u613f / \u9053\u8def\u88c2\u7f1d\u68c0\u6d4b\u7cfb\u7edf / \u4e09\u548c\u5927\u795e`}</div><nav className="m-category-nav" aria-label={`\u4f5c\u54c1\u5206\u7c7b`}><a href="#interactive-experiences">{`\u4ea4\u4e92\u4f53\u9a8c`}<small>INTERACTIVE</small></a><a href="#game-worlds">{`\u6e38\u620f\u4e16\u754c`}<small>GAME WORLDS</small></a><a href="#audiovisual-creation">{`\u89c6\u542c\u521b\u4f5c`}<small>AUDIOVISUAL</small></a><a href="#creative-technology">{`\u521b\u610f\u6280\u672f`}<small>CREATIVE TECH</small></a></nav></section><div className="m-archive-groups">{archiveGroups.map((group) => <section className="m-archive-group" id={group.id} key={group.id}><div className="m-archive-group-heading"><span>{group.title}</span><small>{group.english}</small></div><div className="m-archive-grid">{group.slugs.map((slug) => overviewProjects.find((project) => project.slug === slug)).filter(Boolean).map((project) => <ProjectCard project={project} key={project.slug} />)}</div></section>)}</div><section className="m-archive-footer"><a href="/#contact">{`\u6709\u60f3\u6cd5\uff1f`} <Arrow /></a><span>{`UCL / \u4f26\u6566 / \u7ea6\u514b / \u6b66\u6c49`}</span></section></main><SiteFooter /></div>;
 }
 
 function ProjectPage({ project }) {
@@ -557,7 +562,7 @@ function ProjectPage({ project }) {
     if (link) link.href = `/work#${project.slug}`;
   }, [project.slug]);
   const next = overviewProjects[(overviewProjects.findIndex((item) => item.slug === project.slug) + 1) % overviewProjects.length];
-  return <div className="majd-site m-project-page"><SiteNav /><main><section className={`m-detail-hero ${project.tone}`}><div className="m-section-kicker">/ {`\u4f5c\u54c1`} {project.n} / {project.year}</div><h1>{project.titleCn}<i>{project.title}</i></h1><p>{project.intro}</p><div className="m-detail-meta"><span>{project.type}</span><span>{project.role}</span><span><span dangerouslySetInnerHTML={{ __html: name }} /> / {`\u6b66\u6c49\uff0c\u4e2d\u56fd`}</span></div></section><section className="m-detail-media"><ProjectVisual project={project} large /><div className="m-detail-caption"><span>{`\u9879\u76ee\u5f71\u7247`}</span><p>{`\u5f71\u7247\u5c55\u793a\u9879\u76ee\u7684\u5b9e\u9645\u8fd0\u884c\u6548\u679c\uff0c\u70b9\u51fb\u64ad\u653e\u53ef\u542f\u7528\u58f0\u97f3\u3002`}</p></div></section><section className="m-detail-copy"><div className="m-section-kicker">/ {`\u9879\u76ee\u4ecb\u7ecd`}</div><div><h2>{project.titleCn}{` \u662f\u4e00\u6b21\u8ba9\u60f3\u6cd5 `}<i>{`\u53d8\u5f97\u53ef\u611f\u7684\u5b9e\u8df5\u3002`}</i></h2><p>{project.detail}</p><a className="m-underlink" href="/work">{`\u8fd4\u56de\u5168\u90e8\u4f5c\u54c1`} <Arrow /></a></div></section><section className="m-next-project"><span>{`\u4e0b\u4e00\u4e2a\u4f5c\u54c1`}</span><a href={`/work/${next.slug}`}><small>{next.n} / {next.type}</small><h2>{next.titleCn}<small>{next.title}</small> <Arrow /></h2></a></section></main><SiteFooter /></div>;
+  return <div className="majd-site m-project-page"><SiteNav /><main><section className={`m-detail-hero ${project.tone}`}><div className="m-section-kicker">/ {`\u4f5c\u54c1`} {project.n} / {project.year}</div><h1><SplitText>{project.titleCn}</SplitText><i>{project.title}</i></h1><p>{project.intro}</p><div className="m-detail-meta"><span>{project.type}</span><span>{project.role}</span><span><span dangerouslySetInnerHTML={{ __html: name }} /> / {`\u6b66\u6c49\uff0c\u4e2d\u56fd`}</span></div></section><section className="m-detail-media"><ProjectVisual project={project} large /><div className="m-detail-caption"><span>{`\u9879\u76ee\u5f71\u7247`}</span><p>{`\u5f71\u7247\u5c55\u793a\u9879\u76ee\u7684\u5b9e\u9645\u8fd0\u884c\u6548\u679c\uff0c\u70b9\u51fb\u64ad\u653e\u53ef\u542f\u7528\u58f0\u97f3\u3002`}</p></div></section><section className="m-detail-copy"><div className="m-section-kicker">/ {`\u9879\u76ee\u4ecb\u7ecd`}</div><div><h2>{project.titleCn}{` \u662f\u4e00\u6b21\u8ba9\u60f3\u6cd5 `}<i>{`\u53d8\u5f97\u53ef\u611f\u7684\u5b9e\u8df5\u3002`}</i></h2><p>{project.detail}</p><a className="m-underlink" href="/work">{`\u8fd4\u56de\u5168\u90e8\u4f5c\u54c1`} <Arrow /></a></div></section><section className="m-next-project"><span>{`\u4e0b\u4e00\u4e2a\u4f5c\u54c1`}</span><a href={`/work/${next.slug}`}><small>{next.n} / {next.type}</small><h2>{next.titleCn}<small>{next.title}</small> <Arrow /></h2></a></section></main><SiteFooter /></div>;
 }
 
 class AppErrorBoundary extends React.Component {
@@ -594,12 +599,25 @@ function App() {
       document.title = `\u4f46\u5149\u6cfd \u00b7 Guangze Dan \u2014 \u4ea4\u4e92\u8bbe\u8ba1\u5e08 / \u521b\u610f\u6280\u672f\u4f5c\u54c1\u96c6`;
     }
   }, [path]);
-  if (path === '/work') return <WorkPage />;
-  if (path.startsWith('/work/')) {
+  let page;
+  if (path === '/work') {
+    page = <WorkPage />;
+  } else if (path.startsWith('/work/')) {
     const project = projects.find((item) => item.slug === path.slice('/work/'.length));
-    return project ? <ProjectPage project={project} /> : <WorkPage />;
+    page = project ? <ProjectPage project={project} /> : <WorkPage />;
+  } else {
+    page = <HomePage />;
   }
-  return <HomePage />;
+  return (
+    <>
+      <ScrollProgress />
+      <Noise />
+      <ClickSpark />
+      <CustomCursor />
+      <TrailCursor />
+      {page}
+    </>
+  );
 }
 
 createRoot(document.getElementById('root')).render(<AppErrorBoundary />);
