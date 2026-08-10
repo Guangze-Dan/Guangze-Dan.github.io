@@ -217,13 +217,15 @@ html.rb-cursor-on, html.rb-cursor-on * { cursor: none !important; }
   flex-direction: column;
   align-items: center;
   gap: 8px;
+  color: #111;
 }
+.m-statement p span, .m-statement p small { color: #77756d; }
 
-/* 大字：横向，先渐显再淡出（两幕式） */
+/* 大字：横向，先渐显再淡出；与小字渐显区间交叉重叠（无空白时刻） */
 .m-statement p .rb-pressure-word {
   font-size: clamp(56px, 10.5vw, 180px);
-  opacity: calc(clamp(0, calc((var(--reveal-progress, 0) - .02) * 5.5), 1) - clamp(0, calc((var(--reveal-progress, 0) - .42) * 5.5), 1));
-  transform: translateY(clamp(0px, calc((1 - var(--reveal-progress, 0)) * 34px), 34px));
+  opacity: calc(clamp(0, calc((var(--reveal-progress, 1) - .02) * 5.5), 1) - clamp(0, calc((var(--reveal-progress, 1) - .3) * 5.5), 1));
+  transform: translateY(clamp(0px, calc((1 - var(--reveal-progress, 1)) * 34px), 34px));
 }
 .m-statement p .rb-pressure-word .rb-pressure-char {
   font-size: inherit;
@@ -231,14 +233,14 @@ html.rb-cursor-on, html.rb-cursor-on * { cursor: none !important; }
   font-family: inherit;
 }
 
-/* 小字分段渐显：大字淡出后，span 先、small 后 */
+/* 小字分段渐显：与大字淡出交叉，任意时刻至少一行可见 */
 .m-statement p span {
-  opacity: clamp(0, calc((var(--reveal-progress, 0) - .55) * 4.5), 1);
-  transform: translateY(clamp(0px, calc((1 - var(--reveal-progress, 0)) * 28px), 28px));
+  opacity: clamp(0, calc((var(--reveal-progress, 1) - .34) * 4.6), 1);
+  transform: translateY(clamp(0px, calc((1 - var(--reveal-progress, 1)) * 28px), 28px));
 }
 .m-statement p small {
-  opacity: clamp(0, calc((var(--reveal-progress, 0) - .68) * 4.8), 1);
-  transform: translateY(clamp(0px, calc((1 - var(--reveal-progress, 0)) * 22px), 22px));
+  opacity: clamp(0, calc((var(--reveal-progress, 1) - .48) * 4.8), 1);
+  transform: translateY(clamp(0px, calc((1 - var(--reveal-progress, 1)) * 22px), 22px));
 }
 
 @media (max-width: 800px) {
