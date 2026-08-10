@@ -14,7 +14,7 @@ const projects = [
 const makeArchiveProject = (slug, n, title, titleCn, type, text, mark, tone) => ({ slug, n, title, titleCn, type, text, mark, tone, year: '2024', role: type, intro: text, detail: text });
 projects.push(
   makeArchiveProject('ds-final', '05', 'DS Final', '\u58f0\u97f3\u8bbe\u8ba1', '\u58f0\u97f3\u8bbe\u8ba1 / \u97f3\u9891\u6848\u4f8b', '\u6211\u7684\u58f0\u97f3\u8bbe\u8ba1\u6848\u4f8b\u3002', 'DS', 'project-dark'),
-  makeArchiveProject('the-most-of-us', '06', 'The Most of Us', '\u6211\u4eec\u5927\u591a\u6570\u4eba', '\u4ea4\u4e92\u6545\u4e8b / Twine', '\u4e00\u4e2a\u57fa\u4e8e Twine \u5236\u4f5c\u7684\u4ea4\u4e92\u6545\u4e8b\u3002', 'TW', 'project-acid'),
+  makeArchiveProject('the-most-of-us', '06', 'The Most of Us', '\u5927\u591a\u6570', '\u4ea4\u4e92\u6545\u4e8b / Twine', '\u4e00\u4e2a\u57fa\u4e8e Twine \u5236\u4f5c\u7684\u4ea4\u4e92\u6545\u4e8b\u3002', 'TW', 'project-acid'),
   makeArchiveProject('guangze-project-demo', '07', 'GuangzeDan Project Demo', '\u7ea6\u514b\u90e1 BIM \u5b9e\u666f\u52a8\u753b\u5c55\u793a\u7cfb\u7edf', '\u865a\u5b9e\u5f15\u64ce / BIM / \u52a8\u753b', '\u57fa\u4e8e\u7ea6\u514b\u90e1\u5236\u4f5c\u7684 BIM \u5b9e\u666f\u52a8\u753b\u5c55\u793a\u7cfb\u7edf\uff0c\u4f7f\u7528 UE5 \u81ea\u5236\u52a8\u753b\u7f16\u8f91\u5668\u5b8c\u6210\u3002', 'UE5', 'project-blue'),
   makeArchiveProject('solar-hater', '08', 'Solar Hater', '\u9010\u65e5\u8005', '\u52a8\u6001\u5f71\u50cf / \u89c6\u89c9\u5b9e\u9a8c', '\u56f4\u7ed5\u5149\u3001\u9634\u5f71\u4e0e\u73af\u5883\u5173\u7cfb\u7684\u89c6\u542c\u5b9e\u9a8c\u3002', 'SH', 'project-pink'),
   makeArchiveProject('student-roamer', '10', 'Student Roamer', '\u5b66\u751f\u6f2b\u6e38\u8005', '\u670d\u52a1\u8bbe\u8ba1 / \u754c\u9762', '\u4e3a\u5b66\u751f\u5728\u57ce\u5e02\u4e2d\u53d1\u73b0\u5730\u65b9\u7684\u4f53\u9a8c\u8bbe\u8ba1\u3002', 'SR', 'project-blue'),
@@ -50,7 +50,7 @@ Object.assign(projects.find((project) => project.slug === 'the-most-of-us'), { t
 Object.assign(projects.find((project) => project.slug === 'guangze-project-demo'), { title: 'Yorkshire BIM Visualisation & Real-Time Animation System' });
 Object.assign(projects.find((project) => project.slug === 'solar-hater'), { title: '\u9010\u65e5\u8005' });
 Object.assign(projects.find((project) => project.slug === 'the-most-of-us'), {
-  titleCn: '\u5927\u591a\u6570\u4eba',
+  titleCn: '\u5927\u591a\u6570',
   type: '\u4e92\u52a8\u53d9\u4e8b\u6587\u5b57\u6e38\u620f / Twine',
   role: '\u4ea4\u4e92\u5199\u4f5c / Twine / \u97f3\u4e50',
   intro: '\u300aThe Most of Us\u300b\u662f\u4e00\u6b3e\u57fa\u4e8e Twine \u5f00\u53d1\u7684\u4e92\u52a8\u6587\u5b57\u6e38\u620f\uff0c\u901a\u8fc7\u5206\u652f\u9009\u62e9\u63a2\u7d22\u57ce\u4e61\u8fc1\u79fb\u3001\u52b3\u52a8\u3001\u751f\u5b58\u538b\u529b\u4e0e\u793e\u4f1a\u6d41\u52a8\u7b49\u4e3b\u9898\u3002',
