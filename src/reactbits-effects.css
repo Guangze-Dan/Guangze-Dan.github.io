@@ -200,6 +200,20 @@ html.rb-cursor-on, html.rb-cursor-on * { cursor: none !important; }
   line-height: 1.65;
 }
 
+.m-statement p .rb-pressure-word {
+  display: block;
+  font-size: clamp(64px, 12.5vw, 210px);
+  font-weight: 600;
+  line-height: .92;
+  letter-spacing: -.09em;
+}
+.rb-pressure-char {
+  display: inline-block;
+  transition: transform .32s cubic-bezier(.19, 1, .22, 1);
+  will-change: transform;
+}
+.rb-pressure-char:hover { transform: scaleY(1.5); }
+
 /* ---------- 作品卡片集成 ---------- */
 
 .rb-cover-glare { position: absolute; inset: 0; z-index: 0; }

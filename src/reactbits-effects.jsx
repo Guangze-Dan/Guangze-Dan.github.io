@@ -204,6 +204,17 @@ export function TextPressure({ text = '', className = '', fontSize = 90, fontWei
   );
 }
 
+/* PressureWord：逐字悬停拉伸的压力文字（纯 CSS，渲染稳定） */
+export function PressureWord({ text = '', className = '' }) {
+  return (
+    <span className={`rb-pressure-word ${className}`} aria-label={text}>
+      {text.split('').map((ch, index) => (
+        <span className="rb-pressure-char" key={index}>{ch === ' ' ? '\u00A0' : ch}</span>
+      ))}
+    </span>
+  );
+}
+
 /* ------------------------------------------------------------------ */
 /* 卡片交互                                                              */
 /* ------------------------------------------------------------------ */
