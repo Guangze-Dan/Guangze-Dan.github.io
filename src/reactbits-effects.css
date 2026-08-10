@@ -201,11 +201,18 @@ html.rb-cursor-on, html.rb-cursor-on * { cursor: none !important; }
 }
 
 .m-statement p .rb-pressure-word {
-  display: block;
-  font-size: clamp(64px, 12.5vw, 210px);
+  display: inline-flex;
+  flex-direction: column;
+  gap: .05em;
+  font-size: clamp(72px, 12vh, 150px);
   font-weight: 600;
-  line-height: .92;
-  letter-spacing: -.09em;
+  line-height: .95;
+  letter-spacing: normal;
+}
+.m-statement p .rb-pressure-word .rb-pressure-char {
+  font-size: inherit;
+  font-weight: inherit;
+  font-family: inherit;
 }
 .rb-pressure-char {
   display: inline-block;

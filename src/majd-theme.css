@@ -54,7 +54,7 @@ button, input, textarea { font: inherit; }
 .m-location-line span::after { content: ' /'; color: #a8a69f; margin-left: 8px; }
 .m-location-line span:last-child::after { content: ''; }
 .m-underlink { display: inline-block; padding-bottom: 7px; border-bottom: 1px solid #111; font: 11px 'DM Mono'; }
-.m-statement { min-height: 460px; padding: 150px 8vw; display: grid; place-items: center; background: var(--paper); }
+.m-statement { min-height: 760px; padding: 130px 8vw; display: grid; place-items: center; background: var(--paper); }
 .m-statement p { max-width: 1400px; margin: 0; text-align: center; font-size: clamp(30px, 4vw, 58px); line-height: .98; letter-spacing: -.095em; }
 .m-services { padding: 150px 3.5vw 170px; background: var(--paper); }
 .m-services h2 { margin: 74px 0 100px; font-size: clamp(74px, 10vw, 145px); font-weight: 500; letter-spacing: -.13em; line-height: .75; }
