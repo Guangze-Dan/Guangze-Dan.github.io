@@ -283,7 +283,7 @@ function ProjectVisual({ project, large = false }) {
   return (
     <div className={`m-project-image ${project.tone} ${large ? 'is-large' : ''}`} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
       {!large && project.cover && <GlareHover className="rb-cover-glare"><TiltedCard className="rb-cover-tilt"><img className="m-project-cover" src={coverSrc} alt={project.titleCn} /></TiltedCard></GlareHover>}
-      {large && project.mediaType === 'video' && <video src={project.media} poster={project.poster} controls loop autoPlay playsInline preload="metadata" />}
+      {large && project.mediaType === 'video' && <video src={project.media} poster={project.poster} controls controlsList="nodownload" disablePictureInPicture onContextMenu={(event) => event.preventDefault()} loop autoPlay playsInline preload="metadata" />}
       {large && project.mediaType === 'audio' && <AudioVisualizer src={project.media} />}
       {large && project.demoUrl && <iframe src={project.demoUrl} title={project.title} loading="lazy" />}
     </div>
@@ -486,7 +486,7 @@ function HomePage() {
           <div className="m-hero-side m-hero-side-left">&copy; 2026</div>
           <div className="m-hero-side m-hero-side-right"><ShinyText>/ {`\u8de8\u5a92\u4f53\u521b\u4f5c`}</ShinyText><br /><small>/ Transmedia Practice</small></div>
           <a className="m-hero-cta" href="#about">{`\u5411\u4e0b\u63a2\u7d22`} <Arrow /></a>
-          <a className="m-resume-button" href="/guangze-resume.docx" download="Guangze-Resume.docx"><strong>{`\u4e0b\u8f7d\u7b80\u5386`}<small>Download CV</small></strong><Arrow /></a>
+          <a className="m-resume-button" href="/guangze-resume.pdf" download="Guangze-Resume.pdf"><strong>{`\u4e0b\u8f7d\u7b80\u5386`}<small>Download CV</small></strong><Arrow /></a>
         </section>
 
         <section className="m-intro" id="about">

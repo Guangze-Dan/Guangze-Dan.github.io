@@ -179,6 +179,17 @@ html.rb-cursor-on, html.rb-cursor-on * { cursor: none !important; }
 
 /* ---------- 触屏与减弱动效 ---------- */
 
+/* ---------- 内容保护 ---------- */
+
+/* 全局禁止选中文字（保留输入框/文本域可用） */
+body, body * {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+input, textarea, [contenteditable="true"] { -webkit-user-select: text; -moz-user-select: text; -ms-user-select: text; user-select: text; }
+
 /* ---------- 页脚快速导航 hover 动效 ---------- */
 
 .m-footer-links a {
