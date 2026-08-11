@@ -198,7 +198,6 @@ input, textarea, [contenteditable="true"] { -webkit-user-select: text; -moz-user
   overflow: hidden;
   line-height: 1;
 }
-.m-hero-word-one .rb-masked-text { font-weight: 600; }
 .rb-masked-text {
   display: inline-block;
   color: transparent;

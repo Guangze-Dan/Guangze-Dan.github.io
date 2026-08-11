@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './majd-theme.css';
 import './reactbits-effects.css';
-import { SplitText, BlurText, ShinyText, GradientText, PressureWord, WordReveal, MaskedHeading, DecryptedText, TiltedCard, GlareHover, Magnet, ScrollProgress, Noise, ClickSpark, CustomCursor, TrailCursor } from './reactbits-effects.jsx';
+import { SplitText, BlurText, ShinyText, GradientText, PressureWord, WordReveal, DecryptedText, TiltedCard, GlareHover, Magnet, ScrollProgress, Noise, ClickSpark, CustomCursor, TrailCursor } from './reactbits-effects.jsx';
 
 const name = '&#20294;&#20809;&#27901;';
 
@@ -480,7 +480,7 @@ function HomePage() {
         <section className="m-hero" id="home">
           <div className="m-hero-meta"><span><BlurText>{`\u4ea4\u4e92\u8bbe\u8ba1\u5e08 / \u521b\u610f\u6280\u672f`}</BlurText></span><span><BlurText delay={90}>{`\u5e38\u9a7b\u6b66\u6c49 / \u4e2d\u56fd`}</BlurText></span></div>
           <div className="m-hero-orbit" aria-hidden="true"><span>{`UCL / \u4f26\u6566`}</span><span>{`\u7ea6\u514b`}</span><span>{`\u6b66\u6c49`}</span></div>
-          <div className="m-hero-word m-hero-word-one"><MaskedHeading text={`\u521b\u610f\u6280\u672f`} media="/projects/covers/p2-wish.jpg" /></div>
+          <div className="m-hero-word m-hero-word-one">{`\u521b\u610f\u6280\u672f`}</div>
           <div className="m-hero-word m-hero-word-two"><i><SplitText delay={28}>{`CREATIVE TECHNOLOGY`}</SplitText></i></div>
           <figure className="m-hero-image"><AvatarCard rotation={avatarRotation} /></figure>
           <div className="m-hero-side m-hero-side-left">&copy; 2026</div>
