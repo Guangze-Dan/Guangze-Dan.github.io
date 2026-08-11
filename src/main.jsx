@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './majd-theme.css';
 import './reactbits-effects.css';
-import { SplitText, BlurText, ShinyText, GradientText, PressureWord, WordReveal, TiltedCard, GlareHover, Magnet, ScrollProgress, Noise, ClickSpark, CustomCursor, TrailCursor } from './reactbits-effects.jsx';
+import { SplitText, BlurText, ShinyText, GradientText, PressureWord, WordReveal, MaskedHeading, DecryptedText, TiltedCard, GlareHover, Magnet, ScrollProgress, Noise, ClickSpark, CustomCursor, TrailCursor } from './reactbits-effects.jsx';
 
 const name = '&#20294;&#20809;&#27901;';
 
@@ -304,11 +304,11 @@ function ProjectCard({ project }) {
     return () => el.removeEventListener('pointermove', onMove);
   }, []);
   return (
-    <a ref={cardRef} id={project.categoryAnchor} data-category={project.category} className={`m-project m-reveal ${project.tone}`} href={`/work/${project.slug}`}>
+    <a ref={cardRef} id={project.categoryAnchor} data-category={project.category} className={`m-project m-reveal rb-star-border ${project.tone}`} href={`/work/${project.slug}`}>
       <span className="rb-card-spotlight" aria-hidden="true" />
       <ProjectVisual project={project} />
       <div className="m-project-meta">
-        <div><small>{project.type}</small><h3>{project.titleCn}<small>{project.title}</small></h3></div>
+        <div><small>{project.type}</small><h3><DecryptedText text={project.titleCn} /><small>{project.title}</small></h3></div>
         <p>{project.text}</p>
       </div>
     </a>
@@ -480,7 +480,7 @@ function HomePage() {
         <section className="m-hero" id="home">
           <div className="m-hero-meta"><span><BlurText>{`\u4ea4\u4e92\u8bbe\u8ba1\u5e08 / \u521b\u610f\u6280\u672f`}</BlurText></span><span><BlurText delay={90}>{`\u5e38\u9a7b\u6b66\u6c49 / \u4e2d\u56fd`}</BlurText></span></div>
           <div className="m-hero-orbit" aria-hidden="true"><span>{`UCL / \u4f26\u6566`}</span><span>{`\u7ea6\u514b`}</span><span>{`\u6b66\u6c49`}</span></div>
-          <div className="m-hero-word m-hero-word-one"><SplitText delay={45}>{`\u521b\u610f\u6280\u672f`}</SplitText></div>
+          <div className="m-hero-word m-hero-word-one"><MaskedHeading text={`\u521b\u610f\u6280\u672f`} media="/projects/covers/p2-wish.jpg" /></div>
           <div className="m-hero-word m-hero-word-two"><i><SplitText delay={28}>{`CREATIVE TECHNOLOGY`}</SplitText></i></div>
           <figure className="m-hero-image"><AvatarCard rotation={avatarRotation} /></figure>
           <div className="m-hero-side m-hero-side-left">&copy; 2026</div>
@@ -519,7 +519,7 @@ function HomePage() {
         </section>
 
         <section className="m-work" id="work">
-          <div className="m-work-head"><div className="m-section-kicker"><ShinyText>/ {`\u7cbe\u9009\u4f5c\u54c1`} <small>SELECTED WORKS</small></ShinyText></div><Magnet strength={0.3}><a href="/work">{`\u67e5\u770b\u5168\u90e8\u4f5c\u54c1`} <Arrow /></a></Magnet></div>
+          <div className="m-work-head"><div className="m-section-kicker"><ShinyText>/ {`\u7cbe\u9009\u4f5c\u54c1`} <small>SELECTED WORKS</small></ShinyText></div><Magnet strength={0.3}><a className="rb-glitch" data-text={`\u67e5\u770b\u5168\u90e8\u4f5c\u54c1`} href="/work">{`\u67e5\u770b\u5168\u90e8\u4f5c\u54c1`} <Arrow /></a></Magnet></div>
           <DepthCarousel items={overviewProjects.slice(0, 5).map((project) => ({ image: project.cover, alt: project.titleCn, titleCn: project.titleCn, title: project.title, href: `/work/${project.slug}` }))} depth={220} spread={90} tilt={22} perspective={1400} visibleCards={4} falloff={.2} blur={6} autoplay loop />
         </section>
 

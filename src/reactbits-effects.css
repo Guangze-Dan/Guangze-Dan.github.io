@@ -190,6 +190,77 @@ body, body * {
 }
 input, textarea, [contenteditable="true"] { -webkit-user-select: text; -moz-user-select: text; -ms-user-select: text; user-select: text; }
 
+/* ---------- 文字遮罩与解密 ---------- */
+
+.rb-masked-heading {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  line-height: 1;
+}
+.m-hero-word-one .rb-masked-text { font-weight: 600; }
+.rb-masked-text {
+  display: inline-block;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  background-position: center;
+  background-repeat: no-repeat;
+  will-change: background-position;
+}
+
+.rb-decrypt { display: inline-block; }
+
+/* ---------- 故障文字（hover 触发） ---------- */
+
+.rb-glitch {
+  position: relative;
+  display: inline-block;
+}
+.rb-glitch::before, .rb-glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+.rb-glitch:hover::before, .rb-glitch:hover::after {
+  opacity: .8;
+  animation: rbGlitchShift .38s steps(2, end) infinite;
+}
+.rb-glitch:hover::before { color: #262d62; animation-delay: .04s; }
+.rb-glitch:hover::after { color: #d56b83; animation-delay: .09s; }
+@keyframes rbGlitchShift {
+  0% { transform: translate(0); clip-path: inset(0 0 82% 0); }
+  25% { transform: translate(-2px, 1px); clip-path: inset(38% 0 38% 0); }
+  50% { transform: translate(2px, -1px); clip-path: inset(62% 0 12% 0); }
+  75% { transform: translate(-1px, 0); clip-path: inset(12% 0 66% 0); }
+  100% { transform: translate(0); clip-path: inset(0 0 82% 0); }
+}
+
+/* ---------- 卡片星光边框（hover） ---------- */
+
+.rb-star-border { position: relative; }
+.rb-star-border::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  z-index: 4;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(from var(--star-angle, 0deg), transparent 0deg, #d9ff58 60deg, transparent 130deg, transparent 360deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity .35s ease;
+  animation: rbStarSpin 3.2s linear infinite;
+}
+.rb-star-border:hover::before { opacity: 1; }
+@keyframes rbStarSpin { to { --star-angle: 360deg; } }
+@property --star-angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+
 /* ---------- 页脚快速导航 hover 动效 ---------- */
 
 .m-footer-links a {

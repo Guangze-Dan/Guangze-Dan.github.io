@@ -215,6 +215,94 @@ export function PressureWord({ text = '', className = '' }) {
   );
 }
 
+/* MaskedHeading：文字遮罩显示背景画面，鼠标视差 + 缓慢漂移 */
+export function MaskedHeading({ text = '', media = '', className = '', overscan = 12, parallax = 26, idleAmplitude = 5 }) {
+  const wrapRef = useRef(null);
+  const textRef = useRef(null);
+  useEffect(() => {
+    const wrap = wrapRef.current;
+    const text = textRef.current;
+    if (!wrap || !text) return undefined;
+    let frame;
+    let tx = 0;
+    let ty = 0;
+    let targetX = 0;
+    let targetY = 0;
+    let idle = 0;
+    const onMove = (event) => {
+      const rect = wrap.getBoundingClientRect();
+      targetX = (event.clientX - rect.left) / rect.width - 0.5;
+      targetY = (event.clientY - rect.top) / rect.height - 0.5;
+    };
+    const tick = () => {
+      tx += (targetX - tx) * 0.08;
+      ty += (targetY - ty) * 0.08;
+      idle += 0.003;
+      const ix = Math.sin(idle) * 0.4;
+      const iy = Math.cos(idle * 0.7) * 0.32;
+      const cx = -tx * parallax + ix * idleAmplitude;
+      const cy = -ty * parallax * 0.75 + iy * idleAmplitude;
+      text.style.backgroundPosition = `${cx.toFixed(1)}px ${cy.toFixed(1)}px`;
+      frame = requestAnimationFrame(tick);
+    };
+    wrap.addEventListener('pointermove', onMove, { passive: true });
+    frame = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(frame);
+      wrap.removeEventListener('pointermove', onMove);
+    };
+  }, [parallax, idleAmplitude]);
+  return (
+    <span ref={wrapRef} className={`rb-masked-heading ${className}`}>
+      <span ref={textRef} className="rb-masked-text" style={{ backgroundImage: `url(${media})`, backgroundSize: `calc(100% + ${overscan * 2}px) auto` }} aria-label={text}>{text}</span>
+    </span>
+  );
+}
+
+/* DecryptedText：悬停时字符从乱码解密为正常文字 */
+export function DecryptedText({ text = '', className = '', speed = 26 }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return undefined;
+    const chars = text.split('');
+    const glitchChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\u4e00\u4e8c\u4e09\u56db\u4e94\u516d\u4e03\u516b\u4e5d\u5341\u4e0a\u4e0b\u5927\u5c0f\u4e2d\u6587\u5de5\u827a';
+    let interval;
+    let revealed = 0;
+    let running = false;
+    const scramble = () => {
+      el.textContent = chars.map((ch, index) => (ch === ' ' ? ' ' : index < revealed ? ch : glitchChars[Math.floor(Math.random() * glitchChars.length)])).join('');
+    };
+    const start = () => {
+      if (running) return;
+      running = true;
+      revealed = 0;
+      interval = window.setInterval(() => {
+        revealed += 1;
+        scramble();
+        if (revealed >= chars.length) {
+          window.clearInterval(interval);
+          running = false;
+        }
+      }, speed);
+    };
+    const reset = () => {
+      window.clearInterval(interval);
+      running = false;
+      revealed = 0;
+      el.textContent = text;
+    };
+    el.addEventListener('pointerenter', start);
+    el.addEventListener('pointerleave', reset);
+    return () => {
+      el.removeEventListener('pointerenter', start);
+      el.removeEventListener('pointerleave', reset);
+      window.clearInterval(interval);
+    };
+  }, [text, speed]);
+  return <span ref={ref} className={`rb-decrypt ${className}`}>{text}</span>;
+}
+
 /* ------------------------------------------------------------------ */
 /* 卡片交互                                                              */
 /* ------------------------------------------------------------------ */
