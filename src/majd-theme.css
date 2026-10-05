@@ -468,3 +468,42 @@ button, input, textarea { font: inherit; }
   .m-system-demo-head a { display: inline-block; margin-top: 22px; }
   .m-system-demo-frame { height: 590px; min-height: 0; }
 }
+
+/* ============================================================
+   Award-pass refinement: CJK 换行安全行高、溢出控制、对比度、
+   移动端响应式细节（vertical rhythm 见各断点）
+   ============================================================ */
+
+/* 移动端横向溢出：clip 不产生滚动容器，position: sticky 不受影响 */
+html, body { overflow-x: clip; }
+
+/* 首页大字压在照片上时以 difference 反色，暗底亮字、纸底黑字 */
+.m-hero-word { color: #f1f0eb; mix-blend-mode: difference; }
+
+/* 黑色导航胶囊与黑色卡片相交时的边界 */
+.m-nav-pill { outline: 1px solid rgba(239, 238, 233, .18); outline-offset: -1px; }
+
+/* CJK 大标题：行高小于字形高度会导致换行后上下两行互相重叠 */
+.m-detail-hero h1 { max-width: 1240px; line-height: .95; text-wrap: balance; }
+@media (min-width: 901px) { .m-detail-hero h1 { font-size: clamp(64px, 12vw, 160px); } }
+.m-detail-copy h2 { line-height: .98; text-wrap: balance; }
+.m-next-project h2 { line-height: .95; }
+.m-contact h2 { line-height: .92; }
+
+/* 酸绿底上的次级文字对比度 */
+.m-contact h2 i { color: #546522; }
+.m-contact p small { color: #546522; }
+.m-contact .m-contact-details a { color: #111; }
+
+/* 下一件作品：长箭头 SVG + 悬停位移 */
+.m-next-arrow { width: clamp(46px, 4.5vw, 66px); height: auto; margin-left: 20px; vertical-align: baseline; transition: transform .35s cubic-bezier(.2, .8, .2, 1); }
+.m-next-project a:hover .m-next-arrow { transform: translateX(14px); }
+.m-archive-footer a { white-space: nowrap; }
+
+/* 移动端：轮播标题与卡片间距、分组标题竖排防挤压换行 */
+@media (max-width: 600px) {
+  .m-depth-title { top: calc(50% - 155px - 100px); }
+}
+@media (max-width: 560px) {
+  .m-archive-group-heading { flex-direction: column; align-items: flex-start; gap: 7px; }
+}

@@ -37,7 +37,10 @@
 .rb-words.is-in .rb-words-item { opacity: 1; transform: translateY(0); }
 
 .rb-shiny {
-  background: linear-gradient(110deg, currentColor 38%, #d9ff58 50%, currentColor 62%);
+  /* currentColor 在 color: transparent 下会解析为透明，导致文字除流光扫过瞬间外不可见：
+     用 --shiny-base 提供常驻底色，按明暗分区覆盖 */
+  --shiny-base: #7d7b73;
+  background: linear-gradient(110deg, var(--shiny-base) 38%, #d9ff58 50%, var(--shiny-base) 62%);
   background-size: 200% 100%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -45,6 +48,10 @@
   animation: rbShine var(--shine-speed, 3.2s) linear infinite;
   will-change: background-position;
 }
+.m-testimonials .m-section-kicker .rb-shiny,
+.m-detail-copy .m-section-kicker .rb-shiny,
+.m-system-demo .m-section-kicker .rb-shiny { --shiny-base: #d9ff58; }
+.m-contact .m-section-kicker .rb-shiny { --shiny-base: #546522; }
 @keyframes rbShine {
   0% { background-position: 180% 0; }
   100% { background-position: -80% 0; }
@@ -160,9 +167,10 @@ html.rb-cursor-on, html.rb-cursor-on * { cursor: none !important; }
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
+  height: 2px;
   z-index: 3700;
-  background: linear-gradient(90deg, #d9ff58, #262d62);
+  background: #d9ff58;
+  box-shadow: 0 1px 0 rgba(17, 17, 17, .18);
   transform: scaleX(0);
   transform-origin: 0 50%;
   pointer-events: none;

@@ -422,10 +422,10 @@ export function CustomCursor() {
     setEnabled(true);
     const dot = dotRef.current;
     const ring = ringRef.current;
-    let mx = window.innerWidth / 2;
-    let my = window.innerHeight / 2;
-    let rx = mx;
-    let ry = my;
+    let mx = -100;
+    let my = -100;
+    let rx = -100;
+    let ry = -100;
     let frame;
     const onMove = (event) => {
       mx = event.clientX;
@@ -457,8 +457,8 @@ export function CustomCursor() {
   if (!enabled) return null;
   return (
     <>
-      <div ref={dotRef} className="rb-cursor rb-cursor-dot" aria-hidden="true" />
-      <div ref={ringRef} className="rb-cursor rb-cursor-ring" aria-hidden="true" />
+      <div ref={dotRef} className="rb-cursor rb-cursor-dot" style={{ transform: 'translate(-100px, -100px)' }} aria-hidden="true" />
+      <div ref={ringRef} className="rb-cursor rb-cursor-ring" style={{ transform: 'translate(-100px, -100px)' }} aria-hidden="true" />
     </>
   );
 }

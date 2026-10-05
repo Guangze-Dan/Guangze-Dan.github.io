@@ -145,6 +145,10 @@ function Arrow() {
   return <span className="m-arrow" aria-hidden="true">-&gt;</span>;
 }
 
+function NextArrow() {
+  return <svg className="m-next-arrow" viewBox="0 0 64 32" fill="none" aria-hidden="true"><path d="M2 16h56M46 4l14 12-14 12" stroke="currentColor" strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round" /></svg>;
+}
+
 function usePageMotion(withFlip = false) {
   const [avatarRotation, setAvatarRotation] = useState(0);
 
@@ -158,8 +162,9 @@ function usePageMotion(withFlip = false) {
 
     let ticking = false;
     const update = () => {
-      const x = (window.innerWidth ? window.innerWidth : 1);
-      document.documentElement.style.setProperty('--pointer-x', `${(((window.__pointerX || 0) / x) - 0.5) * 2}`);
+      if (window.__pointerX !== undefined) {
+        document.documentElement.style.setProperty('--pointer-x', `${(((window.__pointerX || 0) / window.innerWidth) - 0.5) * 2}`);
+      }
       if (withFlip) {
         const progress = Math.max(0, Math.min(1, (window.scrollY - 80) / 760));
         setAvatarRotation(Math.round(progress * 180));
@@ -406,7 +411,7 @@ function HomePage() {
     const all = (selector, values) => document.querySelectorAll(selector).forEach((element, index) => { if (values[index]) element.innerHTML = values[index]; });
     html('.m-logo', '\u4f46\u5149\u6cfd <small>Guangze Dan</small>');
     all('.m-menu-panel a', ['\u5173\u4e8e\u6211 <small>About Me</small> <span class="m-arrow">-&gt;</span>', '\u670d\u52a1 <small>Services</small> <span class="m-arrow">-&gt;</span>', '\u4f5c\u54c1 <small>Works</small> <span class="m-arrow">-&gt;</span>', '\u8054\u7cfb <small>Contact</small> <span class="m-arrow">-&gt;</span>']);
-    html('.m-hero-orbit span', ['UCL - London', 'UOY - York, UK', 'Wuhan, China']);
+    all('.m-hero-orbit span', ['UCL - London', 'UOY - York, UK', 'Wuhan, China']);
     html('.m-resume-button', '<strong>\u4e0b\u8f7d\u7b80\u5386<br><small>Download CV</small></strong><span class="m-arrow">-&gt;</span>');
     html('.m-avatar-back-name', '\u4f46\u5149\u6cfd<br><small>Guangze Dan</small>');
     html('.m-footer-top h2', '\u4f46\u5149\u6cfd<small>Guangze Dan</small>');
@@ -455,7 +460,7 @@ function HomePage() {
     const update = () => {
       const rect = section.getBoundingClientRect();
       const total = section.offsetHeight - window.innerHeight;
-      const progress = total > 0 ? Math.min(Math.max(-rect.top / total, 0), 1) : 1;
+      const progress = total > 0 ? Math.min(Math.max((-rect.top + window.innerHeight * 0.55) / total, 0), 1) : 1;
       section.style.setProperty('--reveal-progress', progress.toFixed(3));
       ticking = false;
     };
@@ -537,7 +542,7 @@ function ContactSection() {
 }
 
 function SiteFooter() {
-  return <footer className="m-footer"><div className="m-footer-top"><h2 dangerouslySetInnerHTML={{ __html: name }} /><p>{`\u4ea4\u4e92\u8bbe\u8ba1\u5e08 / \u521b\u610f\u6280\u672f\u5de5\u4f5c\u8005\u3002`}<br />{`\u521b\u9020\u53ef\u4ee5\u88ab\u4eba\u611f\u53d7\u7684\u6545\u4e8b\u3001\u4e16\u754c\u548c\u7cfb\u7edf\u3002`}</p></div><div className="m-footer-links"><span>/ {`\u5feb\u901f\u5bfc\u822a`}</span><a href="/#home">{`\u9996\u9875`}</a><a href="/#about">{`\u5173\u4e8e\u6211`}</a><a href="/#services">{`\u670d\u52a1`}</a><a href="/work">{`\u4f5c\u54c1`}</a><a href="/#contact">{`\u8054\u7cfb`}</a></div><small>&copy; 2026 / <GradientText>{`\u4fdd\u6301\u597d\u5947\uff0c\u6301\u7eed\u521b\u4f5c\u3002`}</GradientText></small></footer>;
+  return <footer className="m-footer"><div className="m-footer-top"><h2 dangerouslySetInnerHTML={{ __html: name }} /><p>{`\u4ea4\u4e92\u8bbe\u8ba1\u5e08 / \u521b\u610f\u6280\u672f\u5de5\u4f5c\u8005\u3002`}<br />{`\u521b\u9020\u53ef\u4ee5\u88ab\u4eba\u611f\u53d7\u7684\u6545\u4e8b\u3001\u4e16\u754c\u548c\u7cfb\u7edf\u3002`}</p></div><div className="m-footer-links"><span>/ {`\u5feb\u901f\u5bfc\u822a`}</span><a href="/#home">{`\u9996\u9875`}</a><a href="/#about">{`\u5173\u4e8e\u6211`}</a><a href="/#services">{`\u670d\u52a1`}</a><a href="/work">{`\u4f5c\u54c1`}</a><a href="/#contact">{`\u8054\u7cfb`}</a></div><small>&copy; 2026 / <GradientText from="#d9ff58" via="#d56b83" to="#f1f0eb">{`\u4fdd\u6301\u597d\u5947\uff0c\u6301\u7eed\u521b\u4f5c\u3002`}</GradientText></small></footer>;
 }
 
 function WorkPage() {
@@ -584,7 +589,7 @@ function ProjectPage({ project }) {
     if (link) link.href = `/work#${project.slug}`;
   }, [project.slug]);
   const next = overviewProjects[(overviewProjects.findIndex((item) => item.slug === project.slug) + 1) % overviewProjects.length];
-  return <div className="majd-site m-project-page"><SiteNav /><main><section className={`m-detail-hero ${project.tone}`}><div className="m-section-kicker">/ {`\u4f5c\u54c1`} {project.n} / {project.year}</div><h1><SplitText>{project.titleCn}</SplitText><i>{project.title}</i></h1><p>{project.intro}</p><div className="m-detail-meta"><span>{project.type}</span><span>{project.role}</span><span><span dangerouslySetInnerHTML={{ __html: name }} /> / {`\u6b66\u6c49\uff0c\u4e2d\u56fd`}</span></div></section><section className="m-detail-media"><ProjectVisual project={project} large /><div className="m-detail-caption"><span>{`\u9879\u76ee\u5f71\u7247`}</span><p>{`\u5f71\u7247\u5c55\u793a\u9879\u76ee\u7684\u5b9e\u9645\u8fd0\u884c\u6548\u679c\uff0c\u70b9\u51fb\u64ad\u653e\u53ef\u542f\u7528\u58f0\u97f3\u3002`}</p></div></section><section className="m-detail-copy"><div className="m-section-kicker">/ {`\u9879\u76ee\u4ecb\u7ecd`}</div><div><h2>{project.titleCn}{` \u662f\u4e00\u6b21\u8ba9\u60f3\u6cd5 `}<i>{`\u53d8\u5f97\u53ef\u611f\u7684\u5b9e\u8df5\u3002`}</i></h2><p>{project.detail}</p><a className="m-underlink" href="/work">{`\u8fd4\u56de\u5168\u90e8\u4f5c\u54c1`} <Arrow /></a></div></section><section className="m-next-project"><span>{`\u4e0b\u4e00\u4e2a\u4f5c\u54c1`}</span><a href={`/work/${next.slug}`}><small>{next.n} / {next.type}</small><h2>{next.titleCn}<small>{next.title}</small> <Arrow /></h2></a></section></main><SiteFooter /></div>;
+  return <div className="majd-site m-project-page"><SiteNav /><main><section className={`m-detail-hero ${project.tone}`}><div className="m-section-kicker">/ {`\u4f5c\u54c1`} {project.n} / {project.year}</div><h1><SplitText>{project.titleCn}</SplitText><i>{project.title}</i></h1><p>{project.intro}</p><div className="m-detail-meta"><span>{project.type}</span><span>{project.role}</span><span><span dangerouslySetInnerHTML={{ __html: name }} /> / {`\u6b66\u6c49\uff0c\u4e2d\u56fd`}</span></div></section><section className="m-detail-media"><ProjectVisual project={project} large /><div className="m-detail-caption"><span>{`\u9879\u76ee\u5f71\u7247`}</span><p>{`\u5f71\u7247\u5c55\u793a\u9879\u76ee\u7684\u5b9e\u9645\u8fd0\u884c\u6548\u679c\uff0c\u70b9\u51fb\u64ad\u653e\u53ef\u542f\u7528\u58f0\u97f3\u3002`}</p></div></section><section className="m-detail-copy"><div className="m-section-kicker">/ {`\u9879\u76ee\u4ecb\u7ecd`}</div><div><h2>{project.titleCn}{` \u662f\u4e00\u6b21\u8ba9\u60f3\u6cd5 `}<i>{`\u53d8\u5f97\u53ef\u611f\u7684\u5b9e\u8df5\u3002`}</i></h2><p>{project.detail}</p><a className="m-underlink" href="/work">{`\u8fd4\u56de\u5168\u90e8\u4f5c\u54c1`} <Arrow /></a></div></section><section className="m-next-project"><a href={`/work/${next.slug}`}><small>{next.n} / {next.type}</small><h2>{next.titleCn}<small>{next.title}</small> <NextArrow /></h2></a></section></main><SiteFooter /></div>;
 }
 
 class AppErrorBoundary extends React.Component {
