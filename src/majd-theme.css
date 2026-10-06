@@ -507,3 +507,25 @@ html, body { overflow-x: clip; }
 @media (max-width: 560px) {
   .m-archive-group-heading { flex-direction: column; align-items: flex-start; gap: 7px; }
 }
+
+/* ============================================================
+   第二轮：动效与微交互
+   ============================================================ */
+
+/* 路由切换 / 首次进入：整页上浮淡入（组件按路径重挂载，动画自然重放） */
+@keyframes pageIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+.majd-site { animation: pageIn .65s cubic-bezier(.2, .8, .2, 1) both; }
+@media (prefers-reduced-motion: reduce) { .majd-site { animation: none; } }
+
+/* 作品封面悬停缓慢变焦（配合既有的倾斜与扫光） */
+.m-project-cover { transition: transform .8s cubic-bezier(.2, .8, .2, 1); will-change: transform; }
+.m-project:hover .m-project-cover { transform: scale(1.055); }
+
+/* 服务行悬停：箭头滑入（原为整行 padding 位移，保留并叠加） */
+.m-service > .m-arrow { display: block; opacity: 0; transform: translateX(-10px); transition: opacity .3s ease, transform .3s cubic-bezier(.2, .8, .2, 1); }
+.m-service:hover > .m-arrow { opacity: 1; transform: none; }
+
+/* Hero 翻转提示：竖排文字引导发现滚动彩蛋 */
+.m-flip-hint { top: 400px; }
+@media (max-width: 900px) { .m-flip-hint { top: 320px; } }
+@media (max-width: 560px) { .m-flip-hint { display: none; } }

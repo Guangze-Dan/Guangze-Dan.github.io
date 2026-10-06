@@ -393,15 +393,16 @@ function AccordionGallery({ items, defaultIndex = 2, expandRatio = .52, trigger 
 
 function DepthCarousel({ items, autoplay = true, loop = true, interval = 2600 }) {
   const [active, setActive] = useState(0);
+  const hoveredRef = useRef(false);
   const previous = () => setActive((current) => (current - 1 + items.length) % items.length);
   const next = () => setActive((current) => loop ? (current + 1) % items.length : Math.min(current + 1, items.length - 1));
   const activeItem = items[active];
   useEffect(() => {
     if (!autoplay || items.length < 2) return undefined;
-    const timer = window.setInterval(() => setActive((current) => loop ? (current + 1) % items.length : Math.min(current + 1, items.length - 1)), interval);
+    const timer = window.setInterval(() => setActive((current) => hoveredRef.current ? current : loop ? (current + 1) % items.length : Math.min(current + 1, items.length - 1)), interval);
     return () => window.clearInterval(timer);
   }, [autoplay, interval, items.length, loop]);
-  return <div className="m-depth-carousel" aria-label="Selected works carousel"><div className="m-depth-title"><strong>{activeItem.titleCn}</strong><small>{activeItem.title}</small></div><button type="button" className="m-depth-arrow m-depth-arrow-left" onClick={previous} aria-label="Previous work">←</button>{items.map((item, index) => { const offset = (index - active + items.length) % items.length; const distance = Math.min(offset, items.length - offset); const side = offset === 1 ? 1 : offset === items.length - 1 ? -1 : 0; return <a className={`m-depth-card ${offset === 0 ? 'is-active' : ''}`} href={item.href || '#work'} key={item.alt} onClick={(event) => { if (offset !== 0) { event.preventDefault(); setActive(index); } }} style={{ transform: `translate(calc(-50% + ${side * 245}px), -50%) rotateY(${side * -22}deg) scale(${offset === 0 ? 1 : .78})`, zIndex: 5 - distance, opacity: distance > 1 ? .18 : offset === 0 ? 1 : .48, filter: `blur(${distance > 1 ? 1 : 0}px) saturate(${offset === 0 ? 1 : .72})`, pointerEvents: distance > 1 ? 'none' : 'auto' }}><img src={item.image} alt={item.alt} /></a>; })}<button type="button" className="m-depth-arrow m-depth-arrow-right" onClick={next} aria-label="Next work">→</button><div className="m-depth-dots" aria-hidden="true">{items.map((item, index) => <button type="button" className={index === active ? 'is-active' : ''} key={item.alt} onClick={() => setActive(index)} aria-label={`Show ${item.alt}`} />)}</div></div>;
+  return <div className="m-depth-carousel" aria-label="Selected works carousel" onMouseEnter={() => { hoveredRef.current = true; }} onMouseLeave={() => { hoveredRef.current = false; }}><div className="m-depth-title"><strong>{activeItem.titleCn}</strong><small>{activeItem.title}</small></div><button type="button" className="m-depth-arrow m-depth-arrow-left" onClick={previous} aria-label="Previous work">←</button>{items.map((item, index) => { const offset = (index - active + items.length) % items.length; const distance = Math.min(offset, items.length - offset); const side = offset === 1 ? 1 : offset === items.length - 1 ? -1 : 0; return <a className={`m-depth-card ${offset === 0 ? 'is-active' : ''}`} href={item.href || '#work'} key={item.alt} onClick={(event) => { if (offset !== 0) { event.preventDefault(); setActive(index); } }} style={{ transform: `translate(calc(-50% + ${side * 245}px), -50%) rotateY(${side * -22}deg) scale(${offset === 0 ? 1 : .78})`, zIndex: 5 - distance, opacity: distance > 1 ? .18 : offset === 0 ? 1 : .48, filter: `blur(${distance > 1 ? 1 : 0}px) saturate(${offset === 0 ? 1 : .72})`, pointerEvents: distance > 1 ? 'none' : 'auto' }}><img src={item.image} alt={item.alt} /></a>; })}<button type="button" className="m-depth-arrow m-depth-arrow-right" onClick={next} aria-label="Next work">→</button><div className="m-depth-dots" aria-hidden="true">{items.map((item, index) => <button type="button" className={index === active ? 'is-active' : ''} key={item.alt} onClick={() => setActive(index)} aria-label={`Show ${item.alt}`} />)}</div></div>;
 }
 
 function HomePage() {
@@ -488,6 +489,7 @@ function HomePage() {
           <div className="m-hero-word m-hero-word-one">{`\u521b\u610f\u6280\u672f`}</div>
           <div className="m-hero-word m-hero-word-two"><i><SplitText delay={28}>{`CREATIVE TECHNOLOGY`}</SplitText></i></div>
           <figure className="m-hero-image"><AvatarCard rotation={avatarRotation} /></figure>
+          <div className="m-flip-hint" aria-hidden="true"><span>{`滚动翻转`}</span> SCROLL TO FLIP</div>
           <div className="m-hero-side m-hero-side-left">&copy; 2026</div>
           <div className="m-hero-side m-hero-side-right"><ShinyText>/ {`\u8de8\u5a92\u4f53\u521b\u4f5c`}</ShinyText><br /><small>/ Transmedia Practice</small></div>
           <a className="m-hero-cta" href="#about">{`\u5411\u4e0b\u63a2\u7d22`} <Arrow /></a>
