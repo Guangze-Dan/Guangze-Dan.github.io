@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './majd-theme.css';
 import './reactbits-effects.css';
@@ -141,6 +141,97 @@ const archiveGroups = [
   { id: 'creative-technology', title: '\u521b\u610f\u6280\u672f', english: 'CREATIVE TECHNOLOGY', slugs: ['guangze-project-demo'] }
 ];
 
+/* 搜索：全文索引 + 联想词（命中标题/类型/角色/简介/详情/年份/分类） */
+const categoryTitleBySlug = {};
+archiveGroups.forEach((group) => group.slugs.forEach((slug) => { categoryTitleBySlug[slug] = group.title; }));
+const searchIndex = projects.map((project) => ({
+  slug: project.slug,
+  n: project.n,
+  cn: project.titleCn,
+  en: project.title,
+  type: project.type,
+  year: project.year,
+  cat: categoryTitleBySlug[project.slug] || '',
+  haystack: [project.titleCn, project.title, project.type, project.role, project.intro, project.detail, project.text, project.year, categoryTitleBySlug[project.slug] || ''].filter(Boolean).join('\n').toLowerCase()
+}));
+const searchTags = [
+  { label: `\u5b9a\u683c\u52a8\u753b`, kw: `\u5b9a\u683c` },
+  { label: `\u6e38\u620f\u8bbe\u8ba1`, kw: `\u6e38\u620f` },
+  { label: `\u58f0\u97f3\u53d9\u4e8b`, kw: `\u58f0\u97f3` },
+  { label: `\u535a\u7269\u9986`, kw: `\u535a\u7269\u9986` },
+  { label: `\u65e0\u969c\u788d`, kw: `\u65e0\u969c\u788d` },
+  { label: `\u8ba1\u7b97\u673a\u89c6\u89c9`, kw: `yolo` },
+  { label: `\u865a\u5e7c\u5f15\u64ce`, kw: `unreal` },
+  { label: `AIGC`, kw: `aigc` },
+  { label: `BIM`, kw: `bim` },
+  { label: `Twine`, kw: `twine` }
+];
+const openSearch = () => window.dispatchEvent(new CustomEvent('open-search'));
+
+function Highlight({ text, q }) {
+  if (!q) return text;
+  const index = text.toLowerCase().indexOf(q.toLowerCase());
+  if (index === -1) return text;
+  return <>{text.slice(0, index)}<mark>{text.slice(index, index + q.length)}</mark>{text.slice(index + q.length)}</>;
+}
+
+function SearchOverlay({ open, onClose }) {
+  const [query, setQuery] = useState('');
+  const [active, setActive] = useState(0);
+  const inputRef = useRef(null);
+  const q = query.trim();
+  const results = useMemo(() => (q ? searchIndex.filter((item) => item.haystack.includes(q.toLowerCase())).slice(0, 7) : []), [q]);
+  useEffect(() => { setActive(0); }, [q]);
+  useEffect(() => {
+    if (!open) return undefined;
+    setQuery('');
+    const timer = setTimeout(() => { if (inputRef.current) inputRef.current.focus(); }, 40);
+    return () => clearTimeout(timer);
+  }, [open]);
+  useEffect(() => {
+    if (!open) return undefined;
+    const onKey = (event) => {
+      if (event.key === 'Escape') { event.preventDefault(); onClose(); }
+      else if (event.key === 'ArrowDown') { event.preventDefault(); setActive((current) => Math.min(current + 1, results.length - 1)); }
+      else if (event.key === 'ArrowUp') { event.preventDefault(); setActive((current) => Math.max(current - 1, 0)); }
+      else if (event.key === 'Enter' && results[active]) { event.preventDefault(); window.location.href = `/work/${results[active].slug}`; }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open, results, active, onClose]);
+  if (!open) return null;
+  return (
+    <div className="m-search-overlay" role="dialog" aria-modal="true" aria-label={`\u641c\u7d22\u4f5c\u54c1`} onClick={onClose}>
+      <div className="m-search-panel" onClick={(event) => event.stopPropagation()}>
+        <div className="m-search-head">
+          <span className="m-search-kicker">/ {`\u641c\u7d22`} <small>SEARCH</small></span>
+          <input ref={inputRef} className="m-search-input" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={`\u5173\u952e\u8bcd\uff1a\u5b9a\u683c\u52a8\u753b\u3001\u58f0\u97f3\u3001YOLO\u2026`} aria-label={`\u641c\u7d22\u4f5c\u54c1\u5173\u952e\u8bcd`} />
+          <button type="button" className="m-search-esc" onClick={onClose}>ESC</button>
+        </div>
+        {q === '' ? (
+          <div className="m-search-tags">
+            <span>/ {`\u8054\u60f3\u8bcd`} <small>SUGGESTIONS</small></span>
+            {searchTags.map((tag) => <button type="button" key={tag.label} onClick={() => setQuery(tag.kw)}>{tag.label}</button>)}
+          </div>
+        ) : results.length === 0 ? (
+          <div className="m-search-empty">{`\u6ca1\u6709\u627e\u5230\u4e0e\u300c${q}\u300d\u76f8\u5173\u7684\u4f5c\u54c1\uff0c\u6362\u4e2a\u5173\u952e\u8bcd\u8bd5\u8bd5\u3002`}</div>
+        ) : (
+          <div className="m-search-results" role="listbox" aria-label={`\u641c\u7d22\u7ed3\u679c`}>
+            {results.map((item, index) => (
+              <a className={`m-search-item ${index === active ? 'is-active' : ''}`} role="option" aria-selected={index === active} href={`/work/${item.slug}`} key={item.slug} onMouseEnter={() => setActive(index)}>
+                <span className="m-search-num">{item.n}</span>
+                <span className="m-search-name"><Highlight text={item.cn} q={q} /><small><Highlight text={item.en} q={q} /></small></span>
+                <span className="m-search-meta"><Highlight text={item.type} q={q} /><small>{item.cat} / {item.year}</small></span>
+              </a>
+            ))}
+          </div>
+        )}
+        <div className="m-search-foot"><span>{`/ \u6216 CTRL K \u968f\u65f6\u5524\u8d77`}</span><span>{`\u2191\u2193 \u9009\u62e9 \u00b7 ENTER \u6253\u5f00 \u00b7 ESC \u5173\u95ed`}</span></div>
+      </div>
+    </div>
+  );
+}
+
 function Arrow() {
   return <span className="m-arrow" aria-hidden="true">-&gt;</span>;
 }
@@ -220,11 +311,16 @@ function SiteNav() {
     <header className={`m-nav ${menuOpen ? 'is-open' : ''}`}>
       <div className="m-nav-pill">
         <a className="m-logo" href="/#home" dangerouslySetInnerHTML={{ __html: name }} onClick={closeMenu} />
-        <button className="m-menu" type="button" aria-label="\u6253\u5f00\u5bfc\u822a" aria-expanded={menuOpen} onClick={() => setMenuOpen((open) => !open)}>
-          <span />
-          <span />
-          <span />
-        </button>
+        <div className="m-nav-actions">
+          <button className="m-search-trigger" type="button" aria-label={`\u641c\u7d22\u4f5c\u54c1\uff08\u5feb\u6377\u952e / \u6216 Ctrl K\uff09`} title={`\u641c\u7d22\u4f5c\u54c1 /`} onClick={() => { closeMenu(); openSearch(); }}>
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="6.2" stroke="currentColor" strokeWidth="1.8" /><path d="M13.8 13.8 18 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>
+          </button>
+          <button className="m-menu" type="button" aria-label={`\u6253\u5f00\u5bfc\u822a`} aria-expanded={menuOpen} onClick={() => setMenuOpen((open) => !open)}>
+            <span />
+            <span />
+            <span />
+          </button>
+        </div>
       </div>
       <nav className="m-menu-panel" aria-label="Main navigation">
         <a href="/#about" onClick={closeMenu}>{`\u5173\u4e8e\u6211`} <Arrow /></a>
@@ -544,7 +640,7 @@ function ContactSection() {
 }
 
 function SiteFooter() {
-  return <footer className="m-footer"><div className="m-footer-top"><h2 dangerouslySetInnerHTML={{ __html: name }} /><p>{`\u4ea4\u4e92\u8bbe\u8ba1\u5e08 / \u521b\u610f\u6280\u672f\u5de5\u4f5c\u8005\u3002`}<br />{`\u521b\u9020\u53ef\u4ee5\u88ab\u4eba\u611f\u53d7\u7684\u6545\u4e8b\u3001\u4e16\u754c\u548c\u7cfb\u7edf\u3002`}</p></div><div className="m-footer-links"><span>/ {`\u5feb\u901f\u5bfc\u822a`}</span><a href="/#home">{`\u9996\u9875`}</a><a href="/#about">{`\u5173\u4e8e\u6211`}</a><a href="/#services">{`\u670d\u52a1`}</a><a href="/work">{`\u4f5c\u54c1`}</a><a href="/#contact">{`\u8054\u7cfb`}</a></div><small>&copy; 2026 / <GradientText from="#d9ff58" via="#d56b83" to="#f1f0eb">{`\u4fdd\u6301\u597d\u5947\uff0c\u6301\u7eed\u521b\u4f5c\u3002`}</GradientText></small></footer>;
+  return <footer className="m-footer"><div className="m-footer-top"><h2 dangerouslySetInnerHTML={{ __html: name }} /><p>{`\u4ea4\u4e92\u8bbe\u8ba1\u5e08 / \u521b\u610f\u6280\u672f\u5de5\u4f5c\u8005\u3002`}<br />{`\u521b\u9020\u53ef\u4ee5\u88ab\u4eba\u611f\u53d7\u7684\u6545\u4e8b\u3001\u4e16\u754c\u548c\u7cfb\u7edf\u3002`}</p></div><div className="m-footer-links"><span>/ {`\u5feb\u901f\u5bfc\u822a`}</span><a href="/#home">{`\u9996\u9875`}</a><a href="/#about">{`\u5173\u4e8e\u6211`}</a><a href="/#services">{`\u670d\u52a1`}</a><a href="/work">{`\u4f5c\u54c1`}</a><a href="/#contact">{`\u8054\u7cfb`}</a><button type="button" className="m-footer-search" onClick={openSearch}>{`\u641c\u7d22`}<small>SEARCH /</small></button></div><small>&copy; 2026 / <GradientText from="#d9ff58" via="#d56b83" to="#f1f0eb">{`\u4fdd\u6301\u597d\u5947\uff0c\u6301\u7eed\u521b\u4f5c\u3002`}</GradientText></small></footer>;
 }
 
 function WorkPage() {
@@ -625,6 +721,22 @@ class AppErrorBoundary extends React.Component {
 
 function App() {
   const path = window.location.pathname.replace(/\/+$/, '') || '/';
+  const [searchOpen, setSearchOpen] = useState(false);
+  useEffect(() => {
+    const onKey = (event) => {
+      const tag = (event.target && event.target.tagName) || '';
+      if (event.key === '/' && !/^(INPUT|TEXTAREA)$/.test(tag)) { event.preventDefault(); setSearchOpen(true); }
+      else if ((event.metaKey || event.ctrlKey) && String(event.key).toLowerCase() === 'k') { event.preventDefault(); setSearchOpen(true); }
+    };
+    const onOpen = () => setSearchOpen(true);
+    window.addEventListener('keydown', onKey);
+    window.addEventListener('open-search', onOpen);
+    return () => { window.removeEventListener('keydown', onKey); window.removeEventListener('open-search', onOpen); };
+  }, []);
+  useEffect(() => {
+    document.body.style.overflow = searchOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [searchOpen]);
   useEffect(() => {
     if (path === '/work') {
       document.title = `\u4f5c\u54c1 / SELECTED PROJECTS \u00b7 \u4f46\u5149\u6cfd\u4f5c\u54c1\u96c6`;
@@ -652,6 +764,7 @@ function App() {
       <CustomCursor />
       <TrailCursor />
       {page}
+      <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
     </>
   );
 }
