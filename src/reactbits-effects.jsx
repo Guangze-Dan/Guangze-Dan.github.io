@@ -420,8 +420,13 @@ export function CustomCursor() {
   useEffect(() => {
     if (!window.matchMedia('(pointer: fine)').matches || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
     setEnabled(true);
+    return undefined;
+  }, []);
+  useEffect(() => {
+    if (!enabled) return undefined;
     const dot = dotRef.current;
     const ring = ringRef.current;
+    if (!dot || !ring) return undefined;
     let mx = -100;
     let my = -100;
     let rx = -100;
@@ -434,7 +439,7 @@ export function CustomCursor() {
     };
     const onOver = (event) => {
       const target = event.target;
-      const interactive = target && target.closest && target.closest('a, button, input, video, [role="button"], .m-project, .m-service');
+      const interactive = target && target.closest && target.closest('a, button, input, video, [role="button"], .m-project, .m-service, .m-search-trigger');
       ring.classList.toggle('is-hover', Boolean(interactive));
     };
     const tick = () => {
@@ -453,7 +458,7 @@ export function CustomCursor() {
       document.removeEventListener('pointerover', onOver, true);
       cancelAnimationFrame(frame);
     };
-  }, []);
+  }, [enabled]);
   if (!enabled) return null;
   return (
     <>

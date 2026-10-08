@@ -118,7 +118,7 @@
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 4000;
+  z-index: 6000;
   pointer-events: none;
   border-radius: 50%;
   will-change: transform;
@@ -149,14 +149,14 @@ html.rb-cursor-on, html.rb-cursor-on * { cursor: none !important; }
 .rb-trail {
   position: fixed;
   inset: 0;
-  z-index: 3900;
+  z-index: 5900;
   pointer-events: none;
 }
 
 .rb-click-spark {
   position: fixed;
   inset: 0;
-  z-index: 3800;
+  z-index: 5800;
   pointer-events: none;
 }
 

@@ -17,7 +17,7 @@ const makeArchiveProject = (slug, n, title, titleCn, type, text, mark, tone) => 
 projects.push(
   makeArchiveProject('ds-final', '05', 'DS Final', '\u58f0\u97f3\u8bbe\u8ba1', '\u58f0\u97f3\u8bbe\u8ba1 / \u97f3\u9891\u6848\u4f8b', '\u6211\u7684\u58f0\u97f3\u8bbe\u8ba1\u6848\u4f8b\u3002', 'DS', 'project-dark'),
   makeArchiveProject('the-most-of-us', '06', 'The Most of Us', '\u5927\u591a\u6570', '\u4ea4\u4e92\u6545\u4e8b / Twine', '\u4e00\u4e2a\u57fa\u4e8e Twine \u5236\u4f5c\u7684\u4ea4\u4e92\u6545\u4e8b\u3002', 'TW', 'project-acid'),
-  makeArchiveProject('guangze-project-demo', '07', 'GuangzeDan Project Demo', '\u7ea6\u514b\u90e1 BIM \u5b9e\u666f\u52a8\u753b\u5c55\u793a\u7cfb\u7edf', '\u865a\u5b9e\u5f15\u64ce / BIM / \u52a8\u753b', '\u57fa\u4e8e\u7ea6\u514b\u90e1\u5236\u4f5c\u7684 BIM \u5b9e\u666f\u52a8\u753b\u5c55\u793a\u7cfb\u7edf\uff0c\u4f7f\u7528 UE5 \u81ea\u5236\u52a8\u753b\u7f16\u8f91\u5668\u5b8c\u6210\u3002', 'UE5', 'project-blue'),
+  makeArchiveProject('guangze-project-demo', '07', 'GuangzeDan Project Demo', '\u7ea6\u514b\u90e1 BIM \u5b9e\u666f\u52a8\u753b\u5c55\u793a\u7cfb\u7edf', '\u865a\u5e7b\u5f15\u64ce / BIM / \u52a8\u753b', '\u57fa\u4e8e\u7ea6\u514b\u90e1\u5236\u4f5c\u7684 BIM \u5b9e\u666f\u52a8\u753b\u5c55\u793a\u7cfb\u7edf\uff0c\u4f7f\u7528 UE5 \u81ea\u5236\u52a8\u753b\u7f16\u8f91\u5668\u5b8c\u6210\u3002', 'UE5', 'project-blue'),
   makeArchiveProject('solar-hater', '08', 'Solar Hater', '\u9010\u65e5\u8005', '\u52a8\u6001\u5f71\u50cf / \u89c6\u89c9\u5b9e\u9a8c', '\u56f4\u7ed5\u5149\u3001\u9634\u5f71\u4e0e\u73af\u5883\u5173\u7cfb\u7684\u89c6\u542c\u5b9e\u9a8c\u3002', 'SH', 'project-pink'),
   makeArchiveProject('student-roamer', '10', 'Student Roamer', '\u5b66\u751f\u6f2b\u6e38\u8005', '\u670d\u52a1\u8bbe\u8ba1 / \u754c\u9762', '\u4e3a\u5b66\u751f\u5728\u57ce\u5e02\u4e2d\u53d1\u73b0\u5730\u65b9\u7684\u4f53\u9a8c\u8bbe\u8ba1\u3002', 'SR', 'project-blue'),
   makeArchiveProject('railway-museum-storytelling', '12', 'Interactive Storytelling for National Railway Museum', '\u56fd\u5bb6\u94c1\u8def\u535a\u7269\u9986\u4ea4\u4e92\u53d9\u4e8b', '\u535a\u7269\u9986\u4ea4\u4e92 / \u516c\u5171\u4f53\u9a8c', '\u4e3a\u56fd\u5bb6\u94c1\u8def\u535a\u7269\u9986\u8bbe\u8ba1\u7684\u4ea4\u4e92\u53d9\u4e8b\u4f53\u9a8c\u3002', 'NRM', 'project-pink'),
@@ -141,9 +141,23 @@ const archiveGroups = [
   { id: 'creative-technology', title: '\u521b\u610f\u6280\u672f', english: 'CREATIVE TECHNOLOGY', slugs: ['guangze-project-demo'] }
 ];
 
-/* 搜索：全文索引 + 联想词（命中标题/类型/角色/简介/详情/年份/分类） */
+/* 搜索：全文索引 + 联想词（命中标题/类型/角色/简介/详情/年份/分类/技术标签） */
 const categoryTitleBySlug = {};
 archiveGroups.forEach((group) => group.slugs.forEach((slug) => { categoryTitleBySlug[slug] = group.title; }));
+/* 技术/主题标签：补足文案里没写出的关键词（如：用虚幻引擎做的游戏，文案未提引擎名） */
+const searchTagsBySlug = {
+  wish: ['\u865a\u5e7b\u5f15\u64ce', 'Unreal Engine', 'UE5', '3D \u6e38\u620f', '\u53ef\u73a9\u73af\u5883', '\u73af\u5883\u53d9\u4e8b', '\u751f\u6001'],
+  'guangze-project-demo': ['\u865a\u5e7b\u5f15\u64ce', 'Unreal Engine', 'UE5', 'BIM', '\u5b9e\u65f6\u52a8\u753b', '\u865a\u62df\u62cd\u6444'],
+  'animating-the-invisible': ['\u5b9a\u683c\u52a8\u753b', '\u52a8\u753b', '\u58f0\u97f3\u8bbe\u8ba1', '\u5185\u5bb9\u5ba1\u6838', '\u7b97\u6cd5'],
+  'sanhe-drifters': ['\u5b9a\u683c\u52a8\u753b', '\u52a8\u753b', '\u58f0\u97f3\u53d9\u4e8b', '\u793e\u4f1a\u89c2\u5bdf', '\u624b\u7ed8'],
+  project: ['YOLO', '\u8ba1\u7b97\u673a\u89c6\u89c9', 'AI \u8bc6\u522b', '\u9053\u8def\u68c0\u6d4b', '\u5168\u6808'],
+  'student-roamer': ['\u65c5\u6e38\u7f51\u7ad9', 'UI \u8bbe\u8ba1', '\u7f51\u9875\u8bbe\u8ba1', '\u54cd\u5e94\u5f0f', '\u7528\u6237\u4f53\u9a8c'],
+  'railway-museum-storytelling': ['\u535a\u7269\u9986', '\u4ea4\u4e92\u53d9\u4e8b', '\u65e0\u969c\u788d', 'NFC', '\u516c\u5171\u4f53\u9a8c'],
+  'the-most-of-us': ['Twine', '\u6587\u5b57\u6e38\u620f', '\u4e92\u52a8\u53d9\u4e8b', '\u793e\u4f1a\u89c2\u5bdf', '\u5206\u652f\u9009\u62e9'],
+  'yun-house': ['\u70b9\u5355\u7cfb\u7edf', '\u754c\u9762\u8bbe\u8ba1', '\u9910\u996e', '\u6570\u5b57\u5316', '\u6587\u5316'],
+  'ds-final': ['\u58f0\u97f3\u8bbe\u8ba1', '\u97f3\u9891', '\u53d9\u4e8b', '\u6c89\u6d78\u5f0f'],
+  'solar-hater': ['AIGC', '\u50cf\u7d20\u98ce', '\u6e38\u620f\u9884\u544a', '\u5f71\u50cf', '\u6982\u5ff5\u8bbe\u8ba1']
+};
 const searchIndex = projects.map((project) => ({
   slug: project.slug,
   n: project.n,
@@ -152,7 +166,7 @@ const searchIndex = projects.map((project) => ({
   type: project.type,
   year: project.year,
   cat: categoryTitleBySlug[project.slug] || '',
-  haystack: [project.titleCn, project.title, project.type, project.role, project.intro, project.detail, project.text, project.year, categoryTitleBySlug[project.slug] || ''].filter(Boolean).join('\n').toLowerCase()
+  haystack: [project.titleCn, project.title, project.type, project.role, project.intro, project.detail, project.text, project.year, categoryTitleBySlug[project.slug] || '', ...(searchTagsBySlug[project.slug] || [])].filter(Boolean).join('\n').toLowerCase()
 }));
 const searchTags = [
   { label: `\u5b9a\u683c\u52a8\u753b`, kw: `\u5b9a\u683c` },
@@ -161,7 +175,7 @@ const searchTags = [
   { label: `\u535a\u7269\u9986`, kw: `\u535a\u7269\u9986` },
   { label: `\u65e0\u969c\u788d`, kw: `\u65e0\u969c\u788d` },
   { label: `\u8ba1\u7b97\u673a\u89c6\u89c9`, kw: `yolo` },
-  { label: `\u865a\u5e7b\u5f15\u64ce`, kw: `unreal` },
+  { label: `\u865a\u5e7b\u5f15\u64ce`, kw: `\u865a\u5e7b` },
   { label: `AIGC`, kw: `aigc` },
   { label: `BIM`, kw: `bim` },
   { label: `Twine`, kw: `twine` }
