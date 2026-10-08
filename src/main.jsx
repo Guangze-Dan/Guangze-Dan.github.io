@@ -161,7 +161,7 @@ const searchTags = [
   { label: `\u535a\u7269\u9986`, kw: `\u535a\u7269\u9986` },
   { label: `\u65e0\u969c\u788d`, kw: `\u65e0\u969c\u788d` },
   { label: `\u8ba1\u7b97\u673a\u89c6\u89c9`, kw: `yolo` },
-  { label: `\u865a\u5e7c\u5f15\u64ce`, kw: `unreal` },
+  { label: `\u865a\u5e7b\u5f15\u64ce`, kw: `unreal` },
   { label: `AIGC`, kw: `aigc` },
   { label: `BIM`, kw: `bim` },
   { label: `Twine`, kw: `twine` }
@@ -201,8 +201,8 @@ function SearchOverlay({ open, onClose }) {
   }, [open, results, active, onClose]);
   if (!open) return null;
   return (
-    <div className="m-search-overlay" role="dialog" aria-modal="true" aria-label={`\u641c\u7d22\u4f5c\u54c1`} onClick={onClose}>
-      <div className="m-search-panel" onClick={(event) => event.stopPropagation()}>
+    <div className="m-search-overlay" role="dialog" aria-modal="true" aria-label={`\u641c\u7d22\u4f5c\u54c1`} onMouseDown={onClose}>
+      <div className="m-search-panel" onMouseDown={(event) => event.stopPropagation()} onClick={(event) => event.stopPropagation()}>
         <div className="m-search-head">
           <span className="m-search-kicker">/ {`\u641c\u7d22`} <small>SEARCH</small></span>
           <input ref={inputRef} className="m-search-input" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={`\u5173\u952e\u8bcd\uff1a\u5b9a\u683c\u52a8\u753b\u3001\u58f0\u97f3\u3001YOLO\u2026`} aria-label={`\u641c\u7d22\u4f5c\u54c1\u5173\u952e\u8bcd`} />
@@ -226,7 +226,7 @@ function SearchOverlay({ open, onClose }) {
             ))}
           </div>
         )}
-        <div className="m-search-foot"><span>{`/ \u6216 CTRL K \u968f\u65f6\u5524\u8d77`}</span><span>{`\u2191\u2193 \u9009\u62e9 \u00b7 ENTER \u6253\u5f00 \u00b7 ESC \u5173\u95ed`}</span></div>
+        <div className="m-search-foot"><span>{`/ \u6216 CTRL K \u968f\u65f6\u5524\u8d77`}</span><span>{`\u2191\u2193 \u9009\u62e9 \u00b7 ENTER \u6253\u5f00 \u00b7 ESC \u6216\u70b9\u51fb\u7a7a\u767d\u5904\u5173\u95ed`}</span></div>
       </div>
     </div>
   );
