@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 # Workspace artifacts
 .zcode/
+
+# Netlify CLI local state
+.netlify/
