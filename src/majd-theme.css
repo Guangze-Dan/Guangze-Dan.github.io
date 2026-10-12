@@ -530,6 +530,9 @@ html, body { overflow-x: clip; }
 @media (max-width: 900px) { .m-flip-hint { top: 320px; } }
 @media (max-width: 560px) { .m-flip-hint { display: none; } }
 
+/* 锚点落位时为顶部固定导航预留空间（导航底边约 90px） */
+section[id], .m-archive-group[id] { scroll-margin-top: 96px; }
+
 /* ============================================================
    搜索：胶囊内幽灵图标 + / 或 Ctrl K 唤起的暗色命令面板
    ============================================================ */

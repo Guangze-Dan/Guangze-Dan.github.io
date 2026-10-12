@@ -761,6 +761,25 @@ function App() {
       document.title = `\u4f46\u5149\u6cfd \u00b7 Guangze Dan \u2014 \u4ea4\u4e92\u8bbe\u8ba1\u5e08 / \u521b\u610f\u6280\u672f\u4f5c\u54c1\u96c6`;
     }
   }, [path]);
+  useEffect(() => {
+    const scrollToHash = () => {
+      const id = window.location.hash.slice(1);
+      if (!id) return;
+      const target = document.getElementById(id);
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+    // 跨页锚点（如从作品页点「联系」跳 /#contact）：浏览器解析 HTML 时目标还不存在，
+    // 等 React 挂载、布局稳定后由前端补一次滚动
+    let frame;
+    if (window.location.hash) {
+      frame = requestAnimationFrame(() => requestAnimationFrame(scrollToHash));
+    }
+    window.addEventListener('hashchange', scrollToHash);
+    return () => {
+      if (frame) cancelAnimationFrame(frame);
+      window.removeEventListener('hashchange', scrollToHash);
+    };
+  }, [path]);
   let page;
   if (path === '/work') {
     page = <WorkPage />;
