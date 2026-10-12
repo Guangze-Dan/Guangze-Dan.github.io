@@ -762,22 +762,54 @@ function App() {
     }
   }, [path]);
   useEffect(() => {
-    const scrollToHash = () => {
+    const scrollToHash = (behavior) => {
       const id = window.location.hash.slice(1);
       if (!id) return;
       const target = document.getElementById(id);
-      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (target) target.scrollIntoView({ behavior, block: 'start' });
     };
-    // 跨页锚点（如从作品页点「联系」跳 /#contact）：浏览器解析 HTML 时目标还不存在，
-    // 等 React 挂载、布局稳定后由前端补一次滚动
-    let frame;
-    if (window.location.hash) {
-      frame = requestAnimationFrame(() => requestAnimationFrame(scrollToHash));
-    }
-    window.addEventListener('hashchange', scrollToHash);
+    // 跨页锚点（如从作品页点「联系」跳 /#contact）：浏览器解析 HTML 时目标不存在，
+    // 由前端在挂载后补定位。三个要点：
+    // 1) 布局未就绪时滚动调用无效 → 每次调用后校验实际位置，未到位就重试；
+    // 2) 全局 CSS scroll-behavior: smooth 会把程序化滚动变成慢动画（且重试会互相取消），
+    //    所以落位时临时切到 auto 保证瞬时到位；
+    // 3) 用 setTimeout 而非 rAF（后台标签页会被节流）；一旦用户自己开始滚动就停止干预。
+    let timer;
+    let cancelled = false;
+    const isSettled = (target) => {
+      if (Math.abs(target.getBoundingClientRect().top - 96) <= 160) return true;
+      // 已滚到页面底部（目标贴底、无法再滚）也算到位；但要求页面确实可滚动
+      const root = document.documentElement;
+      const canScroll = root.scrollHeight - window.innerHeight > 8;
+      return canScroll && window.scrollY + window.innerHeight >= root.scrollHeight - 4;
+    };
+    const settle = (attempt) => {
+      if (cancelled) return;
+      const id = window.location.hash.slice(1);
+      if (!id) return;
+      const target = document.getElementById(id);
+      const retry = (delay) => { if (attempt < 30) timer = window.setTimeout(() => settle(attempt + 1), delay); };
+      if (target) {
+        const root = document.documentElement;
+        const previous = root.style.scrollBehavior;
+        root.style.scrollBehavior = 'auto';
+        target.scrollIntoView({ block: 'start' });
+        root.style.scrollBehavior = previous;
+        if (!isSettled(target)) retry(140);
+        return;
+      }
+      retry(120);
+    };
+    if (window.location.hash) settle(0);
+    const cancel = () => { cancelled = true; window.clearTimeout(timer); };
+    const onHashChange = () => scrollToHash('smooth');
+    window.addEventListener('hashchange', onHashChange);
+    window.addEventListener('wheel', cancel, { passive: true, once: true });
+    window.addEventListener('touchstart', cancel, { passive: true, once: true });
+    window.addEventListener('keydown', cancel, { once: true });
     return () => {
-      if (frame) cancelAnimationFrame(frame);
-      window.removeEventListener('hashchange', scrollToHash);
+      cancel();
+      window.removeEventListener('hashchange', onHashChange);
     };
   }, [path]);
   let page;
