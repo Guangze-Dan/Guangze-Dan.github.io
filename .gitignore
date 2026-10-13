@@ -27,3 +27,6 @@ dist-ssr
 
 # Netlify CLI local state
 .netlify/
+
+# Tool artifacts
+.zcodeignore
