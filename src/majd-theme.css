@@ -533,6 +533,10 @@ html, body { overflow-x: clip; }
 /* 锚点落位时为顶部固定导航预留空间（导航底边约 90px） */
 section[id], .m-archive-group[id] { scroll-margin-top: 96px; }
 
+/* 详情页图片型媒体（科研项目图示）：等比呈现，深色底与图示背景融合 */
+.m-detail-media .m-detail-figure { position: absolute; inset: 0; z-index: 0; margin: 0; display: grid; place-items: center; background: #111; }
+.m-detail-media .m-detail-figure img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
 /* ============================================================
    搜索：胶囊内幽灵图标 + / 或 Ctrl K 唤起的暗色命令面板
    ============================================================ */

@@ -43,6 +43,14 @@ const mediaBySlug = {
   'the-most-of-us': { demoUrl: '/projects/source/the-most-of-us/The%20Most%20of%20Us.html' },
   'yun-house': { demoUrl: '/projects/source/yun-house/menu.html' }
 };
+
+/* 博士期间科研项目：压缩空气储能地下储气库方向 */
+projects.push(
+  { slug: 'caes-multiscale-cavern', n: '17', title: 'Multi-scale Cavern Cyclic Pressure Test', titleCn: '多尺度洞室循环内压物理模型试验', type: '科研工程 / 物理模型试验', text: '主持"UPVC 主洞室—多尺度柔性小洞室—非连续预制裂缝围岩"组合试验体系，复现压气储能地下储气库洞室群受力环境。', tone: 'project-dark', mark: 'CAES', year: '2026', role: '项目总负责人 / 试验设计', mediaType: 'image', media: '/projects/covers/p17-caes-cavern.jpg', intro: '依托国家自然科学基金区域创新发展联合基金开展延伸试验，以多尺度洞室群与非连续裂缝围岩为对象，研究循环内压下的围岩响应与损伤演化。', detail: '作为项目总负责人，主持构建"UPVC 主洞室—多尺度柔性小洞室—非连续预制裂缝围岩"组合试验体系，通过大型物理模型试验复现压气储能地下储气库洞室群实际受力环境。精准控制分级加压与循环充放压参数（压力路径、加载速率、循环次数），同步监测洞室群围岩应力应变传递与裂缝区段损伤演化，揭示多尺度洞室与裂缝构型对围岩响应的作用规律，为储气库洞室群稳定性评价与运行参数优化提供技术支持。' },
+  { slug: 'abandoned-mine-caes', n: '18', title: 'Abandoned Mine CAES Storage', titleCn: '废弃矿硐储库稳定与气密性研究', type: '科研工程 / 可靠性评价', text: '国家自然科学基金项目：搭建储气库围岩劣化大型模型试验平台，研究交变荷载下的劣化、疲劳与气密性能。', tone: 'project-blue', mark: 'NSFC', year: '2025', role: '技术骨干', mediaType: 'image', media: '/projects/covers/p18-mine-caes.jpg', intro: '废弃矿硐压缩空气储库稳定与气密性能研究与可靠性评价——国家自然科学基金区域创新发展联合基金项目。', detail: '本项目属于国家自然科学基金区域创新发展联合基金。作为技术骨干参与搭建储气库围岩劣化的大型模型试验平台，通过大型物理模型试验复现压气储能地下衬砌储气库实际受力环境，精准控制交变荷载参数（幅值、频率、循环次数）与加载速率，同步监测围岩力学响应与损伤演化，探究围岩在交变荷载作用下的劣化、疲劳和损伤以及裂缝分布情况，为储气库实际运行与可靠性评价提供技术支持。' },
+  { slug: 'hp-flexible-sealing', n: '19', title: 'High-Pressure Flexible Sealing Test', titleCn: '高内压柔性密封防渗试验', type: '科研工程 / 试验方案与平台设计', text: '面向成勘院储气库密封需求，编制 20 MPa 高内压柔性密封材料防渗试验方案并设计试验平台。', tone: 'project-acid', mark: '20MPa', year: '2026', role: '试验方案编制 / 平台结构设计', mediaType: 'image', media: '/projects/covers/p19-hp-sealing-detail.jpg', intro: '储气库高内压柔性密封体系防渗性能试验研究——中国电建集团成都勘测设计研究院有限公司委托项目。', detail: '面向中国电建集团成都勘测设计研究院有限公司（成勘院）储气库密封需求，编制 20 MPa 高内压柔性密封材料防渗性能试验方案。设计"柔性密封水囊—聚氨酯填充—钢制反力筒"试验平台，完成 500 mm 内径反力筒结构计算与承压边界校核（22 MPa 设计压力，24 根 M48 高强度螺柱）。制定分级加压（0.5–20 MPa）、恒压保压与循环加载程序，集成压力—湿度—应变多通道监测与超压联锁保护，比较增强丁基橡胶、EPDM 与 TPU 复合织物三种候选材料的抗渗性能并建立失效判据。' }
+);
+
 projects.forEach((project) => Object.assign(project, mediaBySlug[project.slug] || {}));
 Object.assign(projects[0], { title: 'Animating the Invisible' });
 Object.assign(projects[1], { title: 'WISH' });
@@ -105,7 +113,7 @@ const cardDescriptions = {
 projects.forEach((project) => { if (cardDescriptions[project.slug]) project.text = cardDescriptions[project.slug]; });
 
 const overviewOrder = [
-  'animating-the-invisible', 'wish', 'project', 'sanhe-drifters',
+  'caes-multiscale-cavern', 'hp-flexible-sealing', 'abandoned-mine-caes', 'animating-the-invisible', 'wish', 'project', 'sanhe-drifters',
   'guangze-project-demo', 'student-roamer', 'railway-museum-storytelling',
   'ds-final', 'the-most-of-us', 'solar-hater', 'yun-house'
 ];
@@ -116,14 +124,14 @@ overviewProjects.forEach((project) => { project.categoryAnchor = categoryAnchors
 const coverBySlug = {
   'animating-the-invisible': '/projects/covers/p1-invisible.jpg', wish: '/projects/covers/p2-wish.jpg', project: '/projects/covers/p3-road.jpg',
   'sanhe-drifters': '/projects/covers/p4-sanhe.jpg', 'guangze-project-demo': '/projects/covers/p5-bim.jpg', 'solar-hater': '/projects/covers/p6-solar.jpg',
-  'student-roamer': '/projects/covers/p7-student.jpg', 'railway-museum-storytelling': '/projects/covers/p8-railway.svg', 'yun-house': '/projects/covers/p9-yun-house.jpg', 'the-most-of-us': '/projects/covers/p10-the-most-of-us.jpg', 'ds-final': '/projects/covers/p11-hi.jpg'
+  'student-roamer': '/projects/covers/p7-student.jpg', 'railway-museum-storytelling': '/projects/covers/p8-railway.svg', 'yun-house': '/projects/covers/p9-yun-house.jpg', 'the-most-of-us': '/projects/covers/p10-the-most-of-us.jpg', 'ds-final': '/projects/covers/p11-hi.jpg',
+  'caes-multiscale-cavern': '/projects/covers/p17-caes-cavern.jpg', 'abandoned-mine-caes': '/projects/covers/p18-mine-caes.jpg', 'hp-flexible-sealing': '/projects/covers/p19-hp-sealing.jpg'
 };
 const categoryBySlug = {
   'animating-the-invisible': 'creative-technology', wish: 'game-worlds', project: 'interactive-experiences', 'sanhe-drifters': 'audiovisual-creation',
   'guangze-project-demo': 'creative-technology', 'solar-hater': 'audiovisual-creation', 'student-roamer': 'interactive-experiences',
   'railway-museum-storytelling': 'interactive-experiences', 'ds-final': 'audiovisual-creation',
-  'the-most-of-us': 'interactive-experiences', 'yun-house': 'interactive-experiences'
-};
+  'the-most-of-us': 'interactive-experiences', 'yun-house': 'interactive-experiences', 'caes-multiscale-cavern': 'research-engineering', 'abandoned-mine-caes': 'research-engineering', 'hp-flexible-sealing': 'research-engineering'};
 projects.forEach((project) => Object.assign(project, { cover: coverBySlug[project.slug], category: categoryBySlug[project.slug] }));
 projects.forEach((project) => { if (project.mediaType === 'video' && project.cover) project.gif = project.cover.replace(/\.(png|svg|jpe?g)$/, '.gif'); });
 projects.forEach((project) => { if (project.mediaType === 'video' && project.media) project.poster = project.media.replace('/media/', '/media/posters/').replace(/\.(mp4|mov)$/, '.jpg'); });
@@ -132,9 +140,11 @@ const services = [
   ['01', '\u4ea4\u4e92\u4f53\u9a8c', ['\u7f51\u9875\u4f53\u9a8c', '\u535a\u7269\u9986\u4ea4\u4e92', '\u7a7a\u95f4\u53d9\u4e8b'], '/work#interactive-experiences'],
   ['02', '\u6e38\u620f\u4e16\u754c', ['\u53ef\u73a9\u73af\u5883', '\u4e16\u754c\u6784\u5efa', '\u53d9\u4e8b\u7cfb\u7edf'], '/work#game-worlds'],
   ['03', '\u89c6\u542c\u521b\u4f5c', ['\u52a8\u6001\u5f71\u50cf', '\u58f0\u97f3\u4e0e\u52a8\u753b', '\u827a\u672f\u6307\u5bfc'], '/work#audiovisual-creation'],
-  ['04', '\u521b\u610f\u6280\u672f', ['\u521b\u610f\u7f16\u7a0b', '\u7814\u7a76\u4e0e\u539f\u578b', '\u4ea4\u4e92\u8bbe\u8ba1'], '/work#creative-technology']
+  ['04', '创意技术', ['创意编程', '研究与原型', '交互设计'], '/work#creative-technology'],
+  ['05', '科研工程', ['物理模型试验', '密封与防渗', '监测与评价'], '/work#research-engineering']
 ];
 const archiveGroups = [
+  { id: 'research-engineering', title: '科研工程', english: 'RESEARCH & ENGINEERING', slugs: ['caes-multiscale-cavern', 'abandoned-mine-caes', 'hp-flexible-sealing'] },
   { id: 'interactive-experiences', title: '\u4ea4\u4e92\u4f53\u9a8c', english: 'INTERACTIVE EXPERIENCES', slugs: ['project', 'student-roamer', 'railway-museum-storytelling', 'yun-house', 'the-most-of-us'] },
   { id: 'game-worlds', title: '\u6e38\u620f\u4e16\u754c', english: 'GAME WORLDS', slugs: ['wish'] },
   { id: 'audiovisual-creation', title: '\u89c6\u542c\u521b\u4f5c', english: 'AUDIOVISUAL CREATION', slugs: ['animating-the-invisible', 'sanhe-drifters', 'solar-hater', 'ds-final'] },
@@ -156,7 +166,10 @@ const searchTagsBySlug = {
   'the-most-of-us': ['Twine', '\u6587\u5b57\u6e38\u620f', '\u4e92\u52a8\u53d9\u4e8b', '\u793e\u4f1a\u89c2\u5bdf', '\u5206\u652f\u9009\u62e9'],
   'yun-house': ['\u70b9\u5355\u7cfb\u7edf', '\u754c\u9762\u8bbe\u8ba1', '\u9910\u996e', '\u6570\u5b57\u5316', '\u6587\u5316'],
   'ds-final': ['\u58f0\u97f3\u8bbe\u8ba1', '\u97f3\u9891', '\u53d9\u4e8b', '\u6c89\u6d78\u5f0f'],
-  'solar-hater': ['AIGC', '\u50cf\u7d20\u98ce', '\u6e38\u620f\u9884\u544a', '\u5f71\u50cf', '\u6982\u5ff5\u8bbe\u8ba1']
+  'solar-hater': ['AIGC', '\u50cf\u7d20\u98ce', '\u6e38\u620f\u9884\u544a', '\u5f71\u50cf', '\u6982\u5ff5\u8bbe\u8ba1'],
+  'caes-multiscale-cavern': ['压缩空气储能', 'CAES', '储气库', '物理模型试验', '循环内压', '围岩损伤', '裂缝', '分布式光纤', '声发射'],
+  'abandoned-mine-caes': ['压缩空气储能', '废弃矿硐', '储气库', '气密性', '可靠性评价', '国家自然科学基金', '交变荷载'],
+  'hp-flexible-sealing': ['柔性密封', '高内压', '防渗', '20 MPa', '反力筒', '成勘院', '密封材料', '保压']
 };
 const searchIndex = projects.map((project) => ({
   slug: project.slug,
@@ -399,6 +412,7 @@ function ProjectVisual({ project, large = false }) {
     <div className={`m-project-image ${project.tone} ${large ? 'is-large' : ''}`} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
       {!large && project.cover && <GlareHover className="rb-cover-glare"><TiltedCard className="rb-cover-tilt"><img className="m-project-cover" src={coverSrc} alt={project.titleCn} /></TiltedCard></GlareHover>}
       {large && project.mediaType === 'video' && <video src={project.media} poster={project.poster} controls controlsList="nodownload" disablePictureInPicture onContextMenu={(event) => event.preventDefault()} loop autoPlay muted playsInline preload="metadata" />}
+      {large && project.mediaType === 'image' && <figure className="m-detail-figure"><img src={project.media} alt={project.titleCn} /></figure>}
       {large && project.mediaType === 'audio' && <AudioVisualizer src={project.media} />}
       {large && project.demoUrl && <iframe src={project.demoUrl} title={project.title} loading="lazy" />}
     </div>
@@ -526,27 +540,27 @@ function HomePage() {
     html('.m-resume-button', '<strong>\u4e0b\u8f7d\u7b80\u5386<br><small>Download CV</small></strong><span class="m-arrow">-&gt;</span>');
     html('.m-avatar-back-name', '\u4f46\u5149\u6cfd<br><small>Guangze Dan</small>');
     html('.m-footer-top h2', '\u4f46\u5149\u6cfd<small>Guangze Dan</small>');
-    html('.m-intro-lead p', '\u6211\u662f\u4f46\u5149\u6cfd\uff0c\u4e00\u540d\u5728\u5730\u65b9\u3001\u5a92\u4ecb\u4e0e\u60f3\u6cd5\u4e4b\u95f4\u8fdb\u884c\u521b\u4f5c\u7684\u8bbe\u8ba1\u5e08\u3002<br><small>I\'m Guangze Dan, a designer working across places, mediums, and ideas.</small>');
+    html('.m-intro-lead p', '我是但光泽，新能源科学与工程博士研究生，研究方向为压缩空气储能地下储气库；在科研、设计与创作之间工作。<br><small>PhD researcher in new energy science and engineering, working on underground gas storage for CAES — across research, design and making.</small>');
     const intro = document.querySelectorAll('.m-intro-copy p');
-    if (intro[0]) intro[0].innerHTML = '\u6211\u662f\u4e00\u540d\u4ea4\u4e92\u8bbe\u8ba1\u5e08\u548c\u521b\u610f\u6280\u672f\u5de5\u4f5c\u8005\uff0c\u4e13\u6ce8\u4e8e\u6e38\u620f\u3001\u7f51\u9875\u4f53\u9a8c\u3001\u89c6\u542c\u4f5c\u54c1\u4e0e\u521b\u610f\u7f16\u7a0b\u7b49\u8de8\u5a92\u4f53\u5b9e\u8df5\u3002<br><small>I am an Interaction Designer and Creative Technologist working across games, web experiences, audiovisual works, and creative coding.</small>';
+    if (intro[0]) intro[0].innerHTML = '我是中国地质大学（武汉）新能源学院博士研究生，研究方向为压缩空气储能地下储气库；同时是一名交互设计师和创意技术工作者，专注于科研可视化、游戏、网页体验、视听作品与创意编程。<br><small>A PhD researcher at the School of Sustainable Energy, CUG (Wuhan), working on underground gas storage for compressed air energy storage — also an interaction designer and creative technologist.</small>';
     if (intro[1]) intro[1].innerHTML = '\u6211\u5728\u4f26\u6566 UCL \u7684\u7855\u58eb\u5b66\u4e60\u7ecf\u5386\uff0c\u4ee5\u53ca\u5728\u7ea6\u514b\u79ef\u7d2f\u7684\u521b\u610f\u6280\u672f\u5b9e\u8df5\uff0c\u5171\u540c\u6784\u6210\u4e86\u6211\u7684\u521b\u4f5c\u80cc\u666f\u3002<br><small>My master\'s study at UCL - London and my creative technology practice in UOY - York have shaped the foundation of my work.</small><br><br>\u5982\u4eca\uff0c\u6211\u4ee5\u6b66\u6c49\uff0c\u4e2d\u56fd\u4e3a\u521b\u4f5c\u57fa\u5730\uff0c\u5728\u7814\u7a76\u3001\u6982\u5ff5\u4e0e\u5236\u4f5c\u4e4b\u95f4\u63a2\u7d22\uff0c\u521b\u9020\u6e05\u6670\u3001\u6709\u6c1b\u56f4\u611f\u5e76\u5177\u6709\u4eba\u60c5\u6e29\u5ea6\u7684\u4f53\u9a8c\u3002<br><small>Now based in Wuhan, China, I work between research, concepts, and making — creating experiences that are clear, atmospheric, and deeply human.</small>';
     html('.m-location-line', '<span>UCL - London</span><span>UOY - York, UK</span><span>Wuhan, China</span>');
     if (intro[1]) intro[1].innerHTML = intro[1].innerHTML.replace(/<br><br>/g, '<br>');
     html('.m-underlink', '\u67e5\u770b\u4f5c\u54c1 <small>View Works</small> <span class="m-arrow">-&gt;</span>');
-    const serviceEnglish = [['Interactive Experiences', 'Web Experiences', 'Museum Interaction', 'Spatial Narratives'], ['Game Worlds', 'Playable Environments', 'World Building', 'Narrative Systems'], ['Audiovisual Creation', 'Motion Design', 'Sound & Animation', 'Art Direction'], ['Creative\u00a0Technology', 'Creative Coding', 'Research & Prototyping', 'Interaction Design']];
+    const serviceEnglish = [['Interactive Experiences', 'Web Experiences', 'Museum Interaction', 'Spatial Narratives'], ['Game Worlds', 'Playable Environments', 'World Building', 'Narrative Systems'], ['Audiovisual Creation', 'Motion Design', 'Sound & Animation', 'Art Direction'], ['Creative\u00a0Technology', 'Creative Coding', 'Research & Prototyping', 'Interaction Design'], ['Research Engineering', 'Physical Model Testing', 'Sealing & Anti-seepage', 'Monitoring & Evaluation']];
     document.querySelectorAll('.m-service').forEach((service, index) => { const data = serviceEnglish[index]; if (!data) return; service.querySelector('h3').innerHTML = `${service.querySelector('h3').innerText}<small>${data[0]}</small>`; service.querySelectorAll('.m-service-tags span').forEach((tag, tagIndex) => { tag.innerHTML = `${tag.innerText}<small>${data[tagIndex + 1]}</small>`; }); });
     html('.m-work-head a', '\u67e5\u770b\u5168\u90e8\u4f5c\u54c1 <small>View All Works</small> <span class="m-arrow">-&gt;</span>');
     html('.m-contact p', '\u544a\u8bc9\u6211\u4f60\u7684\u60f3\u6cd5\uff0c\u6211\u4f1a\u5c3d\u5feb\u56de\u590d\u3002<br><small>Tell me about your project or idea, and I\'ll get back to you soon.</small>');
-    html('.m-footer-top p', '\u4ea4\u4e92\u8bbe\u8ba1\u5e08 / \u521b\u610f\u6280\u672f\u5de5\u4f5c\u8005\u3002<br><small>Interaction Designer / Creative Technologist.</small><br><br>\u521b\u9020\u53ef\u4ee5\u88ab\u4eba\u611f\u53d7\u7684\u6545\u4e8b\u3001\u4e16\u754c\u4e0e\u7cfb\u7edf\u3002<br><small>Creating stories, worlds, and systems that people can experience and feel.</small>');
+    html('.m-footer-top p', '新能源博士研究 / 交互设计 / 创意技术。<br><small>PhD research / interaction design / creative technology.</small><br><br>研究压缩空气储能地下储气库，创造可以被人们感受的故事、世界和系统。<br><small>Researching underground gas storage for CAES, and creating stories, worlds, and systems that people can experience and feel.</small>');
     html('.m-footer-links span', '/ \u5feb\u901f\u5bfc\u822a <small>QUICK NAVIGATION</small>');
     html('.m-footer-contact span:first-child', '/ \u8054\u7cfb\u65b9\u5f0f <small>CONTACT</small>');
     html('.m-footer-contact span:last-child', 'UCL - London / UOY - York / Wuhan');
   }, []);
   useEffect(() => {
     const set = (selector, value) => { const element = document.querySelector(selector); if (element) element.innerHTML = value; };
-    set('.m-intro-lead p', '\u6211\u662f\u4f46\u5149\u6cfd\uff0c\u4e00\u540d\u5728\u5730\u65b9\u3001\u5a92\u4ecb\u4e0e\u60f3\u6cd5\u4e4b\u95f4\u8fdb\u884c\u521b\u4f5c\u7684\u8bbe\u8ba1\u5e08\u3002<br><small>I\'m Guangze Dan, a designer working across places, mediums, and ideas.</small>');
+    set('.m-intro-lead p', '我是但光泽，新能源科学与工程博士研究生，研究方向为压缩空气储能地下储气库；在科研、设计与创作之间工作。<br><small>PhD researcher in new energy science and engineering, working on underground gas storage for CAES — across research, design and making.</small>');
     const intro = document.querySelectorAll('.m-intro-copy p');
-    if (intro[0]) intro[0].innerHTML = '\u6211\u662f\u4e00\u540d\u4ea4\u4e92\u8bbe\u8ba1\u5e08\u548c\u521b\u610f\u6280\u672f\u5de5\u4f5c\u8005\uff0c\u4e13\u6ce8\u4e8e\u6e38\u620f\u3001\u7f51\u9875\u4f53\u9a8c\u3001\u89c6\u542c\u4f5c\u54c1\u4e0e\u521b\u610f\u7f16\u7a0b\u7b49\u8de8\u5a92\u4f53\u5b9e\u8df5\u3002<br><small>I am an Interaction Designer and Creative Technologist working across games, web experiences, audiovisual works, and creative coding.</small>';
+    if (intro[0]) intro[0].innerHTML = '我是中国地质大学（武汉）新能源学院博士研究生，研究方向为压缩空气储能地下储气库；同时是一名交互设计师和创意技术工作者，专注于科研可视化、游戏、网页体验、视听作品与创意编程。<br><small>A PhD researcher at the School of Sustainable Energy, CUG (Wuhan), working on underground gas storage for compressed air energy storage — also an interaction designer and creative technologist.</small>';
     if (intro[1]) intro[1].innerHTML = '\u6211\u5728\u4f26\u6566 UCL \u7684\u7855\u58eb\u5b66\u4e60\u7ecf\u5386\uff0c\u4ee5\u53ca\u5728\u7ea6\u514b\u79ef\u7d2f\u7684\u521b\u610f\u6280\u672f\u5b9e\u8df5\uff0c\u5171\u540c\u6784\u6210\u4e86\u6211\u7684\u521b\u4f5c\u80cc\u666f\u3002<br><small>My master\'s study at UCL - London and my creative technology practice in UOY - York have shaped the foundation of my work.</small><br><br>\u5982\u4eca\uff0c\u6211\u4ee5\u6b66\u6c49\uff0c\u4e2d\u56fd\u4e3a\u521b\u4f5c\u57fa\u5730\uff0c\u5728\u7814\u7a76\u3001\u6982\u5ff5\u4e0e\u5236\u4f5c\u4e4b\u95f4\u63a2\u7d22\uff0c\u521b\u9020\u6e05\u6670\u3001\u6709\u6c1b\u56f4\u611f\uff0c\u5e76\u5177\u6709\u4eba\u60c5\u6e29\u5ea6\u7684\u4f53\u9a8c\u3002<br><small>Now based in Wuhan, China, I work between research, concepts, and making — creating experiences that are clear, atmospheric, and deeply human.</small>';
     set('.m-location-line', '<span>UCL - London</span><span>UOY - York, UK</span><span>Wuhan, China</span>');
     if (intro[1]) intro[1].innerHTML = intro[1].innerHTML.replace(/<br><br>/g, '<br>');
@@ -594,7 +608,7 @@ function HomePage() {
       <SiteNav />
       <main>
         <section className="m-hero" id="home">
-          <div className="m-hero-meta"><span><BlurText>{`\u4ea4\u4e92\u8bbe\u8ba1\u5e08 / \u521b\u610f\u6280\u672f`}</BlurText></span><span><BlurText delay={90}>{`\u5e38\u9a7b\u6b66\u6c49 / \u4e2d\u56fd`}</BlurText></span></div>
+          <div className="m-hero-meta"><span><BlurText>{`新能源博士研究 / 交互设计 / 创意技术`}</BlurText></span><span><BlurText delay={90}>{`\u5e38\u9a7b\u6b66\u6c49 / \u4e2d\u56fd`}</BlurText></span></div>
           <div className="m-hero-orbit" aria-hidden="true"><span>{`UCL / \u4f26\u6566`}</span><span>{`\u7ea6\u514b`}</span><span>{`\u6b66\u6c49`}</span></div>
           <div className="m-hero-word m-hero-word-one">{`\u521b\u610f\u6280\u672f`}</div>
           <div className="m-hero-word m-hero-word-two"><i><SplitText delay={28}>{`CREATIVE TECHNOLOGY`}</SplitText></i></div>
@@ -609,7 +623,7 @@ function HomePage() {
         <section className="m-intro" id="about">
           <div className="m-section-kicker"><ShinyText>/ {`\u5173\u4e8e\u6211`} <small>About Me</small></ShinyText></div>
           <div className="m-intro-grid">
-            <div className="m-intro-lead"><h2><SplitText>{`\u4f60\u597d\uff01`}</SplitText><small>HELLO!</small></h2><p>{`\u6211\u662f `}<span dangerouslySetInnerHTML={{ __html: name }} />{`\uff0c\u4e00\u540d\u5728\u5730\u65b9\u3001\u5a92\u4ecb\u548c\u60f3\u6cd5\u4e4b\u95f4\u5de5\u4f5c\u7684\u8bbe\u8ba1\u5e08\u3002`}</p></div>
+            <div className="m-intro-lead"><h2><SplitText>{`\u4f60\u597d\uff01`}</SplitText><small>HELLO!</small></h2><p>{`我是 `}<span dangerouslySetInnerHTML={{ __html: name }} />{`，新能源科学与工程博士研究生，在科研、设计与创作之间工作。`}</p></div>
                 <figure className="m-intro-photo"><img src="/about-avatar.jpg" alt="Portfolio portrait" /></figure>
             <div className="m-intro-copy">
               <p className="m-large">{`\u6211\u662f\u4e00\u540d\u4ea4\u4e92\u8bbe\u8ba1\u5e08\u548c\u521b\u610f\u6280\u672f\u5de5\u4f5c\u8005\uff0c\u6d89\u53ca\u6e38\u620f\u3001\u7f51\u9875\u4f53\u9a8c\u3001\u89c6\u542c\u4f5c\u54c1\u4e0e\u521b\u610f\u7f16\u7a0b\u3002`}</p>
@@ -665,10 +679,11 @@ function WorkPage() {
     const slug = window.location.hash.slice(1);
     if (slug) requestAnimationFrame(() => (document.getElementById(slug) || document.querySelector(`a[href="/work/${slug}"]`))?.scrollIntoView({ block: 'center', behavior: 'smooth' }));
   }, []);
-  return <div className="majd-site m-work-page"><SiteNav /><main><section className="m-archive-hero"><div className="m-section-kicker"><ShinyText>/ {`\u4f5c\u54c1 / SELECTED PROJECTS`}</ShinyText></div><h1><SplitText>{`\u7cbe\u9009`}</SplitText><br /><i>SELECTED PROJECTS</i></h1><p>{`\u8fd9\u91cc\u6309\u4ea4\u4e92\u4f53\u9a8c\u3001\u6e38\u620f\u4e16\u754c\u3001\u89c6\u542c\u521b\u4f5c\u548c\u521b\u610f\u6280\u672f\u7f16\u6392\u4f5c\u54c1\uff0c\u4ece\u6700\u91cd\u8981\u7684\u9879\u76ee\u5f00\u59cb\u4e86\u89e3\u6211\u7684\u5b9e\u8df5\u3002`}</p><div className="m-archive-index">{`\u4f7f\u4e0d\u53ef\u89c1\u4e4b\u7269\u663e\u73b0 / \u613f / \u9053\u8def\u88c2\u7f1d\u68c0\u6d4b\u7cfb\u7edf / \u4e09\u548c\u5927\u795e`}</div><nav className="m-category-nav" aria-label={`\u4f5c\u54c1\u5206\u7c7b`}><a href="#interactive-experiences">{`\u4ea4\u4e92\u4f53\u9a8c`}<small>INTERACTIVE</small></a><a href="#game-worlds">{`\u6e38\u620f\u4e16\u754c`}<small>GAME WORLDS</small></a><a href="#audiovisual-creation">{`\u89c6\u542c\u521b\u4f5c`}<small>AUDIOVISUAL</small></a><a href="#creative-technology">{`\u521b\u610f\u6280\u672f`}<small>CREATIVE TECH</small></a></nav></section><div className="m-archive-groups">{archiveGroups.map((group) => <section className="m-archive-group" id={group.id} key={group.id}><div className="m-archive-group-heading"><span>{group.title}</span><small>{group.english}</small></div><div className="m-archive-grid">{group.slugs.map((slug) => overviewProjects.find((project) => project.slug === slug)).filter(Boolean).map((project) => <ProjectCard project={project} key={project.slug} />)}</div></section>)}</div><section className="m-archive-footer"><a href="/#contact">{`\u6709\u60f3\u6cd5\uff1f`} <Arrow /></a><span>{`UCL / \u4f26\u6566 / \u7ea6\u514b / \u6b66\u6c49`}</span></section></main><SiteFooter /></div>;
+  return <div className="majd-site m-work-page"><SiteNav /><main><section className="m-archive-hero"><div className="m-section-kicker"><ShinyText>/ {`\u4f5c\u54c1 / SELECTED PROJECTS`}</ShinyText></div><h1><SplitText>{`精选`}</SplitText><br /><i>SELECTED PROJECTS</i></h1><p>{`这里按科研工程、交互体验、游戏世界、视听创作和创意技术编排作品，从我当前的博士科研工作开始，全面了解我的实践。`}</p><div className="m-archive-index">{`\u4f7f\u4e0d\u53ef\u89c1\u4e4b\u7269\u663e\u73b0 / \u613f / \u9053\u8def\u88c2\u7f1d\u68c0\u6d4b\u7cfb\u7edf / \u4e09\u548c\u5927\u795e`}</div><nav className="m-category-nav" aria-label={`作品分类`}><a href="#research-engineering">科研工程<small>RESEARCH</small></a><a href="#interactive-experiences">{`\u4ea4\u4e92\u4f53\u9a8c`}<small>INTERACTIVE</small></a><a href="#game-worlds">{`\u6e38\u620f\u4e16\u754c`}<small>GAME WORLDS</small></a><a href="#audiovisual-creation">{`\u89c6\u542c\u521b\u4f5c`}<small>AUDIOVISUAL</small></a><a href="#creative-technology">{`\u521b\u610f\u6280\u672f`}<small>CREATIVE TECH</small></a></nav></section><div className="m-archive-groups">{archiveGroups.map((group) => <section className="m-archive-group" id={group.id} key={group.id}><div className="m-archive-group-heading"><span>{group.title}</span><small>{group.english}</small></div><div className="m-archive-grid">{group.slugs.map((slug) => overviewProjects.find((project) => project.slug === slug)).filter(Boolean).map((project) => <ProjectCard project={project} key={project.slug} />)}</div></section>)}</div><section className="m-archive-footer"><a href="/#contact">{`\u6709\u60f3\u6cd5\uff1f`} <Arrow /></a><span>{`UCL / \u4f26\u6566 / \u7ea6\u514b / \u6b66\u6c49`}</span></section></main><SiteFooter /></div>;
 }
 
 function mediaCaption(project) {
+  if (project.mediaType === 'image') return { label: `试验图示`, text: `试验平台与方案图示，展示研究的实际设计与试验内容。` };
   if (project.mediaType === 'audio') return { label: `\u58f0\u97f3\u4f5c\u54c1`, text: `\u70b9\u51fb\u64ad\u653e\uff0c\u9891\u8c31\u5c06\u5b9e\u65f6\u54cd\u5e94\u58f0\u97f3\u3002` };
   if (project.demoUrl) return { label: `\u4ea4\u4e92\u6f14\u793a`, text: `\u4e0b\u65b9\u7a97\u53e3\u53ef\u76f4\u63a5\u64cd\u4f5c\uff0c\u4f53\u9a8c\u5b8c\u6574\u7684\u4ea4\u4e92\u6d41\u7a0b\u3002` };
   return { label: `\u9879\u76ee\u5f71\u7247`, text: `\u5f71\u7247\u81ea\u52a8\u5faa\u73af\u64ad\u653e\uff0c\u58f0\u97f3\u4e0e\u8fdb\u5ea6\u901a\u8fc7\u64ad\u653e\u5668\u63a7\u5236\u3002` };
