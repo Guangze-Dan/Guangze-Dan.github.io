@@ -773,7 +773,7 @@ function App() {
       const project = projects.find((item) => item.slug === path.slice('/work/'.length));
       document.title = project ? `${project.titleCn} \u00b7 \u4f46\u5149\u6cfd\u4f5c\u54c1\u96c6` : `\u4f5c\u54c1 / SELECTED PROJECTS \u00b7 \u4f46\u5149\u6cfd\u4f5c\u54c1\u96c6`;
     } else {
-      document.title = `\u4f46\u5149\u6cfd \u00b7 Guangze Dan \u2014 \u4ea4\u4e92\u8bbe\u8ba1\u5e08 / \u521b\u610f\u6280\u672f\u4f5c\u54c1\u96c6`;
+      document.title = `\u4f46\u5149\u6cfd \u00b7 Guangze Dan \u2014 \u65b0\u80fd\u6e90\u535a\u58eb\u7814\u7a76 / \u4ea4\u4e92\u8bbe\u8ba1 / \u521b\u610f\u6280\u672f`;
     }
   }, [path]);
   useEffect(() => {
