@@ -4,12 +4,14 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { buildMaterials, makeBackdrop } from './materials.js';
+import { getLang } from '../lang.js';
+import { LAB_EN, enLines } from './scene-en.js';
 
 const easeInOut = (x) => (x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2);
 const easeInOutCubic = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
 
 export class LabViewer {
-  constructor(container, { onHotspot, onReadout, onStage, onTourEnd, onClipChange, onStepEnter, onPlayChange, onTourStep } = {}) {
+  constructor(container, { onHotspot, onReadout, onStage, onTourEnd, onClipChange, onStepEnter, onPlayChange, onTourStep, onLockChange } = {}) {
     this.container = container;
     this.onHotspot = onHotspot || (() => {});
     this.onReadout = onReadout || (() => {});
@@ -19,6 +21,8 @@ export class LabViewer {
     this.onStepEnter = onStepEnter || (() => {});
     this.onPlayChange = onPlayChange || (() => {});
     this.onTourStep = onTourStep || (() => {});
+    this.onLockChange = onLockChange || (() => {});
+    this.lockedAt = null; // 聚焦锁定点（点小数字/设备推近后非空），用于"返回宏观"按钮
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -28,6 +32,9 @@ export class LabViewer {
     this.renderer.toneMappingExposure = 1.02;
     this.renderer.clippingPlanes = [];
     this.renderer.localClippingEnabled = true;
+    this._clipTargets = null;   // 剖切白名单（本体组）
+    this._autoClip = false;     // 聚焦触发的临时剖切
+    this._stepIdx = -1;         // 流程模式步号（-1 = 未进入）
     container.appendChild(this.renderer.domElement);
 
     this.labelRenderer = new CSS2DRenderer();
@@ -218,6 +225,33 @@ export class LabViewer {
     this.updateFn = built.update || null;
     this.readoutFn = built.readout || null;
     this.optionFn = built.setOption || null;
+    // 剖切白名单：只切试验本体（围岩/洞室/水囊/土箱），桌椅泵柜等外围设备永不切。
+    // 材质是跨部件共享的（mats.steelPaint 同时用于本体与设备），先把本体材质克隆私有化，
+    // 否则给材质挂 clippingPlanes 会把设备一起切掉。
+    this._clipTargets = built.clipTargets?.length ? built.clipTargets : null;
+    this._autoClip = false;
+    if (this._clipTargets) {
+      const cloneMap = new Map();
+      for (const t of this._clipTargets) {
+        t.traverse((o) => {
+          if (!o.material) return;
+          const mats = Array.isArray(o.material) ? o.material : [o.material];
+          const fresh = mats.map((m) => {
+            if (!('clippingPlanes' in m)) return m;
+            if (!cloneMap.has(m)) {
+              const c = m.clone();
+              c.userData = { ...c.userData, _clipClone: true }; // 贴图与原材质共享，清理时只释放材质本体
+              cloneMap.set(m, c);
+            }
+            return cloneMap.get(m);
+          });
+          o.material = Array.isArray(o.material) ? fresh : fresh[0];
+        });
+      }
+      this._clippedMats = [...cloneMap.values()];
+    } else {
+      this._clippedMats = null;
+    }
     this.scene.add(this.sceneRoot);
     this.sceneRoot.updateWorldMatrix(true, true);
     this._bbox = new THREE.Box3().setFromObject(this.sceneRoot);
@@ -260,6 +294,7 @@ export class LabViewer {
         const mats = Array.isArray(o.material) ? o.material : (o.material ? [o.material] : []);
         for (const m of mats) {
           if (this.sharedMats.has(m)) continue;
+          if (m.userData?._clipClone) { m.dispose(); continue; } // 剖切克隆：贴图共享，只释放材质
           m.map?.dispose?.();
           m.dispose();
         }
@@ -285,22 +320,29 @@ export class LabViewer {
   }
 
   #buildHotspots(list) {
+    const en = getLang() === 'en';
     this.hotspotObjs = [];
     list.forEach((hs, i) => {
+      // 英文模式：就地改写标题/行（'@' 行丢弃），built.hotspots 与画布气泡保持同源
+      if (en) {
+        hs.title = LAB_EN[hs.title]?.title || hs.title;
+        hs.lines = enLines(hs.lines);
+      }
       const el = document.createElement('div');
       el.className = 'lab-hs' + (hs.tone === 'warn' ? ' lab-hs-warn' : '');
       el.innerHTML = `<span class="lab-hs-dot">${i + 1}</span><div class="lab-hs-tip"><b>${hs.title}</b>${(hs.lines || []).map((l) => l.startsWith('@') ? `<i class="lab-hs-en">${l.slice(1)}</i>` : `<span>${l}</span>`).join('')}</div>`;
-      const on = () => { el.classList.add('is-on'); this.onHotspot({ index: i, ...hs }); };
-      const off = () => { el.classList.remove('is-on'); this.onHotspot(null); };
+      // 悬停只亮场景气泡；React 信息卡留给侧栏点击/聚焦，避免同一内容双窗
+      const on = () => el.classList.add('is-on');
+      const off = () => el.classList.remove('is-on');
       el.addEventListener('pointerenter', on);
       el.addEventListener('pointerleave', off);
       el.addEventListener('click', (e) => {
         e.stopPropagation();
-        on();
+        off();
         this.focusHotspot(i);
         // 触屏没有 hover，点开后限时自动收起，避免长期遮挡
         clearTimeout(el._tipTimer);
-        el._tipTimer = setTimeout(() => { if (!el.classList.contains('is-narrate')) off(); }, 4200);
+        el._tipTimer = setTimeout(() => { if (!el.classList.contains('is-narrate')) this.onHotspot(null); }, 4200);
       });
       const css = new CSS2DObject(el);
       const parent = hs.at?.isObject3D ? hs.at : this.sceneRoot;
@@ -370,12 +412,18 @@ export class LabViewer {
     const plane = enabled
       ? [new THREE.Plane(new THREE.Vector3(...(axis === 'x' ? [-1, 0, 0] : axis === 'y' ? [0, -1, 0] : [0, 0, -1])), pos)]
       : null;
-    this.sceneRoot?.traverse((o) => {
-      const mats = Array.isArray(o.material) ? o.material : (o.material ? [o.material] : []);
-      for (const m of mats) {
-        if ('clippingPlanes' in m) m.clippingPlanes = plane;
-      }
-    });
+    if (this._clippedMats) {
+      // 本体私有材质：直接挂/摘剖面
+      for (const m of this._clippedMats) m.clippingPlanes = plane;
+    } else if (this.sceneRoot) {
+      // 兼容旧场景：无白名单时退回全场景
+      this.sceneRoot.traverse((o) => {
+        const mats = Array.isArray(o.material) ? o.material : (o.material ? [o.material] : []);
+        for (const m of mats) {
+          if ('clippingPlanes' in m) m.clippingPlanes = plane;
+        }
+      });
+    }
     this.onClipChange({ enabled, axis, pos });
     // 剖切面指示器
     const h = this.clipHelper;
@@ -408,13 +456,47 @@ export class LabViewer {
     this.flyTo([camPos.x, camPos.y, camPos.z], [p.x, p.y, p.z], false, {
       dur: 1.05, ease: easeInOutCubic, arc: 0.16, lockAt: p.clone(),
     });
+    // flyTo 内部会 clearPick，自动剖切必须排在其后，否则刚开就被还原
+    this.#maybeAutoClip(p);
     hs.el.classList.add('is-focus'); // flyTo 会清一次，聚焦标记在其后补上
     this.onHotspot({ index: i, ...hs.data }); // 信息卡同步显示聚焦内容
   }
 
+  // 响应式剖切：聚焦被本体包裹的测点时自动开剖切（剖面落在测点稍后方），退出时还原
+  #maybeAutoClip(p) {
+    if (this._stepIdx >= 0) return;           // 流程模式有自己的剖切编排
+    if (this._tour) return;                    // 自动巡游同理
+    const targets = this._clipTargets;
+    if (!targets?.length) return;
+    if (this._clip?.enabled) { this._autoClip = false; return; }
+    const box = new THREE.Box3();
+    for (const t of targets) box.expandByObject(t);
+    if (box.isEmpty() || !box.containsPoint(p)) return;
+    const axis = this.activeScene?.features?.clip || 'z';
+    const range = this.activeScene?.features?.clipRange || [-1, 1];
+    const comp = { x: 0, y: 1, z: 2 }[axis];
+    const pos = THREE.MathUtils.clamp(p.getComponent(comp) + 0.35, range[0], range[1]);
+    this._autoClip = true;
+    this.setClip({ enabled: true, axis, pos });
+  }
+
+  // 还原聚焦时自动打开的剖切
+  #restoreAutoClip() {
+    if (!this._autoClip) return;
+    this._autoClip = false;
+    const mod = this.activeScene;
+    if (mod?.clipDefault) this.setClip({ enabled: true, ...mod.clipDefault });
+    else this.setClip({ enabled: false });
+  }
+
   setLabelsVisible(v) {
     this._labelsOn = v;
-    for (const h of this.hotspotObjs) h.el.style.display = v ? '' : 'none';
+    // CSS2DRenderer 每帧按 object.visible 重写 el.style.display，
+    // 所以必须切 CSS2DObject.visible（真开关），只改行内样式会被下一帧冲掉
+    for (const h of this.hotspotObjs) {
+      h.css.visible = v;
+      h.el.style.display = v ? '' : 'none';
+    }
     for (const sp of this.spriteLabels || []) sp.visible = v;
   }
 
@@ -499,6 +581,7 @@ export class LabViewer {
     this.clearPick();
     const p = new THREE.Vector3(...pos);
     const t = new THREE.Vector3(...target);
+    this.setLock(opts.lockAt ?? null);
     if (instant) {
       this.camera.position.copy(p);
       this.controls.target.copy(t);
@@ -513,6 +596,13 @@ export class LabViewer {
       arc: opts.arc ?? 0,                    // 推轨弧高（米）
       lockAt: opts.lockAt ?? null,           // 到位后播锁定环的位置
     };
+  }
+
+  // 锁定状态：点小数字/设备推近后非空 → UI 显示"返回宏观"按钮
+  setLock(at) {
+    const had = Boolean(this.lockedAt);
+    this.lockedAt = at || null;
+    if (Boolean(this.lockedAt) !== had) this.onLockChange(Boolean(this.lockedAt));
   }
 
   // 到位锁定环：Zoom in 结束时在目标处播一圈扩散环
@@ -643,6 +733,7 @@ export class LabViewer {
     this.pickCard.style.display = 'none';
     this.selOutline.visible = false;
     for (const h of this.hotspotObjs) h.el.classList.remove('is-focus');
+    this.#restoreAutoClip();
   }
 
   /* ---------- 线性巡游：局部 → 局部 → … → 宏观 ---------- */
@@ -729,6 +820,7 @@ export class LabViewer {
 
   exitStepMode() {
     this._stepIdx = -1;
+    this._autoClip = false;
     const mod = this.activeScene;
     if (!mod) return;
     this.setExplode(0);
@@ -770,6 +862,75 @@ export class LabViewer {
     this.selOutline.visible = prevSel;
     (this.spriteLabels || []).forEach((sp, i) => { sp.visible = spriteState[i]; });
     this.hotspotObjs.forEach((x, i) => { x.el.style.display = hotspotState[i]; });
+    this.renderer.render(this.scene, this.camera);
+    return url;
+  }
+
+  // 封面帧：完整模型（强制关剖切）、无任何文字标注
+  // 取景优先用场景默认机位 pos/target（乘 zoom 拉远）；否则按包围盒自动计算
+  captureCover({ scale = 2, azim = 0.55, elev = 0.38, pad = 0.95, zoom = 1.1, pos, target } = {}) {
+    const w = this.container.clientWidth || 1;
+    const h = this.container.clientHeight || 1;
+    const prevRatio = this.renderer.getPixelRatio();
+    const prevLabels = this.labelRenderer.domElement.style.display;
+    const prevHelper = this.clipHelper.visible;
+    const prevSel = this.selOutline.visible;
+    const spriteState = (this.spriteLabels || []).map((sp) => sp.visible);
+    const hotspotState = this.hotspotObjs.map((x) => x.el.style.display);
+    const prevCamPos = this.camera.position.clone();
+    const prevTarget = this.controls?.target.clone();
+
+    // 强制解除全部材质剖切，得到完整模型
+    const savedClip = new Map();
+    this.sceneRoot?.traverse((o) => {
+      const mats = Array.isArray(o.material) ? o.material : (o.material ? [o.material] : []);
+      for (const m of mats) {
+        if ('clippingPlanes' in m) { savedClip.set(m, m.clippingPlanes); m.clippingPlanes = null; }
+      }
+    });
+    this.labelRenderer.domElement.style.display = 'none';
+    this.clipHelper.visible = false;
+    this.selOutline.visible = false;
+    for (const sp of this.spriteLabels || []) sp.visible = false;
+    for (const x of this.hotspotObjs) x.el.style.display = 'none';
+
+    // 自动取景
+    if (pos && target) {
+      const t = new THREE.Vector3(...target);
+      const dir = new THREE.Vector3(...pos).sub(t).normalize();
+      const dist = new THREE.Vector3(...pos).sub(t).length() * zoom;
+      this.camera.position.copy(t).addScaledVector(dir, dist);
+      this.camera.lookAt(t);
+    } else if (this._bbox) {
+      const c = this._bbox.getCenter(new THREE.Vector3());
+      const r = this._bbox.getSize(new THREE.Vector3()).length() / 2;
+      const dir = new THREE.Vector3(
+        Math.cos(elev) * Math.sin(azim),
+        Math.sin(elev),
+        Math.cos(elev) * Math.cos(azim),
+      );
+      const fov = THREE.MathUtils.degToRad(this.camera.fov || 45);
+      const dist = (r / Math.sin(fov / 2)) * pad;
+      this.camera.position.copy(c).addScaledVector(dir, dist);
+      this.camera.lookAt(c);
+    }
+
+    this.renderer.setPixelRatio(scale);
+    this.renderer.setSize(w, h, false);
+    this.renderer.render(this.scene, this.camera);
+    const url = this.renderer.domElement.toDataURL('image/png');
+
+    // 还原
+    this.renderer.setPixelRatio(prevRatio);
+    this.renderer.setSize(w, h, false);
+    for (const [m, p] of savedClip) m.clippingPlanes = p;
+    this.labelRenderer.domElement.style.display = prevLabels;
+    this.clipHelper.visible = prevHelper;
+    this.selOutline.visible = prevSel;
+    (this.spriteLabels || []).forEach((sp, i) => { sp.visible = spriteState[i]; });
+    this.hotspotObjs.forEach((x, i) => { x.el.style.display = hotspotState[i]; });
+    if (prevCamPos) this.camera.position.copy(prevCamPos);
+    if (prevTarget && this.controls) { this.controls.target.copy(prevTarget); this.controls.update(); }
     this.renderer.render(this.scene, this.camera);
     return url;
   }

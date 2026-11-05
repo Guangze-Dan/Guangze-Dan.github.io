@@ -217,7 +217,8 @@ export default {
     const lerp = THREE.MathUtils.lerp;
     const tempColor = new THREE.Color();
     return {
-      root,
+      clipTargets: [model, jacket],
+  root,
       hotspots,
       readout: (t, stage) => {
         // 温度示意（相对）

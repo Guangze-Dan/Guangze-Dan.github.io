@@ -248,7 +248,8 @@ export default {
 
     let flashT = 0;
     return {
-      root,
+      clipTargets: [rock],
+  root,
       hotspots,
       readout: (t, stage) => ({ pressure: `${(0.4 + 0.4 * (0.5 + 0.5 * Math.sin(t * Math.PI * 8))).toFixed(2)} MPa · 第 ${Math.round(t * 48)} 循`, note: stage?.label || '' }),
       update(t, dt) {

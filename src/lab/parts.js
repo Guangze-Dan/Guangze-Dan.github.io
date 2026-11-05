@@ -3,6 +3,23 @@
 // 爆炸方向写进 userData.explodeDir / userData.explodeDist（米）。
 import * as THREE from 'three';
 import { textTexture, gaugeFaceTexture } from './materials.js';
+import { getLang } from '../lang.js';
+import { LAB_EN, enLines } from './scene-en.js';
+
+// 英文模式：拾取卡标题与行文本经 LAB_EN 词典整体替换
+function enPick(pick) {
+  if (getLang() !== 'en' || !pick) return pick;
+  const t = LAB_EN[pick.title];
+  return { ...pick, title: t?.title || pick.title, lines: enLines(pick.lines) };
+}
+// 标签行：单行先查词典（对象值回退到 .title），再走 enLines 丢弃 '@' 行
+function enLabel(lines) {
+  if (getLang() !== 'en') return lines;
+  return enLines(lines.map((l) => {
+    const v = LAB_EN[l];
+    return typeof v === 'string' ? v : (v?.title || l);
+  }));
+}
 
 const G = {}; // 共享几何体缓存
 function geo(key, make) {
@@ -216,7 +233,7 @@ export function flowMeter(mats) {
   g.add(mesh(new THREE.PlaneGeometry(0.05, 0.025), new THREE.MeshBasicMaterial({ map: tag }), { p: [0, 0.05, 0.0452], r: [0, 0, 0.06], cast: false }));
   g.add(mesh(new THREE.CylinderGeometry(0.014, 0.014, 0.03, 12), mats.steelMachined, { p: [0, -0.015, 0] }));
   g.userData.hotspot = { title: '高压液体流量计', lines: ['齿轮式，微流量分辨率', '补水体积与重量互校'] };
-  g.userData.pick = { title: '高压液体流量计', lines: ['齿轮式，微流量分辨率'] };
+  g.userData.pick = enPick({ title: '高压液体流量计', lines: ['齿轮式，微流量分辨率'] });
   return g;
 }
 
@@ -240,7 +257,7 @@ export function waterController(mats) {
     g.add(mesh(geo('led3', () => new THREE.SphereGeometry(0.004, 8, 8)), mats[k], { p: [x, -0.043, 0.015], cast: false }));
   });
   g.userData.hotspot = { title: '水浸信号采集控制器', lines: ['18 点分区接入', '最先触发给出高度带与象限'] };
-  g.userData.pick = { title: '水浸信号采集控制器', lines: ['18 点分区接入'] };
+  g.userData.pick = enPick({ title: '水浸信号采集控制器', lines: ['18 点分区接入'] });
   return g;
 }
 
@@ -259,7 +276,7 @@ export function lunaHost(mats) {
     g.add(mesh(new THREE.CylinderGeometry(0.009, 0.009, 0.012, 12), mats.steelMachined, { p: [x, -0.03, 0.146], r: [Math.PI / 2, 0, 0], cast: false }));
   }
   g.userData.hotspot = { title: '光纤解调仪', lines: ['BOTDA / FBG 解调', '4 线 39 栅点连续应变梯度'] };
-  g.userData.pick = { title: '光纤解调仪', lines: ['LUNA ODiSI 级解调主机'] };
+  g.userData.pick = enPick({ title: '光纤解调仪', lines: ['LUNA ODiSI 级解调主机'] });
   return g;
 }
 
@@ -293,7 +310,7 @@ export function daqCase(mats, { w = 0.36, label = 'DC-2042' } = {}) {
   g.add(mesh(new THREE.PlaneGeometry(w * 0.9, 0.1), new THREE.MeshBasicMaterial({ map: panel }), { p: [0, 0, 0.157], cast: false }));
   for (let i = 0; i < 4; i++) g.add(mesh(geo('bnc', () => new THREE.CylinderGeometry(0.008, 0.008, 0.014, 12)), mats.steelMachined, { p: [-w / 2 + 0.05 + i * 0.055, -0.03, 0.16], r: [Math.PI / 2, 0, 0], cast: false }));
   g.userData.hotspot = { title: '静态应变采集箱', lines: ['72 通道（66 正式 + 6 备用）', '全场统一时基'] };
-  g.userData.pick = { title: '数据采集机箱', lines: ['通道数与标签随场景配置'] };
+  g.userData.pick = enPick({ title: '数据采集机箱', lines: ['通道数与标签随场景配置'] });
   return g;
 }
 
@@ -395,7 +412,7 @@ export function controlCabinet(mats, { label = '加载控制' } = {}) {
     g.add(mesh(geo('cabFoot', () => new THREE.CylinderGeometry(0.016, 0.02, 0.03, 10)), mats.plasticBlack, { p: [fx, 0.015, fz], cast: false }));
   }
   g.userData.hotspot = { title: '内压加载控制柜', lines: ['分级加压与循环程序控制', '压力路径 / 速率 / 循环次数'] };
-  g.userData.pick = { title: '内压加载控制柜', lines: ['分级加压与循环程序控制', '数显实时跟随管路压力'] };
+  g.userData.pick = enPick({ title: '内压加载控制柜', lines: ['分级加压与循环程序控制', '数显实时跟随管路压力'] });
   return g;
 }
 
@@ -406,7 +423,7 @@ export function hydraulicJack(mats, { stroke = 0.25, r = 0.055 } = {}) {
   g.add(mesh(new THREE.CylinderGeometry(r * 0.5, r * 0.5, stroke, 16), mats.chrome, { p: [0, 0.16 + stroke / 2, 0] }));
   g.add(mesh(new THREE.CylinderGeometry(r * 0.8, r * 0.8, 0.02, 18), mats.steelMachined, { p: [0, 0.16 + stroke, 0] }));
   g.add(cable([[r * 0.6, 0.04, 0], [r * 1.6, 0.02, 0.06], [r * 2.2, 0.0, 0.12]], 0.005, mats.hoseBlack));
-  g.userData.pick = { title: '伺服作动器', lines: ['程序加载执行单元'] };
+  g.userData.pick = enPick({ title: '伺服作动器', lines: ['程序加载执行单元'] });
   return g;
 }
 
@@ -432,7 +449,7 @@ export function pumpUnit(mats) {
   }
   g.add(fan);
   g.userData.spin = fan;
-  g.userData.pick = { title: '泵组', lines: ['电机 + 泵头 + 出口压力表', '运转中：风扇与数显联动'] };
+  g.userData.pick = enPick({ title: '泵组', lines: ['电机 + 泵头 + 出口压力表', '运转中：风扇与数显联动'] });
   return g;
 }
 
@@ -442,7 +459,7 @@ export function accumulator(mats) {
   g.add(mesh(new THREE.CapsuleGeometry(0.055, 0.22, 6, 18), mats.paintYellow, { p: [0, 0.19, 0] }));
   g.add(mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.05, 12), mats.brass, { p: [0, 0.36, 0] }));
   g.add(mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.04, 12), mats.brass, { p: [0, 0.015, 0] }));
-  g.userData.pick = { title: '蓄能器', lines: ['稳压与快速能量补偿'] };
+  g.userData.pick = enPick({ title: '蓄能器', lines: ['稳压与快速能量补偿'] });
   return g;
 }
 
@@ -501,7 +518,7 @@ export function platformScale(mats) {
   const disp = textTexture(['12.48 kg'], { w: 256, h: 96, bg: '#0c1a10', color: '#54d23a', font: '700 40px monospace' });
   g.add(mesh(new THREE.PlaneGeometry(0.11, 0.04), new THREE.MeshBasicMaterial({ map: disp }), { p: [0.19, 0.83, -0.174], cast: false }));
   g.userData.hotspot = { title: '称重式补水', lines: ['微量渗漏体积法不准，重量法分辨率高', '每次补压称重，交叉验证分区'] };
-  g.userData.pick = { title: '称重式补水台', lines: ['电子秤 + 立杆数显'] };
+  g.userData.pick = enPick({ title: '称重式补水台', lines: ['电子秤 + 立杆数显'] });
   return g;
 }
 
@@ -510,7 +527,7 @@ export function waterTank(mats, { r = 0.14, h = 0.34 } = {}) {
   g.add(mesh(new THREE.CylinderGeometry(r, r, h, 22), mats.plasticWhite, { p: [0, h / 2, 0] }));
   g.add(mesh(new THREE.CylinderGeometry(r * 0.35, r * 0.35, 0.03, 14), mats.plasticBlack, { p: [0, h + 0.015, 0] }));
   g.add(mesh(new THREE.CylinderGeometry(0.01, 0.01, 0.05, 10), mats.brass, { p: [r * 0.7, h * 0.2, 0], r: [0, 0, Math.PI / 2] }));
-  g.userData.pick = { title: '水箱', lines: ['补给水源'] };
+  g.userData.pick = enPick({ title: '水箱', lines: ['补给水源'] });
   return g;
 }
 
@@ -529,7 +546,7 @@ export function cctvCamera(mats) {
     g.add(leg);
   }
   g.userData.hotspot = { title: '同步视频', lines: ['异常时刻画面', '与拆检结果对照'] };
-  g.userData.pick = { title: '同步摄像机', lines: ['全景与重点双机位'] };
+  g.userData.pick = enPick({ title: '同步摄像机', lines: ['全景与重点双机位'] });
   return g;
 }
 
@@ -554,7 +571,7 @@ export function boltCircle(parent, mats, { radius, count, r = 0.024, len = 0.07,
 }
 
 export function labelSprite(text, { size = 0.09, color = '#e8e7e2', bg = 'rgba(12,13,15,0.82)', tick = '#d9ff58' } = {}) {
-  const lines = Array.isArray(text) ? text : [text];
+  const lines = enLabel(Array.isArray(text) ? text : [text]);
   const w = 512, h = 96 + (lines.length - 1) * 44;
   const c = document.createElement('canvas'); c.width = w; c.height = h;
   const g = c.getContext('2d');
@@ -636,7 +653,7 @@ export function powerStrip(mats, { w = 0.32 } = {}) {
 
 // 给部件挂信息卡数据（引擎悬停/点击时经射线拾取显示）
 export function pickable(obj, title, lines = []) {
-  obj.userData.pick = { title, lines };
+  obj.userData.pick = enPick({ title, lines });
   return obj;
 }
 

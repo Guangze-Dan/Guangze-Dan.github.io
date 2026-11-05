@@ -466,7 +466,8 @@ export default {
     for (const o of [tBox, lvdt2, ...tcTop, ...aeSensors.slice(0, 6)]) cover.attach(o);
 
     return {
-      root,
+      clipTargets: [box, rock, cavern, crackBands],
+  root,
       hotspots,
       readout: (t, stage) => ({ pressure: `${pressureAt(t).toFixed(2)} MPa`, note: stage?.label || '' }),
       update(t, dt) {

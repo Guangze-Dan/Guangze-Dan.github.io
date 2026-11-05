@@ -79,6 +79,15 @@ body:has(.lab-page) .rb-cursor, body:has(.lab-page) .rb-trail { display: none !i
   overflow: hidden;
   background: #0a0b0d;
 }
+/* 全屏：铺满屏幕，去掉圆角与暗角边框 */
+.lab-viewport:fullscreen {
+  height: 100vh;
+  width: 100vw;
+  border: none;
+  border-radius: 0;
+}
+.lab-viewport:fullscreen canvas { width: 100% !important; height: 100% !important; }
+.lab-viewport:fullscreen::after { border-radius: 0; }
 .lab-viewport canvas { display: block; }
 /* 视口暗角：轻微聚拢视线 */
 .lab-viewport::after {
@@ -207,15 +216,12 @@ body:has(.lab-page) .rb-cursor, body:has(.lab-page) .rb-trail { display: none !i
 .lab-hud-controls {
   position: absolute; top: 14px; right: 14px; z-index: 7;
   display: flex; align-items: center; gap: 8px;
-  /* 单行 + 横向滚动：给左上读数留出空间，永不换行压字 */
-  flex-wrap: nowrap;
+  /* 放不下时换行右对齐，绝不裁字；宽度避让左侧读数（JS 实测写入 --readout-reserve） */
+  flex-wrap: wrap;
   justify-content: flex-end;
-  max-width: calc(100% - 260px);
-  overflow-x: auto;
-  scrollbar-width: none;
+  max-width: calc(100% - var(--readout-reserve, 320px));
   padding-bottom: 2px;
 }
-.lab-hud-controls::-webkit-scrollbar { display: none; }
 .lab-hud-controls .lab-ctl { flex: none; }
 .lab-ctl {
   padding: 7px 12px;
@@ -594,7 +600,7 @@ body:has(.lab-page) .rb-cursor, body:has(.lab-page) .rb-trail { display: none !i
   /* 控制条单行横向滚动，避免换行压住读数 */
   .lab-hud-controls {
     top: 10px; right: 10px; left: auto;
-    max-width: calc(100% - 150px);
+    max-width: calc(100% - var(--readout-reserve, 150px));
     flex-wrap: nowrap;
     overflow-x: auto;
     padding-bottom: 2px;
@@ -615,15 +621,15 @@ body:has(.lab-page) .rb-cursor, body:has(.lab-page) .rb-trail { display: none !i
   .lab-hero { padding-top: 100px; }
 }
 @media (max-width: 640px) {
-  /* 控制条：单行横向滚动，不换行、不压读数 */
+  /* 手机：读数限宽左上换行，控制条右上 40% 换行堆叠，左右分域互不遮挡 */
+  .lab-hud-readout { max-width: 52%; }
   .lab-hud-controls {
     top: 8px; right: 8px; left: auto;
-    max-width: calc(100% - 118px);
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    padding-bottom: 3px;
-    scrollbar-width: none;
-    justify-content: flex-start;
+    max-width: 40%;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    row-gap: 6px;
+    padding-bottom: 0;
   }
   .lab-hud-controls::-webkit-scrollbar { display: none; }
   .lab-hud-controls .lab-ctl { padding: 6px 9px; font-size: 10.5px; white-space: nowrap; }
@@ -675,3 +681,38 @@ body:has(.lab-page) .rb-cursor, body:has(.lab-page) .rb-trail { display: none !i
   .lab-tour-caption { bottom: 104px; left: 8px; padding: 6px 10px; }
   .lab-tour-caption b { font-size: 11px; }
 }
+
+/* ---------- 文本溢出防护：任何文案都不许撑破 UI 框 ---------- */
+.lab-hs-tip { max-width: 250px; }
+.lab-hs-tip span, .lab-hs-tip i.lab-hs-en {
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+.lab-pick-card { max-width: 264px; }
+.lab-pick-card span { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.lab-hotspot-card { max-width: 320px; }
+.lab-hotspot-card span { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+.lab-hud-stage { max-width: min(46vw, 420px); }
+.lab-hud-stage small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lab-stepbar-info b, .lab-stepbar-info span, .lab-stepbar-info small {
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.lab-tree-node { min-width: 0; overflow: hidden; }
+.lab-tree-node b, .lab-tree-node span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lab-tree-node small { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.lab-facts > div { min-width: 0; }
+.lab-facts dd { overflow-wrap: anywhere; }
+
+/* 返回宏观按钮：推近聚焦后出现在视口底部中央 */
+.lab-back {
+  position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%);
+  z-index: 9;
+  padding: 9px 16px;
+  border: 1px solid #2a2c31; border-radius: 999px;
+  background: rgba(12, 13, 15, 0.85); backdrop-filter: blur(8px);
+  color: #f2f1ec; font: 600 12px 'Space Grotesk', Arial, sans-serif; letter-spacing: .03em;
+  cursor: pointer; white-space: nowrap;
+  transition: border-color .2s, color .2s, transform .2s;
+  animation: lab-back-in .35s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes lab-back-in { from { opacity: 0; transform: translateX(-50%) translateY(10px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+.lab-back:hover { border-color: #d9ff58; color: #d9ff58; transform: translateX(-50%) translateY(-2px); }

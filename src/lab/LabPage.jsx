@@ -13,6 +13,15 @@ import './lab.css';
 
 const SCENES = [multiscale, sealing, hongan, mine, soiltank];
 
+// 封面机位：方位角/仰角（captureCover 按包围盒自动取距）
+const COVER_VIEWS = {
+  multiscale: { azim: 0.62, elev: 0.40 },
+  sealing: { azim: -0.66, elev: 0.30 },
+  hongan: { azim: 0.48, elev: 0.36 },
+  mine: { azim: 0.72, elev: 0.28 },
+  soiltank: { azim: 0.44, elev: 0.52 },
+};
+
 const RELATED = [
   { slug: 'caes-multiscale-cavern', label: '多尺度洞室试验' },
   { slug: 'abandoned-mine-caes', label: '废弃矿硐储库' },
@@ -54,6 +63,46 @@ export default function LabPage() {
   const [stepMode, setStepMode] = useState(false);
   const [stepIdx, setStepIdx] = useState(0);
   const [stepInfo, setStepInfo] = useState(null);
+  const [fs, setFs] = useState(false);
+  const [zoomed, setZoomed] = useState(false);
+  // 控制条动态避让：实测左上读数宽度写入 --readout-reserve（场景/语言/字号变化都会触发）
+  useEffect(() => {
+    if (!ready) return undefined;
+    const vp = containerRef.current;
+    const ro = vp?.querySelector('.lab-hud-readout');
+    if (!vp || !ro || typeof ResizeObserver === 'undefined') return undefined;
+    const apply = () => {
+      const w = ro.getBoundingClientRect().width;
+      const vw = vp.clientWidth || window.innerWidth;
+      const reserve = Math.min(Math.max(w + 44, 180), Math.max(vw - 170, 180));
+      vp.style.setProperty('--readout-reserve', `${Math.round(reserve)}px`);
+    };
+    apply();
+    const obs = new ResizeObserver(apply);
+    obs.observe(ro);
+    window.addEventListener('resize', apply);
+    return () => { obs.disconnect(); window.removeEventListener('resize', apply); };
+  }, [ready, sceneIdx]);
+  const backToOverview = () => {
+    const viewer = engineRef.current;
+    if (!viewer) return;
+    viewer.clearPick();
+    setHotspot(null);
+    viewer.flyTo(SCENES[sceneIdxRef.current].view.pos, SCENES[sceneIdxRef.current].view.target);
+  };
+  const coverMode = useMemo(() => new URLSearchParams(window.location.search).get('cover') === '1', []);
+  const [coverDone, setCoverDone] = useState(0);
+  useEffect(() => {
+    const h = () => setFs(Boolean(document.fullscreenElement));
+    document.addEventListener('fullscreenchange', h);
+    return () => document.removeEventListener('fullscreenchange', h);
+  }, []);
+  const toggleFullscreen = () => {
+    const el = containerRef.current;
+    if (!el) return;
+    if (document.fullscreenElement) document.exitFullscreen?.();
+    else el.requestFullscreen?.();
+  };
 
   const [lang, setLangState] = useState(getLang());
   useEffect(() => subscribeLang(setLangState), []);
@@ -61,11 +110,11 @@ export default function LabPage() {
   const T = (zh, en) => (lang === 'en' ? en : zh);
 
   useEffect(() => {
-    document.title = `三维试验室 / 3D TESTBED · 但光泽作品集`;
+    document.title = T('三维试验室 / 3D TESTBED · 但光泽作品集', '3D Testbed · Guangze Dan — Portfolio');
     // 3D 视口需要原生光标（grab / pointer 反馈）：进入试验室时停用站点自定义光标
     document.documentElement.classList.remove('rb-cursor-on');
     return () => document.documentElement.classList.add('rb-cursor-on');
-  }, []);
+  }, [lang]);
 
   // 引擎只建一次（WebGL 不可用时给出兜底提示）
   useEffect(() => {
@@ -80,7 +129,13 @@ export default function LabPage() {
         },
         onStage: (st) => setStage(st),
         onTourEnd: () => setTour(false),
-        onClipChange: ({ enabled }) => setClipOn(enabled),
+        onClipChange: ({ enabled, axis, pos }) => {
+          setClipOn(enabled);
+          // 自动剖切/流程模式改了剖面位置时，滑条跟着走
+          if (axis) setClipAxis(axis);
+          if (typeof pos === 'number') setClipPos(pos);
+        },
+        onLockChange: (on) => setZoomed(on),
         onStepEnter: (i, st) => setStepInfo({ index: i, ...st }),
         onPlayChange: (p) => setPlaying(p),
         onTourStep: (info) => setTourStep(info),
@@ -118,6 +173,47 @@ export default function LabPage() {
     setClipPos(def ? def.pos : range[1]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sceneIdx, ready]);
+
+  // 封面批量导出模式：/lab?cover=1 → 逐场景下载完整无标注封面 PNG
+  useEffect(() => {
+    if (!ready || !coverMode) return;
+    const viewer = engineRef.current;
+    if (!viewer) return;
+    const timer = window.setTimeout(() => {
+      const v = COVER_VIEWS[scene.id] || {};
+      viewer.setClip({ enabled: false });
+      viewer.setLabelsVisible(false);
+      const url = viewer.captureCover({
+        scale: 2,
+        azim: v.azim ?? 0.55,
+        elev: v.elev ?? 0.38,
+        pos: scene.view?.pos,
+        target: scene.view?.target,
+      });
+      const name = `lab-${sceneIdx + 1}-${scene.id}-cover.png`;
+      // 直传仅限本地封面流水线（dev 接收服务），线上直接走下载，避免无效请求报错
+      if (['localhost', '127.0.0.1'].includes(window.location.hostname)) {
+        fetch('http://localhost:19527/cover', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ name, data: url }),
+        }).catch(() => null);
+      } else {
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = name;
+        a.click();
+      }
+      setCoverDone(sceneIdx + 1);
+      if (sceneIdx + 1 < SCENES.length) {
+        window.setTimeout(() => {
+          window.location.replace(`/lab?cover=1&scene=${sceneIdx + 1}`);
+        }, 1200);
+      }
+    }, 1600);
+    return () => window.clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready, sceneIdx, coverMode]);
 
   const togglePlay = useCallback(() => {
     const viewer = engineRef.current;
@@ -175,10 +271,12 @@ export default function LabPage() {
   useEffect(() => { sceneIdxRef.current = sceneIdx; }, [sceneIdx]);
   useEffect(() => { stepIdxRef.current = stepIdx; }, [stepIdx]);
 
-  // 深链：/lab?scene=N
+  // 深链：/lab?scene=N（保留其他查询参数，如 cover=1）
   useEffect(() => {
-    const url = `${window.location.pathname}${sceneIdx ? `?scene=${sceneIdx}` : ''}`;
-    window.history.replaceState(null, '', url);
+    const q = new URLSearchParams(window.location.search);
+    if (sceneIdx) q.set('scene', String(sceneIdx)); else q.delete('scene');
+    const qs = q.toString();
+    window.history.replaceState(null, '', `${window.location.pathname}${qs ? `?${qs}` : ''}`);
   }, [sceneIdx]);
 
   const onScrub = (e) => {
@@ -367,6 +465,14 @@ export default function LabPage() {
 
         <section className="lab-main">
           <div className="lab-viewport" ref={containerRef}>
+            {zoomed && !stepMode && !coverMode && (
+              <button type="button" className="lab-back" onClick={backToOverview}>← {T('返回宏观', 'Back to overview')}</button>
+            )}
+            {coverMode && (
+              <div className="lab-cover-badge" style={{ position: 'absolute', left: 14, bottom: 14, zIndex: 30, color: '#d9ff58', font: '600 13px "DM Mono", monospace', letterSpacing: '.08em' }}>
+                COVER {coverDone}/{SCENES.length} · {scene.id}
+              </div>
+            )}
             <div className={`lab-shot-flash ${shotFlash ? 'is-on' : ''}`} aria-hidden="true" />
             <div className="lab-hud-readout">
               <strong>{readout?.pressure || '—'}</strong>
@@ -391,17 +497,17 @@ export default function LabPage() {
                   <span className="lab-clip-val">{clipAxis} = {clipPos.toFixed(2)} m</span>
                 </>
               )}
-              <span className="lab-ctl-sep" data-g="视图" />
+              <span className="lab-ctl-sep" data-g={T('视图', 'View')} />
               <label className="lab-ctl-lab">{T('爆炸', 'Explode')}<input type="range" aria-label="爆炸视图" min={0} max={100} value={explode * 100}
                 onChange={(e) => { const v = Number(e.target.value) / 100; setExplode(v); engineRef.current?.setExplode(v); }} /></label>
               <button type="button" className={`lab-ctl ${labelsOn ? 'is-on' : ''}`} title={T('显示/隐藏测点编号', 'Show or hide gauge numbers')} aria-label={T('标注显示', 'Annotations')} onClick={() => { const v = !labelsOn; setLabelsOn(v); engineRef.current?.setLabelsVisible(v); }}>{T('标注', 'Labels')}</button>
               <button type="button" className={`lab-ctl ${lineView ? 'is-on' : ''}`} title={T('线路视图：结构褪为剪影，只留线缆与管路', 'Line view: structure fades, cabling and piping glow')}
                 aria-label={T('线路视图', 'Line view')} onClick={() => { const v = !lineView; setLineView(v); engineRef.current?.setLineView(v); }}>{T('线路', 'Lines')}</button>
-              <span className="lab-ctl-sep" data-g="模式" />
+              <span className="lab-ctl-sep" data-g={T('模式', 'Mode')} />
               <button type="button" className="lab-ctl" title={T('因果链流程树：Zoom in 后从左往右生长', 'Cause chain: zoom in, then grows left to right')} aria-label={T('原理流程树', 'Principle tree')} onClick={openTree}>{T('原理', 'Principle')}</button>
               <button type="button" className={`lab-ctl ${stepMode ? 'is-on' : ''}`} title={T('按试验步骤逐段讲解', 'Walk through the test step by step')} aria-label={T('流程模式', 'Step mode')} onClick={toggleStepMode}>{T('流程', 'Steps')}</button>
               <button type="button" className={`lab-ctl ${tour ? 'is-on' : ''}`} title={T('线性巡游：局部 → 局部 → 宏观全景', 'Linear tour: part → part → whole rig')} aria-label={T('巡游', 'Tour')} onClick={toggleTour}>{T('巡游', 'Tour')}</button>
-              <span className="lab-ctl-sep" data-g="工具" />
+              <span className="lab-ctl-sep" data-g={T('工具', 'Tools')} />
               <button type="button" className="lab-ctl" title={T('纯净截图：隐藏全部标注，导出 2x PNG（适合做封面）', 'Clean capture: no annotations, 2x PNG for covers')} aria-label={T('纯净截图', 'Clean capture')} onClick={() => {
                 const viewer = engineRef.current;
                 if (!viewer) return;
@@ -412,6 +518,7 @@ export default function LabPage() {
                 setShotFlash(true);
                 window.setTimeout(() => setShotFlash(false), 500);
               }}>{T('截图', 'Capture')}</button>
+              <button type="button" className={`lab-ctl ${fs ? 'is-on' : ''}`} title={fs ? T('退出全屏（Esc 也可以）', 'Exit fullscreen (Esc works too)') : T('全屏查看试验台', 'View the testbed fullscreen')} aria-label={fs ? T('退出全屏', 'Exit fullscreen') : T('全屏', 'Fullscreen')} onClick={toggleFullscreen}>{fs ? T('退出全屏', 'Exit') : T('全屏', 'Fullscreen')}</button>
               <button type="button" className="lab-ctl" title={T('回到默认机位', 'Back to the default camera')} onClick={() => engineRef.current?.flyTo(scene.view.pos, scene.view.target)}>{T('复位', 'Reset')}</button>
             </div>
             <div className="lab-hud-timeline">

@@ -277,7 +277,8 @@ export default {
     const dipAt = (x, z, A, s) => A * Math.exp(-(x * x + z * z) / (2 * s * s));
 
     return {
-      root,
+      clipTargets: [tank, pipe],
+  root,
       hotspots,
       readout: (t, stage) => {
         const day = Math.round(t * 40);

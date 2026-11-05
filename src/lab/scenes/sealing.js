@@ -468,7 +468,8 @@ export default {
     };
 
     return {
-      root,
+      clipTargets: [shell, bagAsm, supportG, top],
+  root,
       hotspots,
       setOption(id, val) {
         if (id === 'round1') {
