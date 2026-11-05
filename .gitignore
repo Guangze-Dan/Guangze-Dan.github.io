@@ -30,3 +30,6 @@ dist-ssr
 
 # Tool artifacts
 .zcodeignore
+
+# Local viewer artifacts
+.view/
