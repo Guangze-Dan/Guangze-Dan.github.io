@@ -52,9 +52,9 @@ const mediaBySlug = {
 
 /* 博士期间科研项目：压缩空气储能地下储气库方向 */
 projects.push(
-  { slug: 'caes-multiscale-cavern', n: '17', title: 'Multi-scale Cavern Cyclic Pressure Test', titleCn: '多尺度洞室循环内压物理模型试验', type: '科研工程 / 物理模型试验', text: '主持"UPVC 主洞室—多尺度柔性小洞室—非连续预制裂缝围岩"组合试验体系，复现压气储能地下储气库洞室群受力环境。', tone: 'project-dark', mark: 'CAES', year: '2026', role: '项目总负责人 / 试验设计', mediaType: 'image', media: '/projects/covers/lab-1-multiscale.png', intro: '依托国家自然科学基金区域创新发展联合基金开展延伸试验，以多尺度洞室群与非连续裂缝围岩为对象，研究循环内压下的围岩响应与损伤演化。', detail: '作为项目总负责人，主持构建"UPVC 主洞室—多尺度柔性小洞室—非连续预制裂缝围岩"组合试验体系，通过大型物理模型试验复现压气储能地下储气库洞室群实际受力环境。精准控制分级加压与循环充放压参数（压力路径、加载速率、循环次数），同步监测洞室群围岩应力应变传递与裂缝区段损伤演化，揭示多尺度洞室与裂缝构型对围岩响应的作用规律，为储气库洞室群稳定性评价与运行参数优化提供技术支持。' },
-  { slug: 'abandoned-mine-caes', n: '18', title: 'Abandoned Mine CAES Storage', titleCn: '废弃矿硐储库稳定与气密性研究', type: '科研工程 / 可靠性评价', text: '国家自然科学基金项目：搭建储气库围岩劣化大型模型试验平台，研究交变荷载下的劣化、疲劳与气密性能。', tone: 'project-blue', mark: 'NSFC', year: '2025', role: '技术骨干', mediaType: 'image', media: '/projects/covers/lab-4-mine.png', intro: '废弃矿硐压缩空气储库稳定与气密性能研究与可靠性评价——国家自然科学基金区域创新发展联合基金项目。', detail: '本项目属于国家自然科学基金区域创新发展联合基金。作为技术骨干参与搭建储气库围岩劣化的大型模型试验平台，通过大型物理模型试验复现压气储能地下衬砌储气库实际受力环境，精准控制交变荷载参数（幅值、频率、循环次数）与加载速率，同步监测围岩力学响应与损伤演化，探究围岩在交变荷载作用下的劣化、疲劳和损伤以及裂缝分布情况，为储气库实际运行与可靠性评价提供技术支持。' },
-  { slug: 'hp-flexible-sealing', n: '19', title: 'High-Pressure Flexible Sealing Test', titleCn: '高内压柔性密封防渗试验', type: '科研工程 / 试验方案与平台设计', text: '面向成勘院储气库密封需求，编制 20 MPa 高内压柔性密封材料防渗试验方案并设计试验平台。', tone: 'project-acid', mark: '20MPa', year: '2026', role: '试验方案编制 / 平台结构设计', mediaType: 'image', media: '/projects/covers/lab-2-sealing.png', intro: '储气库高内压柔性密封体系防渗性能试验研究——中国电建集团成都勘测设计研究院有限公司委托项目。', detail: '面向中国电建集团成都勘测设计研究院有限公司（成勘院）储气库密封需求，编制 20 MPa 高内压柔性密封材料防渗性能试验方案。设计"柔性密封水囊—聚氨酯填充—钢制反力筒"试验平台，完成 500 mm 内径反力筒结构计算与承压边界校核（22 MPa 设计压力，24 根 M48 高强度螺柱）。制定分级加压（0.5–20 MPa）、恒压保压与循环加载程序，集成压力—湿度—应变多通道监测与超压联锁保护，比较增强丁基橡胶、EPDM 与 TPU 复合织物三种候选材料的抗渗性能并建立失效判据。' }
+  { slug: 'caes-multiscale-cavern', n: '17', title: 'Multi-scale Cavern Cyclic Pressure Test', titleCn: '多尺度洞室循环内压物理模型试验', type: '科研工程 / 物理模型试验', text: '主持"UPVC 主洞室—多尺度柔性小洞室—非连续预制裂缝围岩"组合试验体系，复现压气储能地下储气库洞室群受力环境。', tone: 'project-dark', mark: 'CAES', year: '2026', role: '项目总负责人 / 试验设计', mediaType: 'image', media: '/projects/covers/lab-1-multiscale.webp', intro: '依托国家自然科学基金区域创新发展联合基金开展延伸试验，以多尺度洞室群与非连续裂缝围岩为对象，研究循环内压下的围岩响应与损伤演化。', detail: '作为项目总负责人，主持构建"UPVC 主洞室—多尺度柔性小洞室—非连续预制裂缝围岩"组合试验体系，通过大型物理模型试验复现压气储能地下储气库洞室群实际受力环境。精准控制分级加压与循环充放压参数（压力路径、加载速率、循环次数），同步监测洞室群围岩应力应变传递与裂缝区段损伤演化，揭示多尺度洞室与裂缝构型对围岩响应的作用规律，为储气库洞室群稳定性评价与运行参数优化提供技术支持。' },
+  { slug: 'abandoned-mine-caes', n: '18', title: 'Abandoned Mine CAES Storage', titleCn: '废弃矿硐储库稳定与气密性研究', type: '科研工程 / 可靠性评价', text: '国家自然科学基金项目：搭建储气库围岩劣化大型模型试验平台，研究交变荷载下的劣化、疲劳与气密性能。', tone: 'project-blue', mark: 'NSFC', year: '2025', role: '技术骨干', mediaType: 'image', media: '/projects/covers/lab-4-mine.webp', intro: '废弃矿硐压缩空气储库稳定与气密性能研究与可靠性评价——国家自然科学基金区域创新发展联合基金项目。', detail: '本项目属于国家自然科学基金区域创新发展联合基金。作为技术骨干参与搭建储气库围岩劣化的大型模型试验平台，通过大型物理模型试验复现压气储能地下衬砌储气库实际受力环境，精准控制交变荷载参数（幅值、频率、循环次数）与加载速率，同步监测围岩力学响应与损伤演化，探究围岩在交变荷载作用下的劣化、疲劳和损伤以及裂缝分布情况，为储气库实际运行与可靠性评价提供技术支持。' },
+  { slug: 'hp-flexible-sealing', n: '19', title: 'High-Pressure Flexible Sealing Test', titleCn: '高内压柔性密封防渗试验', type: '科研工程 / 试验方案与平台设计', text: '面向成勘院储气库密封需求，编制 20 MPa 高内压柔性密封材料防渗试验方案并设计试验平台。', tone: 'project-acid', mark: '20MPa', year: '2026', role: '试验方案编制 / 平台结构设计', mediaType: 'image', media: '/projects/covers/lab-2-sealing.webp', intro: '储气库高内压柔性密封体系防渗性能试验研究——中国电建集团成都勘测设计研究院有限公司委托项目。', detail: '面向中国电建集团成都勘测设计研究院有限公司（成勘院）储气库密封需求，编制 20 MPa 高内压柔性密封材料防渗性能试验方案。设计"柔性密封水囊—聚氨酯填充—钢制反力筒"试验平台，完成 500 mm 内径反力筒结构计算与承压边界校核（22 MPa 设计压力，24 根 M48 高强度螺柱）。制定分级加压（0.5–20 MPa）、恒压保压与循环加载程序，集成压力—湿度—应变多通道监测与超压联锁保护，比较增强丁基橡胶、EPDM 与 TPU 复合织物三种候选材料的抗渗性能并建立失效判据。' }
 );
 
 projects.forEach((project) => Object.assign(project, mediaBySlug[project.slug] || {}));
@@ -134,7 +134,7 @@ const coverBySlug = {
   'animating-the-invisible': '/projects/covers/p1-invisible.jpg', wish: '/projects/covers/p2-wish.jpg', project: '/projects/covers/p3-road.jpg',
   'sanhe-drifters': '/projects/covers/p4-sanhe.jpg', 'guangze-project-demo': '/projects/covers/p5-bim.jpg', 'solar-hater': '/projects/covers/p6-solar.jpg',
   'student-roamer': '/projects/covers/p7-student.jpg', 'railway-museum-storytelling': '/projects/covers/p8-railway.svg', 'yun-house': '/projects/covers/p9-yun-house.jpg', 'the-most-of-us': '/projects/covers/p10-the-most-of-us.jpg', 'ds-final': '/projects/covers/p11-hi.jpg',
-  'caes-multiscale-cavern': '/projects/covers/lab-1-multiscale.png', 'abandoned-mine-caes': '/projects/covers/lab-4-mine.png', 'hp-flexible-sealing': '/projects/covers/lab-2-sealing.png'
+  'caes-multiscale-cavern': '/projects/covers/lab-1-multiscale.webp', 'abandoned-mine-caes': '/projects/covers/lab-4-mine.webp', 'hp-flexible-sealing': '/projects/covers/lab-2-sealing.webp'
 };
 const categoryBySlug = {
   'animating-the-invisible': 'creative-technology', wish: 'game-worlds', project: 'interactive-experiences', 'sanhe-drifters': 'audiovisual-creation',
@@ -354,7 +354,7 @@ function SiteNav() {
           <button className="m-search-trigger" type="button" aria-label={`\u641c\u7d22\u4f5c\u54c1\uff08\u5feb\u6377\u952e / \u6216 Ctrl K\uff09`} title={`\u641c\u7d22\u4f5c\u54c1 /`} onClick={() => { closeMenu(); openSearch(); }}>
             <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="6.2" stroke="currentColor" strokeWidth="1.8" /><path d="M13.8 13.8 18 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>
           </button>
-          <button className="m-lang" type="button" aria-label="切换语言 / Switch language" title="切换语言 / Switch language" onClick={() => { const next = getLang() === 'zh' ? 'en' : 'zh'; setLang(next); const u = new URL(window.location.href); u.searchParams.set('lang', next); window.location.replace(u.toString()); }}>{document.documentElement.lang === 'zh-CN' ? 'EN' : '中'}</button>
+          <button className="m-lang" type="button" aria-label="切换语言 / Switch language" title="切换语言 / Switch language" onClick={() => { const next = getLang() === 'zh' ? 'en' : 'zh'; setLang(next); const u = new URL(window.location.href); u.searchParams.set('lang', next); u.hash = ''; try { sessionStorage.setItem('gd-lang-jump', 'top'); } catch { /* ignore */ } window.location.replace(u.toString()); }}>{document.documentElement.lang === 'zh-CN' ? 'EN' : '中'}</button>
           <button className="m-menu" type="button" aria-label={`\u6253\u5f00\u5bfc\u822a`} aria-expanded={menuOpen} onClick={() => setMenuOpen((open) => !open)}>
             <span />
             <span />
@@ -424,7 +424,7 @@ function ProjectVisual({ project, large = false }) {
   const coverSrc = hover && project.gif ? project.gif : project.cover;
   return (
     <div className={`m-project-image ${project.tone} ${large ? 'is-large' : ''}`} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
-      {!large && project.cover && <GlareHover className="rb-cover-glare"><TiltedCard className="rb-cover-tilt"><img className="m-project-cover" src={coverSrc} alt={project.titleCn} /></TiltedCard></GlareHover>}
+      {!large && project.cover && <GlareHover className="rb-cover-glare"><TiltedCard className="rb-cover-tilt"><img className="m-project-cover" src={coverSrc} alt={project.titleCn} loading="lazy" decoding="async" /></TiltedCard></GlareHover>}
       {large && project.mediaType === 'video' && <video src={project.media} poster={project.poster} controls controlsList="nodownload" disablePictureInPicture onContextMenu={(event) => event.preventDefault()} loop autoPlay muted playsInline preload="metadata" />}
       {large && project.mediaType === 'image' && <figure className="m-detail-figure"><img src={project.media} alt={project.titleCn} /></figure>}
       {large && project.mediaType === 'audio' && <AudioVisualizer src={project.media} />}
@@ -526,7 +526,7 @@ function TextLoop({ text, separator = '✦', speed = 90, uppercase = false }) {
 
 function AccordionGallery({ items, defaultIndex = 2, expandRatio = .52, trigger = 'hover' }) {
   const [active, setActive] = useState(defaultIndex);
-  return <div className="m-accordion-gallery" style={{ '--expand-ratio': expandRatio }} onMouseLeave={() => setActive(defaultIndex)}>{items.map((item, index) => <a className={`m-accordion-item ${active === index ? 'is-active' : ''}`} href={item.link} key={item.label} onMouseEnter={() => trigger === 'hover' && setActive(index)}><img src={item.image} alt="" /><span>{item.label}</span><small>{String(index + 1).padStart(2, '0')}</small></a>)}</div>;
+  return <div className="m-accordion-gallery" style={{ '--expand-ratio': expandRatio }} onMouseLeave={() => setActive(defaultIndex)}>{items.map((item, index) => <a className={`m-accordion-item ${active === index ? 'is-active' : ''}`} href={item.link} key={item.label} onMouseEnter={() => trigger === 'hover' && setActive(index)}><img src={item.image} alt="" loading="lazy" decoding="async" /><span>{item.label}</span><small>{String(index + 1).padStart(2, '0')}</small></a>)}</div>;
 }
 
 function DepthCarousel({ items, autoplay = true, loop = true, interval = 2600 }) {
@@ -540,18 +540,35 @@ function DepthCarousel({ items, autoplay = true, loop = true, interval = 2600 })
     const timer = window.setInterval(() => setActive((current) => hoveredRef.current ? current : loop ? (current + 1) % items.length : Math.min(current + 1, items.length - 1)), interval);
     return () => window.clearInterval(timer);
   }, [autoplay, interval, items.length, loop]);
-  return <div className="m-depth-carousel" aria-label="Selected works carousel" onMouseEnter={() => { hoveredRef.current = true; }} onMouseLeave={() => { hoveredRef.current = false; }}><div className="m-depth-title"><strong>{activeItem.titleCn}</strong><small>{activeItem.title}</small></div><button type="button" className="m-depth-arrow m-depth-arrow-left" onClick={previous} aria-label="Previous work">←</button>{items.map((item, index) => { const offset = (index - active + items.length) % items.length; const distance = Math.min(offset, items.length - offset); const side = offset === 1 ? 1 : offset === items.length - 1 ? -1 : 0; return <a className={`m-depth-card ${offset === 0 ? 'is-active' : ''}`} href={item.href || '#work'} key={item.alt} onClick={(event) => { if (offset !== 0) { event.preventDefault(); setActive(index); } }} style={{ transform: `translate(calc(-50% + ${side * 245}px), -50%) rotateY(${side * -22}deg) scale(${offset === 0 ? 1 : .78})`, zIndex: 5 - distance, opacity: distance > 1 ? .18 : offset === 0 ? 1 : .48, filter: `blur(${distance > 1 ? 1 : 0}px) saturate(${offset === 0 ? 1 : .72})`, pointerEvents: distance > 1 ? 'none' : 'auto' }}><img src={item.image} alt={item.alt} /></a>; })}<button type="button" className="m-depth-arrow m-depth-arrow-right" onClick={next} aria-label="Next work">→</button><div className="m-depth-dots" aria-hidden="true">{items.map((item, index) => <button type="button" className={index === active ? 'is-active' : ''} key={item.alt} onClick={() => setActive(index)} aria-label={`Show ${item.alt}`} />)}</div></div>;
+  return <div className="m-depth-carousel" aria-label="Selected works carousel" onMouseEnter={() => { hoveredRef.current = true; }} onMouseLeave={() => { hoveredRef.current = false; }}><div className="m-depth-title"><strong>{activeItem.titleCn}</strong><small>{activeItem.title}</small></div><button type="button" className="m-depth-arrow m-depth-arrow-left" onClick={previous} aria-label="Previous work">←</button>{items.map((item, index) => { const offset = (index - active + items.length) % items.length; const distance = Math.min(offset, items.length - offset); const side = offset === 1 ? 1 : offset === items.length - 1 ? -1 : 0; return <a className={`m-depth-card ${offset === 0 ? 'is-active' : ''}`} href={item.href || '#work'} key={item.alt} onClick={(event) => { if (offset !== 0) { event.preventDefault(); setActive(index); } }} style={{ transform: `translate(calc(-50% + ${side * 245}px), -50%) rotateY(${side * -22}deg) scale(${offset === 0 ? 1 : .78})`, zIndex: 5 - distance, opacity: distance > 1 ? .18 : offset === 0 ? 1 : .48, filter: `blur(${distance > 1 ? 1 : 0}px) saturate(${offset === 0 ? 1 : .72})`, pointerEvents: distance > 1 ? 'none' : 'auto' }}><img src={item.image} alt={item.alt} loading="lazy" decoding="async" /></a>; })}<button type="button" className="m-depth-arrow m-depth-arrow-right" onClick={next} aria-label="Next work">→</button><div className="m-depth-dots" aria-hidden="true">{items.map((item, index) => <button type="button" className={index === active ? 'is-active' : ''} key={item.alt} onClick={() => setActive(index)} aria-label={`Show ${item.alt}`} />)}</div></div>;
+}
+
+// 首屏身份轮播：中文词 + 英文衬线大写成对出现，循环三个实践领域。
+// 词对本身自带双语，中英模式同构；data-no-i18n 防止翻译层把中文词单独换掉
+const HERO_WORDS = [
+  { zh: '科研工程', en: 'RESEARCH ENGINEERING' },
+  { zh: '交互设计', en: 'INTERACTION DESIGN' },
+  { zh: '创意技术', en: 'CREATIVE TECHNOLOGY' },
+];
+function HeroWordOne({ idx }) {
+  return <span className="m-word-anim" data-no-i18n="1">{HERO_WORDS[idx].zh}</span>;
 }
 
 function HomePage() {
   const avatarRotation = usePageMotion(true);
+  const [heroWord, setHeroWord] = useState(2); // 落地仍是「创意技术」，随后轮换
+  useEffect(() => {
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return undefined;
+    const timer = setInterval(() => setHeroWord((x) => (x + 1) % HERO_WORDS.length), 3400);
+    return () => clearInterval(timer);
+  }, []);
   useEffect(() => {
     const html = (selector, value) => { const element = document.querySelector(selector); if (element) element.innerHTML = value; };
     const all = (selector, values) => document.querySelectorAll(selector).forEach((element, index) => { if (values[index]) element.innerHTML = values[index]; });
     html('.m-logo', '\u4f46\u5149\u6cfd <small>Guangze Dan</small>');
     all('.m-menu-panel a', ['\u5173\u4e8e\u6211 <small>About Me</small> <span class="m-arrow">-&gt;</span>', '\u670d\u52a1 <small>Services</small> <span class="m-arrow">-&gt;</span>', '\u4f5c\u54c1 <small>Works</small> <span class="m-arrow">-&gt;</span>', '\u8054\u7cfb <small>Contact</small> <span class="m-arrow">-&gt;</span>']);
     all('.m-hero-orbit span', ['UCL - London', 'UOY - York, UK', 'Wuhan, China']);
-    html('.m-resume-button', '<strong>\u4e0b\u8f7d\u7b80\u5386<br><small>CV 中文版</small></strong><span class="m-arrow">-&gt;</span>');
+    html('.m-resume-button', '<strong>\u4e0b\u8f7d\u7b80\u5386<br><small>CV · Chinese version</small></strong><span class="m-arrow">-&gt;</span>');
     html('.m-resume-button-en', '<strong>Download CV<br><small>English · Academic</small></strong><span class="m-arrow">-&gt;</span>');
     html('.m-avatar-back-name', '\u4f46\u5149\u6cfd<br><small>Guangze Dan</small>');
     html('.m-footer-top h2', '\u4f46\u5149\u6cfd<small>Guangze Dan</small>');
@@ -625,8 +642,8 @@ function HomePage() {
         <section className="m-hero" id="home">
           <div className="m-hero-meta"><span><BlurText>{`新能源博士研究 / 交互设计 / 创意技术`}</BlurText></span><span><BlurText delay={90}>{`\u5e38\u9a7b\u6b66\u6c49 / \u4e2d\u56fd`}</BlurText></span></div>
           <div className="m-hero-orbit" aria-hidden="true"><span>{`UCL / \u4f26\u6566`}</span><span>{`\u7ea6\u514b`}</span><span>{`\u6b66\u6c49`}</span></div>
-          <div className="m-hero-word m-hero-word-one">{`\u521b\u610f\u6280\u672f`}</div>
-          <div className="m-hero-word m-hero-word-two"><i><SplitText delay={28}>{`CREATIVE TECHNOLOGY`}</SplitText></i></div>
+          <div className="m-hero-word m-hero-word-one"><HeroWordOne idx={heroWord} /></div>
+          <div className="m-hero-word m-hero-word-two" key={`hw${heroWord}`}><i><span className="m-word-anim"><SplitText delay={28}>{HERO_WORDS[heroWord].en}</SplitText></span></i></div>
           <figure className="m-hero-image"><AvatarCard rotation={avatarRotation} /></figure>
           <div className="m-flip-hint" aria-hidden="true"><span>{`滚动翻转`}</span> SCROLL TO FLIP</div>
           <div className="m-hero-side m-hero-side-left">&copy; 2026</div>
@@ -798,15 +815,18 @@ function App() {
     return () => { document.body.style.overflow = ''; };
   }, [searchOpen]);
   useEffect(() => {
+    const en = getLang() === 'en';
+    const site = en ? 'Guangze Dan — Portfolio' : '但光泽作品集';
     if (path === '/work') {
-      document.title = `\u4f5c\u54c1 / SELECTED PROJECTS \u00b7 \u4f46\u5149\u6cfd\u4f5c\u54c1\u96c6`;
+      document.title = en ? `Selected Projects · ${site}` : `作品 / SELECTED PROJECTS · ${site}`;
     } else if (path === '/lab') {
-      document.title = `三维试验室 / 3D TESTBED \u00b7 \u4f46\u5149\u6cfd\u4f5c\u54c1\u96c6`;
+      document.title = en ? `3D Testbed · ${site}` : `三维试验室 / 3D TESTBED · ${site}`;
     } else if (path.startsWith('/work/')) {
       const project = projects.find((item) => item.slug === path.slice('/work/'.length));
-      document.title = project ? `${project.titleCn} \u00b7 \u4f46\u5149\u6cfd\u4f5c\u54c1\u96c6` : `\u4f5c\u54c1 / SELECTED PROJECTS \u00b7 \u4f46\u5149\u6cfd\u4f5c\u54c1\u96c6`;
+      // localizeProject 互换语义：titleCn 恒为当前主语言标题
+      document.title = project ? `${project.titleCn} · ${site}` : (en ? `Selected Projects · ${site}` : `作品 / SELECTED PROJECTS · ${site}`);
     } else {
-      document.title = `\u4f46\u5149\u6cfd \u00b7 Guangze Dan \u2014 \u65b0\u80fd\u6e90\u535a\u58eb\u7814\u7a76 / \u4ea4\u4e92\u8bbe\u8ba1 / \u521b\u610f\u6280\u672f`;
+      document.title = en ? `Guangze Dan — PhD research / interaction design / creative technology` : `但光泽 · Guangze Dan — 新能源博士研究 / 交互设计 / 创意技术`;
     }
   }, [path]);
   useEffect(() => {
@@ -860,6 +880,17 @@ function App() {
       window.removeEventListener('hashchange', onHashChange);
     };
   }, [path]);
+  // 语言切换后强制回到页面顶部：切换按钮会去掉锚点并打标记，
+  // 这里在首帧抢在浏览器滚动恢复之前落顶（避免 reload 记忆位置 / 旧锚点跳转）
+  useEffect(() => {
+    try {
+      if (sessionStorage.getItem('gd-lang-jump') !== 'top') return undefined;
+      sessionStorage.removeItem('gd-lang-jump');
+      if ('scrollRestoration' in window.history) window.history.scrollRestoration = 'manual';
+      window.scrollTo(0, 0);
+    } catch { /* ignore */ }
+    return undefined;
+  }, []);
   let page;
   if (path === '/work') {
     page = <WorkPage />;

@@ -172,6 +172,7 @@ function translateDict(root, toEn) {
   let n;
   while ((n = walker.nextNode())) nodes.push(n);
   for (const node of nodes) {
+    if (node.parentElement && node.parentElement.closest('[data-no-i18n]')) continue; // 设计元素（如首屏轮播词对）不翻译
     if (node.parentElement && node.parentElement.closest('small[data-lang-secondary="1"]')) continue;
     const raw = node.nodeValue;
     const t = (raw || '').trim();
@@ -202,6 +203,7 @@ function stripMixedCjk(root, toEn) {
   while ((n = walker.nextNode())) nodes.push(n);
   for (const node of nodes) {
     if (node.__stripDone || node.__translated) continue;
+    if (node.parentElement && node.parentElement.closest('[data-no-i18n]')) continue;
     const raw = node.nodeValue || '';
     if (!raw.includes(' / ') || !hasZh(raw)) continue;
     if (node.parentElement && node.parentElement.closest('small[data-lang-secondary="1"]')) continue;

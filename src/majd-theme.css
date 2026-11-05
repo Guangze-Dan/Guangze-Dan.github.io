@@ -34,6 +34,10 @@ button, input, textarea { font: inherit; }
 .m-hero-word-one { top: 42%; }
 .m-hero-word-two { top: 53%; left: 4vw; }
 .m-hero-word-two i { font-family: 'Instrument Serif'; font-weight: 400; letter-spacing: -.11em; }
+/* 首屏身份轮播：词对入场 + 英文模式的巨型序号 */
+.m-word-anim { display: inline-block; animation: m-word-in .75s cubic-bezier(.22, 1, .36, 1) both; }
+@keyframes m-word-in { from { opacity: 0; transform: translateY(30px) rotateX(28deg); filter: blur(9px); } to { opacity: 1; transform: none; filter: none; } }
+@media (prefers-reduced-motion: reduce) { .m-word-anim { animation: none; } }
 .m-hero-side { position: absolute; z-index: 4; bottom: 42px; font-size: clamp(36px, 5vw, 70px); letter-spacing: -.1em; line-height: .8; }
 .m-hero-side-left { left: 3.5vw; }
 .m-hero-side-right { right: 3.5vw; bottom: 48px; font: 11px 'DM Mono'; letter-spacing: -.04em; }
@@ -195,13 +199,13 @@ button, input, textarea { font: inherit; }
 .m-avatar-front img { border-radius: inherit; }
 .m-avatar-back { border: 1px solid rgba(255, 255, 255, .08); }
 
-.m-resume-button { position: absolute; z-index: 6; top: 720px; right: 4vw; min-width: 150px; padding: 15px 17px 13px; display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; border: 1px solid #111; border-radius: 12px; background: rgba(239, 238, 233, .72); backdrop-filter: blur(10px); transition: color .25s, background .25s, transform .25s; }
+.m-resume-button { position: absolute; z-index: 6; top: 720px; right: 4vw; min-width: 168px; padding: 15px 17px 13px; display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; border: 1px solid #111; border-radius: 12px; background: rgba(239, 238, 233, .72); backdrop-filter: blur(10px); transition: color .25s, background .25s, transform .25s; }
 .m-resume-button strong { font-size: 15px; letter-spacing: -.06em; }
 .m-resume-button small { color: #77756d; font: 8px 'DM Mono'; }
 .m-resume-button .m-arrow { grid-column: 2; grid-row: 1 / 3; align-self: center; color: #111; }
 .m-resume-button:hover { color: #f3f2eb; background: #111; transform: translateY(-5px); }
 .m-resume-button:hover small, .m-resume-button:hover .m-arrow { color: var(--acid); }
-.m-resume-button-en { top: 788px; }
+.m-resume-button-en { top: 808px; }
 
 .m-intro-lead h2 small { display: block; margin-top: 15px; color: #77756d; font: 10px 'DM Mono'; letter-spacing: .06em; }
 .m-services h2 { display: flex; flex-direction: column; gap: 17px; }
@@ -254,13 +258,13 @@ button, input, textarea { font: inherit; }
 
 @media (max-width: 900px) {
   .m-resume-button { top: 735px; right: 20px; }
-  .m-resume-button-en { top: 803px; }
+  .m-resume-button-en { top: 823px; }
 }
 
 @media (max-width: 560px) {
-  .m-resume-button { top: 645px; right: 20px; min-width: 130px; padding: 12px 13px 10px; }
+  .m-resume-button { top: 645px; right: 20px; min-width: 140px; padding: 12px 13px 10px; }
   .m-resume-button strong { font-size: 13px; }
-  .m-resume-button-en { top: 713px; }
+  .m-resume-button-en { top: 723px; }
 }
 
 /* Match the reference site's long sticky avatar section. */
@@ -348,6 +352,9 @@ button, input, textarea { font: inherit; }
 .m-detail-copy p { max-width: 430px; margin: 0 0 35px; color: #999; font-size: 15px; line-height: 1.6; }
 .m-detail-copy .m-underlink { color: #f2f1eb; border-color: #f2f1eb; }
 .m-detail-copy .m-underlink { color: #111; border-color: #111; background: var(--acid); }
+/* 三维试验台入口：独立成行，与介绍/返回链接拉开距离 */
+.m-detail-copy .m-lab-link { display: flex; width: fit-content; margin-top: 28px; padding: 14px 24px 12px; align-items: center; gap: 10px; border-radius: 999px; font: 600 12.5px 'Space Grotesk', Arial, sans-serif; letter-spacing: .02em; transition: transform .25s, box-shadow .25s, background .25s; }
+.m-detail-copy .m-lab-link:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(217, 255, 88, .18); background: #d9ff58; }
 .m-detail-caption { display: none; }
 .m-next-project { padding: 125px 8vw 160px; background: var(--acid); }
 .m-next-project > span { color: #546522; font: 9px 'DM Mono'; }
