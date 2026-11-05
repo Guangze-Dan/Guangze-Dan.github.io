@@ -590,3 +590,13 @@ section[id], .m-archive-group[id] { scroll-margin-top: 96px; }
 @media (prefers-reduced-motion: reduce) {
   .m-search-overlay, .m-search-panel { animation: none; }
 }
+
+/* 语言切换：导航内的迷你开关 */
+.m-lang {
+  height: 34px; min-width: 38px; padding: 0 8px;
+  border: 1px solid #ffffff33; border-radius: 10px;
+  background: transparent; color: #f5f4ef;
+  font: 600 11px 'DM Mono', monospace; letter-spacing: .04em;
+  cursor: pointer;
+}
+.m-lang:hover { background: var(--acid); border-color: var(--acid); color: #111; }

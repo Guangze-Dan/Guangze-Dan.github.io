@@ -1,7 +1,9 @@
 // /lab — 三维试验室：五个试验方案场景的实时三维模型。
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import { SiteNav, SiteFooter } from '../main.jsx';
 import { LabViewer } from './engine.js';
+import { getLang, setLang, subscribeLang } from '../lang.js';
+import { localizeScene, SCENE_TOUR } from './scene-en.js';
 import multiscale from './scenes/multiscale.js';
 import sealing from './scenes/sealing.js';
 import hongan from './scenes/hongan.js';
@@ -53,7 +55,10 @@ export default function LabPage() {
   const [stepIdx, setStepIdx] = useState(0);
   const [stepInfo, setStepInfo] = useState(null);
 
-  const scene = SCENES[sceneIdx];
+  const [lang, setLangState] = useState(getLang());
+  useEffect(() => subscribeLang(setLangState), []);
+  const scene = useMemo(() => localizeScene(SCENES[sceneIdx], lang), [sceneIdx, lang]);
+  const T = (zh, en) => (lang === 'en' ? en : zh);
 
   useEffect(() => {
     document.title = `三维试验室 / 3D TESTBED · 但光泽作品集`;
@@ -78,6 +83,7 @@ export default function LabPage() {
         onClipChange: ({ enabled }) => setClipOn(enabled),
         onStepEnter: (i, st) => setStepInfo({ index: i, ...st }),
         onPlayChange: (p) => setPlaying(p),
+        onTourStep: (info) => setTourStep(info),
       });
     } catch (err) {
       setGlError(err?.message || String(err));
@@ -208,12 +214,20 @@ export default function LabPage() {
   const toggleTour = useCallback(() => {
     const viewer = engineRef.current;
     if (!viewer) return;
-    const next = !viewer.controls.autoRotate;
-    viewer.controls.autoRotate = next;
-    viewer.controls.autoRotateSpeed = 0.9;
-    if (next && !viewer.playing) { viewer.playing = true; setPlaying(true); }
-    setTour(next);
-  }, []);
+    if (viewer._tour) {
+      viewer.stopTour();
+      setTour(false);
+      return;
+    }
+    const stops = SCENE_TOUR[scene.id] || [];
+    if (!stops.length) return;
+    // 巡游时自动剖开 + 播放，局部看细节、最后拉远看宏观
+    const dc = scene.demoClip || scene.clipDefault;
+    if (dc) { viewer.setClip({ enabled: true, ...dc }); setClipOn(true); }
+    if (!viewer.playing) { viewer.playing = true; setPlaying(true); }
+    viewer.startTour(stops);
+    setTour(true);
+  }, [scene]);
 
   // 流程模式：逐步编排状态 + 解说
   const steps = scene.steps || [];
@@ -244,6 +258,7 @@ export default function LabPage() {
 
   // 原理流程树：Zoom in 到关键测点，然后因果链从左往右生长
   const [tree, setTree] = useState(null);
+  const [tourStep, setTourStep] = useState(null);
   const [lineView, setLineView] = useState(false);
   const treeTimerRef = useRef(null);
   const openTree = useCallback(() => {
@@ -328,16 +343,16 @@ export default function LabPage() {
       <SiteNav />
       <main>
         <section className="lab-hero">
-          <div className="m-section-kicker">/ 试验室 / 3D TESTBED</div>
-          <h1>把试验方案，建成<em>可以走进去</em>的三维模型。</h1>
+          <div className="m-section-kicker">{T('/ 试验室 / 3D TESTBED', '/ 3D TESTBED')}</div>
+          <h1>{T('把试验方案，建成', 'Every test plan, rebuilt as ')}<em>{T('可以走进去', 'a room you can enter')}</em>{T('的三维模型。', '.')}</h1>
           <p>
-            全部按方案尺寸与实拍照片程序化建模：每一颗螺栓、每一根引线、每一个测点都有出处。
-            拖动剖切看构造内部，拉开爆炸图看装配层级，按播放走一遍加载程序。
+            {T('全部按方案尺寸与实拍照片程序化建模：每一颗螺栓、每一根引线、每一个测点都有出处。拖动剖切看构造内部，拉开爆炸图看装配层级，按播放走一遍加载程序。',
+              'Everything is built procedurally to the scheme dimensions and site photographs: every bolt, every lead, every gauge has a source. Cut it open, explode the assembly, or play the loading programme.')}
           </p>
           <div className="lab-hero-meta">
-            <span>Three.js 实时渲染</span>
-            <span>5 个场景 · 60+ 部件</span>
-            <span>方案尺寸 1:1 建模</span>
+            <span>{T('Three.js 实时渲染', 'Three.js realtime')}</span>
+            <span>{T('5 个场景 · 60+ 部件', '5 scenes · 60+ parts')}</span>
+            <span>{T('方案尺寸 1:1 建模', 'Built to scheme dimensions')}</span>
           </div>
         </section>
 
@@ -345,7 +360,7 @@ export default function LabPage() {
           {SCENES.map((s, i) => (
             <button key={s.id} type="button" className={`lab-tab ${i === sceneIdx ? 'is-active' : ''}`} onClick={() => setSceneIdx(i)}>
               <small>{s.n}</small>
-              <span>{s.titleCn}</span>
+              <span>{localizeScene(s, lang).titleCn}</span>
             </button>
           ))}
         </nav>
@@ -363,7 +378,7 @@ export default function LabPage() {
               )}
             </div>
             <div className="lab-hud-controls">
-              <button type="button" className={`lab-ctl ${clipOn ? 'is-on' : ''}`} aria-label="剖切视图" onClick={() => { const v = !clipOn; setClipOn(v); applyClip(v, clipAxis, clipPos); }}>剖切</button>
+              <button type="button" className={`lab-ctl ${clipOn ? 'is-on' : ''}`} aria-label={T('剖切视图', 'Section view')} onClick={() => { const v = !clipOn; setClipOn(v); applyClip(v, clipAxis, clipPos); }}>{T('剖切', 'Section')}</button>
               {clipOn && (
                 <>
                   <div className="lab-seg">
@@ -377,17 +392,17 @@ export default function LabPage() {
                 </>
               )}
               <span className="lab-ctl-sep" data-g="视图" />
-              <label className="lab-ctl-lab">爆炸<input type="range" aria-label="爆炸视图" min={0} max={100} value={explode * 100}
+              <label className="lab-ctl-lab">{T('爆炸', 'Explode')}<input type="range" aria-label="爆炸视图" min={0} max={100} value={explode * 100}
                 onChange={(e) => { const v = Number(e.target.value) / 100; setExplode(v); engineRef.current?.setExplode(v); }} /></label>
-              <button type="button" className={`lab-ctl ${labelsOn ? 'is-on' : ''}`} title="显示/隐藏测点编号" aria-label="标注显示" onClick={() => { const v = !labelsOn; setLabelsOn(v); engineRef.current?.setLabelsVisible(v); }}>标注</button>
-              <button type="button" className={`lab-ctl ${lineView ? 'is-on' : ''}`} title="线路视图：结构褪为剪影，只留线缆与管路"
-                aria-label="线路视图" onClick={() => { const v = !lineView; setLineView(v); engineRef.current?.setLineView(v); }}>线路</button>
+              <button type="button" className={`lab-ctl ${labelsOn ? 'is-on' : ''}`} title={T('显示/隐藏测点编号', 'Show or hide gauge numbers')} aria-label={T('标注显示', 'Annotations')} onClick={() => { const v = !labelsOn; setLabelsOn(v); engineRef.current?.setLabelsVisible(v); }}>{T('标注', 'Labels')}</button>
+              <button type="button" className={`lab-ctl ${lineView ? 'is-on' : ''}`} title={T('线路视图：结构褪为剪影，只留线缆与管路', 'Line view: structure fades, cabling and piping glow')}
+                aria-label={T('线路视图', 'Line view')} onClick={() => { const v = !lineView; setLineView(v); engineRef.current?.setLineView(v); }}>{T('线路', 'Lines')}</button>
               <span className="lab-ctl-sep" data-g="模式" />
-              <button type="button" className="lab-ctl" title="因果链流程树：Zoom in 后从左往右生长" aria-label="原理流程树" onClick={openTree}>原理</button>
-              <button type="button" className={`lab-ctl ${stepMode ? 'is-on' : ''}`} title="按试验步骤逐段讲解" aria-label="流程模式" onClick={toggleStepMode}>流程</button>
-              <button type="button" className={`lab-ctl ${tour ? 'is-on' : ''}`} title="自动环绕 + 自动播放" aria-label="导览模式" onClick={toggleTour}>巡游</button>
+              <button type="button" className="lab-ctl" title={T('因果链流程树：Zoom in 后从左往右生长', 'Cause chain: zoom in, then grows left to right')} aria-label={T('原理流程树', 'Principle tree')} onClick={openTree}>{T('原理', 'Principle')}</button>
+              <button type="button" className={`lab-ctl ${stepMode ? 'is-on' : ''}`} title={T('按试验步骤逐段讲解', 'Walk through the test step by step')} aria-label={T('流程模式', 'Step mode')} onClick={toggleStepMode}>{T('流程', 'Steps')}</button>
+              <button type="button" className={`lab-ctl ${tour ? 'is-on' : ''}`} title={T('线性巡游：局部 → 局部 → 宏观全景', 'Linear tour: part → part → whole rig')} aria-label={T('巡游', 'Tour')} onClick={toggleTour}>{T('巡游', 'Tour')}</button>
               <span className="lab-ctl-sep" data-g="工具" />
-              <button type="button" className="lab-ctl" title="纯净截图：隐藏全部标注，导出 2x PNG（适合做封面）" aria-label="纯净截图" onClick={() => {
+              <button type="button" className="lab-ctl" title={T('纯净截图：隐藏全部标注，导出 2x PNG（适合做封面）', 'Clean capture: no annotations, 2x PNG for covers')} aria-label={T('纯净截图', 'Clean capture')} onClick={() => {
                 const viewer = engineRef.current;
                 if (!viewer) return;
                 const a = document.createElement('a');
@@ -396,8 +411,8 @@ export default function LabPage() {
                 a.click();
                 setShotFlash(true);
                 window.setTimeout(() => setShotFlash(false), 500);
-              }}>截图</button>
-              <button type="button" className="lab-ctl" title="回到默认机位" onClick={() => engineRef.current?.flyTo(scene.view.pos, scene.view.target)}>复位</button>
+              }}>{T('截图', 'Capture')}</button>
+              <button type="button" className="lab-ctl" title={T('回到默认机位', 'Back to the default camera')} onClick={() => engineRef.current?.flyTo(scene.view.pos, scene.view.target)}>{T('复位', 'Reset')}</button>
             </div>
             <div className="lab-hud-timeline">
               <button type="button" className="lab-play" onClick={togglePlay} aria-label={playing ? '暂停' : '播放'}>
@@ -425,13 +440,19 @@ export default function LabPage() {
                   </button>
                 ))}
               </div>
-              <span className="lab-kbd-hint">1–5 切换 · 空格播放 · C 剖切 · E 爆炸 · L 标注 · R 复位</span>
+              <span className="lab-kbd-hint">{T('1–5 切换 · 空格播放 · C 剖切 · E 爆炸 · L 标注 · R 复位', '1–5 scenes · Space play · C section · E explode · L labels · R reset')}</span>
             </div>
+            {tour && tourStep && (
+              <div className="lab-tour-caption">
+                <small>{T('线性巡游', 'Linear tour')} {tourStep.index + 1}/{tourStep.total}</small>
+                <b>{tourStep.label === '宏观全景' ? T('宏观全景', 'Whole rig') : tourStep.label}</b>
+              </div>
+            )}
             {stepMode && stepInfo && (
               <div className="lab-stepbar">
                 <button type="button" aria-label="上一步" disabled={stepIdx === 0} onClick={() => gotoStep(stepIdx - 1)}>‹</button>
                 <div className="lab-stepbar-info">
-                  <small>流程模式 · 步骤 {stepIdx + 1} / {steps.length} · ←→ 翻步</small>
+                  <small>{T('流程模式', 'Step mode')} · {stepIdx + 1} / {steps.length} · {T('←→ 翻步', '←→ to step')}</small>
                   <b>{stepInfo.title}</b>
                   <span>{stepInfo.sub}</span>
                 </div>
@@ -440,11 +461,11 @@ export default function LabPage() {
             )}
             {lineView && (
               <div className="lab-line-legend">
-                <b>线路视图 · 连接拓扑</b>
-                <span data-c="fiber">光纤 / FBG</span>
-                <span data-c="signal">信号 / 数据</span>
-                <span data-c="fluid">流体 / 气压</span>
-                <span data-c="power">电力 / 动力</span>
+                <b>{T('线路视图 · 连接拓扑', 'Line view · connections')}</b>
+                <span data-c="fiber">{T('光纤 / FBG', 'Fiber / FBG')}</span>
+                <span data-c="signal">{T('信号 / 数据', 'Signal / data')}</span>
+                <span data-c="fluid">{T('流体 / 气压', 'Fluid / gas')}</span>
+                <span data-c="power">{T('电力 / 动力', 'Power')}</span>
               </div>
             )}
             {tree && (
@@ -471,7 +492,7 @@ export default function LabPage() {
             )}
             {clipOn && scene.clipLegend && (
               <div className="lab-clip-legend">
-                <b>剖面图例</b>
+                <b>{T('剖面图例', 'Section legend')}</b>
                 {scene.clipLegend.map((l, i) => <span key={i}>{l}</span>)}
               </div>
             )}
@@ -481,9 +502,9 @@ export default function LabPage() {
                 <em>{stepInfo.sub}</em>
                 {(stepInfo.detail || []).map((l, i) => <span key={i}>{l}</span>)}
                 {stepInfo.tree && (
-                  <button type="button" className="lab-step-tree-btn" onClick={openTree}>原理流程树 ›</button>
+                  <button type="button" className="lab-step-tree-btn" onClick={openTree}>{T('原理流程树', 'Principle tree')} ›</button>
                 )}
-                <small>› 下一步揭示后续原理 · Esc 退出流程</small>
+                <small>{T('› 下一步揭示后续原理 · Esc 退出流程', '› Next step reveals the reasoning · Esc to exit')}</small>
               </div>
             )}
             {!stepMode && hotspot && (
@@ -519,7 +540,7 @@ export default function LabPage() {
               ))}
             </dl>
             <div className="lab-hs-list">
-              <h3>测点与构造 <small>点击定位 · 画布中悬停查看</small></h3>
+              <h3>{T('测点与构造', 'Gauges and parts')} <small>{T('点击定位 · 画布中悬停查看', 'Click to focus · hover in the scene')}</small></h3>
               <ol>
                 {hsList.map((t, i) => (
                   <li key={i} onClick={() => engineRef.current?.focusHotspot(i)}>{t}</li>
@@ -530,7 +551,7 @@ export default function LabPage() {
         </section>
 
         <section className="lab-related">
-          <span>对应作品 / WORKS</span>
+          <span>{T('对应作品 / WORKS', 'RELATED WORKS')}</span>
           {RELATED.map((r) => <a key={r.slug} href={`/work/${r.slug}`}>{r.label} →</a>)}
         </section>
       </main>

@@ -206,9 +206,17 @@ body:has(.lab-page) .rb-cursor, body:has(.lab-page) .rb-trail { display: none !i
 /* HUD 控制条 */
 .lab-hud-controls {
   position: absolute; top: 14px; right: 14px; z-index: 7;
-  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  display: flex; align-items: center; gap: 8px;
+  /* 单行 + 横向滚动：给左上读数留出空间，永不换行压字 */
+  flex-wrap: nowrap;
   justify-content: flex-end;
+  max-width: calc(100% - 260px);
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 2px;
 }
+.lab-hud-controls::-webkit-scrollbar { display: none; }
+.lab-hud-controls .lab-ctl { flex: none; }
 .lab-ctl {
   padding: 7px 12px;
   background: rgba(16, 17, 20, .82);
@@ -648,4 +656,22 @@ body:has(.lab-page) .rb-cursor, body:has(.lab-page) .rb-trail { display: none !i
   .lab-tree-node { min-width: 116px; padding: 6px 8px; }
   .lab-tree-node span { font-size: 10.5px; }
   .lab-tree-node small { font-size: 9px; }
+}
+
+/* 线性巡游字幕 */
+.lab-tour-caption {
+  position: absolute; left: 18px; bottom: 78px; z-index: 7;
+  padding: 8px 12px;
+  background: rgba(10, 11, 13, .82);
+  border: 1px solid #2c2f35;
+  border-left: 3px solid #d9ff58;
+  border-radius: 10px;
+  backdrop-filter: blur(8px);
+  pointer-events: none;
+}
+.lab-tour-caption small { display: block; color: #6d6b64; font: 9.5px 'DM Mono', monospace; letter-spacing: .06em; }
+.lab-tour-caption b { display: block; color: #f2f1ec; font: 600 12.5px 'Space Grotesk', Arial, sans-serif; }
+@media (max-width: 640px) {
+  .lab-tour-caption { bottom: 104px; left: 8px; padding: 6px 10px; }
+  .lab-tour-caption b { font-size: 11px; }
 }

@@ -9,7 +9,7 @@ const easeInOut = (x) => (x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2)
 const easeInOutCubic = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
 
 export class LabViewer {
-  constructor(container, { onHotspot, onReadout, onStage, onTourEnd, onClipChange, onStepEnter, onPlayChange } = {}) {
+  constructor(container, { onHotspot, onReadout, onStage, onTourEnd, onClipChange, onStepEnter, onPlayChange, onTourStep } = {}) {
     this.container = container;
     this.onHotspot = onHotspot || (() => {});
     this.onReadout = onReadout || (() => {});
@@ -18,6 +18,7 @@ export class LabViewer {
     this.onClipChange = onClipChange || (() => {});
     this.onStepEnter = onStepEnter || (() => {});
     this.onPlayChange = onPlayChange || (() => {});
+    this.onTourStep = onTourStep || (() => {});
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -644,6 +645,61 @@ export class LabViewer {
     for (const h of this.hotspotObjs) h.el.classList.remove('is-focus');
   }
 
+  /* ---------- 线性巡游：局部 → 局部 → … → 宏观 ---------- */
+
+  startTour(stops) {
+    if (!stops?.length) return;
+    this.clearPick();
+    this._tour = { stops, i: -1, phase: 'move', t: 0, moveDur: 1.15 };
+    this.#tourGoto(0);
+  }
+
+  stopTour() {
+    if (!this._tour) return;
+    this._tour = null;
+    this.onTourStep(null);
+  }
+
+  #tourGoto(i) {
+    const T = this._tour;
+    if (!T) return;
+    const st = T.stops[i];
+    const mod = this.activeScene;
+    let toPos, toTarget;
+    if (st.macro) {
+      toTarget = new THREE.Vector3(...mod.view.target);
+      const v = new THREE.Vector3(...mod.view.pos);
+      toPos = toTarget.clone().add(v.clone().sub(toTarget).multiplyScalar(1.08));
+    } else {
+      const hs = this.hotspotObjs[st.focus ?? 0];
+      if (!hs) { this.#tourNext(i); return; }
+      const p = hs.worldPos;
+      const dir = this.camera.position.clone().sub(p);
+      if (dir.lengthSq() < 1e-4) dir.set(1, 0.6, 1);
+      dir.normalize();
+      toTarget = p.clone();
+      toPos = p.clone().addScaledVector(dir, st.dist ?? 1.2);
+      toPos.y = Math.max(toPos.y, p.y + 0.12);
+    }
+    T.i = i;
+    T.phase = 'move';
+    T.t = 0;
+    T.from = { p: this.camera.position.clone(), t: this.controls.target.clone() };
+    T.to = { p: toPos, t: toTarget };
+    this.onTourStep({ index: i, total: T.stops.length, label: st.macro ? '宏观全景' : this.hotspotObjs[st.focus ?? 0]?.data?.title, caption: st.caption });
+  }
+
+  #tourNext(i) {
+    if (!this._tour) return;
+    if (i + 1 >= this._tour.stops.length) {
+      this._tour = null;
+      this.onTourStep(null);
+      this.onTourEnd();
+    } else {
+      this.#tourGoto(i + 1);
+    }
+  }
+
   /* ---------- 流程模式：逐步编排状态 ---------- */
 
   enterStep(i) {
@@ -750,6 +806,21 @@ export class LabViewer {
         this.lockRing.scale.setScalar(0.4 + rk * 2.4);
         this._lockRingMat.opacity = 0.9 * (1 - rk);
         this.lockRing.lookAt(this.camera.position);
+      }
+    }
+
+    // 线性巡游：匀速推进，不插值缓动
+    if (this._tour) {
+      const T = this._tour;
+      const st = T.stops[T.i] || {};
+      T.t += raw;
+      if (T.phase === 'move') {
+        const k = Math.min(1, T.t / T.moveDur);
+        this.camera.position.lerpVectors(T.from.p, T.to.p, k);
+        this.controls.target.lerpVectors(T.from.t, T.to.t, k);
+        if (k >= 1) { T.phase = 'hold'; T.t = 0; }
+      } else if (T.t >= (st.hold ?? 1.8)) {
+        this.#tourNext(T.i);
       }
     }
 

@@ -2,6 +2,7 @@ import React, { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'rea
 import { createRoot } from 'react-dom/client';
 import './majd-theme.css';
 import './reactbits-effects.css';
+import { getLang, setLang, subscribeLang } from './lang.js';
 import { SplitText, BlurText, ShinyText, GradientText, PressureWord, WordReveal, DecryptedText, TiltedCard, GlareHover, Magnet, ScrollProgress, Noise, ClickSpark, CustomCursor, TrailCursor } from './reactbits-effects.jsx';
 
 const LabPage = lazy(() => import('./lab/LabPage.jsx'));
@@ -335,6 +336,9 @@ function AvatarCard({ rotation = 0, className = '' }) {
 
 function SiteNav() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [lang, setLangState] = useState(getLang());
+  useEffect(() => subscribeLang(setLangState), []);
+  const L = (zh, en) => (lang === 'en' ? en : zh);
   const closeMenu = () => setMenuOpen(false);
   return (
     <header className={`m-nav ${menuOpen ? 'is-open' : ''}`}>
@@ -344,6 +348,7 @@ function SiteNav() {
           <button className="m-search-trigger" type="button" aria-label={`\u641c\u7d22\u4f5c\u54c1\uff08\u5feb\u6377\u952e / \u6216 Ctrl K\uff09`} title={`\u641c\u7d22\u4f5c\u54c1 /`} onClick={() => { closeMenu(); openSearch(); }}>
             <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="6.2" stroke="currentColor" strokeWidth="1.8" /><path d="M13.8 13.8 18 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>
           </button>
+          <button className="m-lang" type="button" aria-label="切换语言 / Switch language" title="切换语言 / Switch language" onClick={() => setLang(lang === 'zh' ? 'en' : 'zh')}>{lang === 'zh' ? 'EN' : '中'}</button>
           <button className="m-menu" type="button" aria-label={`\u6253\u5f00\u5bfc\u822a`} aria-expanded={menuOpen} onClick={() => setMenuOpen((open) => !open)}>
             <span />
             <span />
@@ -352,11 +357,11 @@ function SiteNav() {
         </div>
       </div>
       <nav className="m-menu-panel" aria-label="Main navigation">
-        <a href="/#about" onClick={closeMenu}>{`\u5173\u4e8e\u6211`} <Arrow /></a>
-        <a href="/#services" onClick={closeMenu}>{`\u670d\u52a1`} <Arrow /></a>
-        <a href="/work" onClick={closeMenu}>{`\u4f5c\u54c1`} <Arrow /></a>
-        <a href="/lab" onClick={closeMenu}>{`三维试验室`} <Arrow /></a>
-        <a href="/#contact" onClick={closeMenu}>{`\u8054\u7cfb`} <Arrow /></a>
+        <a href="/#about" onClick={closeMenu}>{L('关于我', 'About')} <Arrow /></a>
+        <a href="/#services" onClick={closeMenu}>{L('服务', 'Services')} <Arrow /></a>
+        <a href="/work" onClick={closeMenu}>{L('作品', 'Work')} <Arrow /></a>
+        <a href="/lab" onClick={closeMenu}>{L('三维试验室', '3D Testbed')} <Arrow /></a>
+        <a href="/#contact" onClick={closeMenu}>{L('联系', 'Contact')} <Arrow /></a>
       </nav>
     </header>
   );
