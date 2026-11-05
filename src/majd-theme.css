@@ -610,3 +610,10 @@ section[id], .m-archive-group[id] { scroll-margin-top: 96px; }
   cursor: pointer;
 }
 .m-lang:hover { background: var(--acid); border-color: var(--acid); color: #111; }
+
+/* 页脚联系方式：真 mailto / tel 链接 */
+.m-footer-contact a { color: #111; text-decoration: none; border-bottom: 1px solid rgba(17,17,17,.35); padding-bottom: 2px; transition: color .2s, border-color .2s; }
+.m-footer-contact a:hover { color: #d56b83; border-color: #d56b83; }
+/* 首页联系区：链接悬停反馈更明确 */
+.m-contact-details a { transition: color .2s, border-color .2s, transform .2s; display: inline-block; }
+.m-contact-details a:hover { color: #d56b83; border-color: #d56b83; transform: translateY(-3px); }
