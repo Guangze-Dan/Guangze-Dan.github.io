@@ -36,7 +36,10 @@ export default function LabPage() {
   const [clipOn, setClipOn] = useState(false);
   const [clipAxis, setClipAxis] = useState('z');
   const [clipPos, setClipPos] = useState(0);
-  const [labelsOn, setLabelsOn] = useState(true);
+  const [labelsOn, setLabelsOn] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return !window.matchMedia('(pointer: coarse)').matches;
+  });
   const [readout, setReadout] = useState(null);
   const [stage, setStage] = useState(null);
   const [hotspot, setHotspot] = useState(null);
@@ -115,7 +118,18 @@ export default function LabPage() {
     if (!viewer) return;
     viewer.playing = !viewer.playing;
     setPlaying(viewer.playing);
+    // 开始播放时自动剖开，否则看不到内部响应
+    const dc = sceneRef.current?.demoClip;
+    if (viewer.playing && dc && viewer._clip?.enabled !== true) {
+      viewer.setClip({ enabled: true, ...dc });
+      setClipOn(true);
+      setClipAxis(dc.axis);
+      setClipPos(dc.pos);
+    }
   }, []);
+
+  const sceneRef = useRef(scene);
+  useEffect(() => { sceneRef.current = scene; }, [scene]);
 
   // 键盘：1–5 切场景 · 空格播放 · C 剖切 · R 复位
   useEffect(() => {
@@ -238,7 +252,8 @@ export default function LabPage() {
     if (!p || !viewer) return;
     viewer.playing = false;
     setPlaying(false);
-    if (p.clip) viewer.setClip({ enabled: true, ...p.clip });
+    const clip = p.clip || scene.demoClip;
+    if (clip) viewer.setClip({ enabled: true, ...clip });
     else viewer.setClip({ enabled: false });
     if (p.timeline != null) viewer.setTimeline(p.timeline);
     viewer.finishTweens();
@@ -372,11 +387,11 @@ export default function LabPage() {
               <button type="button" className={`lab-ctl ${stepMode ? 'is-on' : ''}`} title="按试验步骤逐段讲解" aria-label="流程模式" onClick={toggleStepMode}>流程</button>
               <button type="button" className={`lab-ctl ${tour ? 'is-on' : ''}`} title="自动环绕 + 自动播放" aria-label="导览模式" onClick={toggleTour}>巡游</button>
               <span className="lab-ctl-sep" data-g="工具" />
-              <button type="button" className="lab-ctl" title="导出当前视角 PNG" onClick={() => {
+              <button type="button" className="lab-ctl" title="纯净截图：隐藏全部标注，导出 2x PNG（适合做封面）" aria-label="纯净截图" onClick={() => {
                 const viewer = engineRef.current;
                 if (!viewer) return;
                 const a = document.createElement('a');
-                a.href = viewer.snapshot();
+                a.href = viewer.captureClean({ scale: 2 });
                 a.download = `lab-${scene.id}-${new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-')}.png`;
                 a.click();
                 setShotFlash(true);

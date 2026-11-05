@@ -166,7 +166,7 @@ body:has(.lab-page) .rb-cursor, body:has(.lab-page) .rb-trail { display: none !i
   0% { box-shadow: 0 0 0 4px rgba(242, 241, 236, .45); }
   100% { box-shadow: 0 0 0 14px rgba(242, 241, 236, 0); }
 }
-.lab-hs.is-narrate .lab-hs-tip { display: block; }
+/* 阶段叙述只做圆点脉冲提示，不自动展开文字框（避免长期遮挡）；点击才看详情 */
 
 @media (prefers-reduced-motion: reduce) {
   .lab-hs-dot { animation: none !important; }
@@ -577,6 +577,28 @@ body:has(.lab-page) .rb-cursor, body:has(.lab-page) .rb-trail { display: none !i
 
 /* 页脚适配暗色 */
 .lab-page .m-footer, .lab-page footer { color: #b9b7ae; }
+
+@media (max-width: 1180px) {
+  /* 平板：精简信息密度 */
+  .lab-panel .lab-hs-list { display: none; }
+  .lab-hero-meta { display: none; }
+  .lab-tree { bottom: 132px; }
+  /* 控制条单行横向滚动，避免换行压住读数 */
+  .lab-hud-controls {
+    top: 10px; right: 10px; left: auto;
+    max-width: calc(100% - 150px);
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+    justify-content: flex-start;
+  }
+  .lab-hud-controls::-webkit-scrollbar { display: none; }
+  .lab-ctl-sep { display: none; }
+  .lab-ctl-sep[data-g]::after { display: none; }
+  .lab-ctl { white-space: nowrap; }
+  .lab-ctl-lab { white-space: nowrap; flex: none; }
+}
 
 @media (max-width: 1080px) {
   .lab-main { grid-template-columns: 1fr; }

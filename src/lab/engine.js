@@ -55,6 +55,13 @@ export class LabViewer {
     container.addEventListener('pointermove', (e) => this.#onPointerMove(e));
     container.addEventListener('pointerdown', (e) => { this._downPos = [e.clientX, e.clientY]; });
     container.addEventListener('pointerup', (e) => this.#onPointerUp(e));
+    container.addEventListener('pointerdown', () => {
+      for (const h of this.hotspotObjs) {
+        if (h.el.classList.contains('is-narrate')) continue;
+        h.el.classList.remove('is-on');
+      }
+      this.onHotspot(null);
+    }, { capture: true });
     container.addEventListener('pointerleave', () => this.#hidePick());
     container.addEventListener('dblclick', (e) => {
       const hit = this.#pickAt(e);
@@ -213,6 +220,9 @@ export class LabViewer {
     this.scene.add(this.sceneRoot);
     this.sceneRoot.updateWorldMatrix(true, true);
     this._bbox = new THREE.Box3().setFromObject(this.sceneRoot);
+    // 收集精灵标签（随"标注"开关一起显隐）
+    this.spriteLabels = [];
+    this.sceneRoot.traverse((o) => { if (o.isSprite) this.spriteLabels.push(o); });
     // 收集可拾取对象
     this.pickables = [];
     this.pinnedPick = null;
@@ -283,7 +293,14 @@ export class LabViewer {
       const off = () => { el.classList.remove('is-on'); this.onHotspot(null); };
       el.addEventListener('pointerenter', on);
       el.addEventListener('pointerleave', off);
-      el.addEventListener('click', (e) => { e.stopPropagation(); on(); this.focusHotspot(i); });
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        on();
+        this.focusHotspot(i);
+        // 触屏没有 hover，点开后限时自动收起，避免长期遮挡
+        clearTimeout(el._tipTimer);
+        el._tipTimer = setTimeout(() => { if (!el.classList.contains('is-narrate')) off(); }, 4200);
+      });
       const css = new CSS2DObject(el);
       const parent = hs.at?.isObject3D ? hs.at : this.sceneRoot;
       if (!hs.at?.isObject3D) css.position.set(...(hs.at || [0, 0, 0]));
@@ -395,7 +412,9 @@ export class LabViewer {
   }
 
   setLabelsVisible(v) {
+    this._labelsOn = v;
     for (const h of this.hotspotObjs) h.el.style.display = v ? '' : 'none';
+    for (const sp of this.spriteLabels || []) sp.visible = v;
   }
 
   /* ---------- 线路视图：结构褪为剪影，只留发光线路 ---------- */
@@ -635,7 +654,8 @@ export class LabViewer {
     this.onStepEnter(i, st);
     if (st.option) this.setOption(st.option.id, st.option.value);
     this.setExplode(st.explode ?? 0);
-    if (st.clip) this.setClip({ enabled: true, ...st.clip });
+    const stepClip = st.clip || (st.play ? this.activeScene?.demoClip : null);
+    if (stepClip) this.setClip({ enabled: true, ...stepClip });
     else this.setClip({ enabled: false });
     this.setTimeline(st.timeline ?? 0);
     this.playing = !!st.play;
@@ -655,6 +675,40 @@ export class LabViewer {
     this.playing = false;
     this.onPlayChange(false);
     this.flyTo(mod.view.pos, mod.view.target);
+  }
+
+  // 纯净截图：隐藏全部标注与精灵，按倍率渲染一帧，用于作品集封面
+  captureClean({ scale = 2 } = {}) {
+    const w = this.container.clientWidth || 1;
+    const h = this.container.clientHeight || 1;
+    const prevRatio = this.renderer.getPixelRatio();
+    const prevLabels = this.labelRenderer.domElement.style.display;
+    const spriteState = (this.spriteLabels || []).map((sp) => sp.visible);
+    const hotspotState = this.hotspotObjs.map((x) => x.el.style.display);
+
+    this.labelRenderer.domElement.style.display = 'none';
+    const prevHelper = this.clipHelper.visible;
+    this.clipHelper.visible = false;
+    const prevSel = this.selOutline.visible;
+    this.selOutline.visible = false;
+    for (const sp of this.spriteLabels || []) sp.visible = false;
+    for (const x of this.hotspotObjs) x.el.style.display = 'none';
+
+    this.renderer.setPixelRatio(scale);
+    this.renderer.setSize(w, h, false);
+    this.renderer.render(this.scene, this.camera);
+    const url = this.renderer.domElement.toDataURL('image/png');
+
+    // 还原
+    this.renderer.setPixelRatio(prevRatio);
+    this.renderer.setSize(w, h, false);
+    this.labelRenderer.domElement.style.display = prevLabels;
+    this.clipHelper.visible = prevHelper;
+    this.selOutline.visible = prevSel;
+    (this.spriteLabels || []).forEach((sp, i) => { sp.visible = spriteState[i]; });
+    this.hotspotObjs.forEach((x, i) => { x.el.style.display = hotspotState[i]; });
+    this.renderer.render(this.scene, this.camera);
+    return url;
   }
 
   // 同步渲染一帧并返回 dataURL（自动化/调试用，绕过合成器）

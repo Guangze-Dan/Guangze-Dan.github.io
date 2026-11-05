@@ -78,6 +78,7 @@ export default {
       focus: 9, clip: { axis: 'z', pos: 0.1 }, timeline: 0.93 },
   ],
   features: { explode: true, clip: 'z', clipRange: [-0.8, 1.2] },
+  demoClip: { axis: 'z', pos: 0.08 },
 
   build({ mats }) {
     const root = new THREE.Group();
