@@ -1,8 +1,10 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './majd-theme.css';
 import './reactbits-effects.css';
 import { SplitText, BlurText, ShinyText, GradientText, PressureWord, WordReveal, DecryptedText, TiltedCard, GlareHover, Magnet, ScrollProgress, Noise, ClickSpark, CustomCursor, TrailCursor } from './reactbits-effects.jsx';
+
+const LabPage = lazy(() => import('./lab/LabPage.jsx'));
 
 const name = '&#20294;&#20809;&#27901;';
 
@@ -353,6 +355,7 @@ function SiteNav() {
         <a href="/#about" onClick={closeMenu}>{`\u5173\u4e8e\u6211`} <Arrow /></a>
         <a href="/#services" onClick={closeMenu}>{`\u670d\u52a1`} <Arrow /></a>
         <a href="/work" onClick={closeMenu}>{`\u4f5c\u54c1`} <Arrow /></a>
+        <a href="/lab" onClick={closeMenu}>{`三维试验室`} <Arrow /></a>
         <a href="/#contact" onClick={closeMenu}>{`\u8054\u7cfb`} <Arrow /></a>
       </nav>
     </header>
@@ -721,6 +724,19 @@ function ProjectPage({ project }) {
     const link = document.querySelector('.m-detail-copy .m-underlink');
     if (link) link.href = `/work#${project.slug}`;
   }, [project.slug]);
+  // 科研工程项目：附三维试验台入口（深链到对应场景）
+  useEffect(() => {
+    const labScene = { 'caes-multiscale-cavern': 0, 'abandoned-mine-caes': 3, 'hp-flexible-sealing': 1 }[project.slug];
+    if (labScene === undefined) return undefined;
+    const copy = document.querySelector('.m-detail-copy > div');
+    if (!copy || copy.querySelector('.m-lab-link')) return undefined;
+    const a = document.createElement('a');
+    a.className = 'm-underlink m-lab-link';
+    a.href = `/lab?scene=${labScene}`;
+    a.textContent = '三维试验台模型 / 3D TESTBED →';
+    copy.appendChild(a);
+    return () => a.remove();
+  }, [project.slug]);
   const next = overviewProjects[(overviewProjects.findIndex((item) => item.slug === project.slug) + 1) % overviewProjects.length];
   const caption = mediaCaption(project);
   return <div className="majd-site m-project-page"><SiteNav /><main><section className={`m-detail-hero ${project.tone}`}><div className="m-section-kicker">/ {`\u4f5c\u54c1`} {project.n} / {project.year}</div><h1><SplitText>{project.titleCn}</SplitText><i>{project.title}</i></h1><p>{project.intro}</p><div className="m-detail-meta"><span>{project.type}</span><span>{project.role}</span><span><span dangerouslySetInnerHTML={{ __html: name }} /> / {`\u6b66\u6c49\uff0c\u4e2d\u56fd`}</span></div></section><section className="m-detail-media"><ProjectVisual project={project} large /><div className="m-detail-caption"><span>{caption.label}</span><p>{caption.text}</p></div></section><section className="m-detail-copy"><div className="m-section-kicker">/ {`\u9879\u76ee\u4ecb\u7ecd`}</div><div><h2>{project.titleCn}{` \u662f\u4e00\u6b21\u8ba9\u60f3\u6cd5 `}<i>{`\u53d8\u5f97\u53ef\u611f\u7684\u5b9e\u8df5\u3002`}</i></h2><p>{project.detail}</p><a className="m-underlink" href="/work">{`\u8fd4\u56de\u5168\u90e8\u4f5c\u54c1`} <Arrow /></a></div></section><section className="m-next-project"><a href={`/work/${next.slug}`}><small>{next.n} / {next.type}</small><h2>{next.titleCn}<small>{next.title}</small> <NextArrow /></h2></a></section></main><SiteFooter /></div>;
@@ -769,6 +785,8 @@ function App() {
   useEffect(() => {
     if (path === '/work') {
       document.title = `\u4f5c\u54c1 / SELECTED PROJECTS \u00b7 \u4f46\u5149\u6cfd\u4f5c\u54c1\u96c6`;
+    } else if (path === '/lab') {
+      document.title = `三维试验室 / 3D TESTBED \u00b7 \u4f46\u5149\u6cfd\u4f5c\u54c1\u96c6`;
     } else if (path.startsWith('/work/')) {
       const project = projects.find((item) => item.slug === path.slice('/work/'.length));
       document.title = project ? `${project.titleCn} \u00b7 \u4f46\u5149\u6cfd\u4f5c\u54c1\u96c6` : `\u4f5c\u54c1 / SELECTED PROJECTS \u00b7 \u4f46\u5149\u6cfd\u4f5c\u54c1\u96c6`;
@@ -830,6 +848,8 @@ function App() {
   let page;
   if (path === '/work') {
     page = <WorkPage />;
+  } else if (path === '/lab') {
+    page = <Suspense fallback={<div className="lab-loading">三维试验室加载中 / LOADING 3D TESTBED…</div>}><LabPage /></Suspense>;
   } else if (path.startsWith('/work/')) {
     const project = projects.find((item) => item.slug === path.slice('/work/'.length));
     page = project ? <ProjectPage project={project} /> : <WorkPage />;
@@ -850,3 +870,6 @@ function App() {
 }
 
 createRoot(document.getElementById('root')).render(<AppErrorBoundary />);
+
+// 供 /lab 三维试验室页复用站点导航与页脚
+export { SiteNav, SiteFooter };
