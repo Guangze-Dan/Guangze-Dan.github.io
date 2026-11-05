@@ -448,14 +448,32 @@ export function CustomCursor() {
       ring.style.transform = `translate(${rx}px, ${ry}px)`;
       frame = requestAnimationFrame(tick);
     };
-    document.documentElement.classList.add('rb-cursor-on');
+    // 进入/离开页面时切换：离开必须放回原生光标，否则鼠标像被锁在网页里
+    const setActive = (on) => {
+      document.documentElement.classList.toggle('rb-cursor-on', on);
+      dot.style.opacity = on ? '1' : '0';
+      ring.style.opacity = on ? '1' : '0';
+    };
+    const onLeave = () => setActive(false);
+    const onEnter = () => setActive(true);
+    setActive(true);
     window.addEventListener('pointermove', onMove, { passive: true });
     document.addEventListener('pointerover', onOver, true);
+    document.addEventListener('pointerleave', onLeave, true);
+    document.documentElement.addEventListener('mouseleave', onLeave);
+    window.addEventListener('blur', onLeave);
+    window.addEventListener('pointerenter', onEnter);
+    document.addEventListener('mouseenter', onEnter);
     frame = requestAnimationFrame(tick);
     return () => {
       document.documentElement.classList.remove('rb-cursor-on');
       window.removeEventListener('pointermove', onMove);
       document.removeEventListener('pointerover', onOver, true);
+      document.removeEventListener('pointerleave', onLeave, true);
+      document.documentElement.removeEventListener('mouseleave', onLeave);
+      window.removeEventListener('blur', onLeave);
+      window.removeEventListener('pointerenter', onEnter);
+      document.removeEventListener('mouseenter', onEnter);
       cancelAnimationFrame(frame);
     };
   }, [enabled]);
