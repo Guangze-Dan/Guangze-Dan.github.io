@@ -441,7 +441,7 @@ export default function LabPage() {
       <SiteNav />
       <main>
         <section className="lab-hero">
-          <div className="m-section-kicker">{T('/ 试验室 / 3D TESTBED', '/ 3D TESTBED')}</div>
+          <div className="m-section-kicker">{T('/ 试验室', '/ 3D TESTBED')}</div>
           <h1>{T('把试验方案，建成', 'Every test plan, rebuilt as ')}<em>{T('可以走进去', 'a room you can enter')}</em>{T('的三维模型。', '.')}</h1>
           <p>
             {T('全部按方案尺寸与实拍照片程序化建模：每一颗螺栓、每一根引线、每一个测点都有出处。拖动剖切看构造内部，拉开爆炸图看装配层级，按播放走一遍加载程序。',
