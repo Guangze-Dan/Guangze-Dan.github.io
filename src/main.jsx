@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import React, { lazy, Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './majd-theme.css';
 import './reactbits-effects.css';
@@ -354,7 +354,7 @@ function SiteNav() {
           <button className="m-search-trigger" type="button" aria-label={`\u641c\u7d22\u4f5c\u54c1\uff08\u5feb\u6377\u952e / \u6216 Ctrl K\uff09`} title={`\u641c\u7d22\u4f5c\u54c1 /`} onClick={() => { closeMenu(); openSearch(); }}>
             <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="6.2" stroke="currentColor" strokeWidth="1.8" /><path d="M13.8 13.8 18 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>
           </button>
-          <button className="m-lang" type="button" aria-label="切换语言 / Switch language" title="切换语言 / Switch language" onClick={() => setLang(lang === 'zh' ? 'en' : 'zh')}>{lang === 'zh' ? 'EN' : '中'}</button>
+          <button className="m-lang" type="button" aria-label="切换语言 / Switch language" title="切换语言 / Switch language" onClick={() => { const next = getLang() === 'zh' ? 'en' : 'zh'; setLang(next); const u = new URL(window.location.href); u.searchParams.set('lang', next); window.location.replace(u.toString()); }}>{document.documentElement.lang === 'zh-CN' ? 'EN' : '中'}</button>
           <button className="m-menu" type="button" aria-label={`\u6253\u5f00\u5bfc\u822a`} aria-expanded={menuOpen} onClick={() => setMenuOpen((open) => !open)}>
             <span />
             <span />
@@ -778,11 +778,8 @@ class AppErrorBoundary extends React.Component {
 function App() {
   const path = window.location.pathname.replace(/\/+$/, '') || '/';
   const [searchOpen, setSearchOpen] = useState(false);
-  const [, setLangTick] = useState(0);
-  useEffect(() => {
-    // 语言切换：先切换作品数据语言，再强制重渲染
-    return subscribeLang((l) => { localizeProjects(projects, l); setLangTick((n) => n + 1); });
-  }, []);
+  // 语言切换通过重载页面完成；加载时把数据层文案切到当前语言
+  useLayoutEffect(() => { localizeProjects(projects, getLang()); }, []);
   useEffect(() => {
     const onKey = (event) => {
       const tag = (event.target && event.target.tagName) || '';
