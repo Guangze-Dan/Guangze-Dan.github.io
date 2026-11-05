@@ -3,6 +3,7 @@
 // 爆炸方向写进 userData.explodeDir / userData.explodeDist（米）。
 import * as THREE from 'three';
 import { textTexture, gaugeFaceTexture } from './materials.js';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { getLang } from '../lang.js';
 import { LAB_EN, enLines } from './scene-en.js';
 
@@ -213,6 +214,7 @@ export function mechGauge(mats, { r = 0.05, maxLabel = '2.0' } = {}) {
   const needle = group({ p: [0, 0, 0.0125] });
   needle.add(mesh(geo('needle', () => new THREE.BoxGeometry(0.0026, r * 0.78, 0.0012)), mats.warnRed, { p: [0, r * 0.32, 0], cast: false }));
   needle.add(mesh(geo('needleHub', () => new THREE.CylinderGeometry(0.006, 0.006, 0.004, 12)), mats.darkSteel, { r: [Math.PI / 2, 0, 0], cast: false }));
+  needle.userData.animated = true; // 指针逐帧旋转，禁止参与静态合并
   g.add(needle);
   g.add(mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.02, 10), mats.brass, { p: [0, -r + 0.002, -0.008], r: [Math.PI / 2.6, 0, 0] }));
   g.userData.needle = needle;
@@ -655,6 +657,52 @@ export function powerStrip(mats, { w = 0.32 } = {}) {
 export function pickable(obj, title, lines = []) {
   obj.userData.pick = enPick({ title, lines });
   return obj;
+}
+
+// 静态组合并：把组内网格按（材质+阴影组合）烘焙成少量大网格，砍绘制调用。
+// 只动组内子网格——组级爆炸/拾取（射线向上找 userData.pick）/剖切（材质克隆）都不受影响。
+// 跳过：精灵、自身爆炸的网格、爆炸祖先下的网格（合并会破坏其相对运动）、
+//       多材质网格、动态材质（userData.local，如闪烁探头/屏幕）。
+// 共享几何体不释放（缓存复用），合并用的临时克隆即时释放。
+export function mergeStatic(group) {
+  if (!group?.isGroup) return 0;
+  group.updateWorldMatrix(true, true);
+  const inv = new THREE.Matrix4().copy(group.matrixWorld).invert();
+  const buckets = new Map();
+  const dead = [];
+  const walk = (o, underFrozen, isRoot) => {
+    // 根自身的 explodeDir 完全忽略：合并体加入根后仍随根整体移动；
+    // 深层的爆炸子组 / 动画对象（指针、量程柱）才会使其成员保持独立
+    if (o.isMesh && !underFrozen && !o.userData?.animated) {
+      const mats = Array.isArray(o.material) ? o.material : [o.material];
+      if (mats.length === 1 && !mats[0].userData?.local) {
+        const m = mats[0];
+        const key = `${m.uuid}|${o.castShadow ? 1 : 0}${o.receiveShadow ? 1 : 0}`;
+        if (!buckets.has(key)) buckets.set(key, { mat: m, cast: o.castShadow, recv: o.receiveShadow, geos: [] });
+        const rel = new THREE.Matrix4().multiplyMatrices(inv, o.matrixWorld);
+        buckets.get(key).geos.push(o.geometry.clone().applyMatrix4(rel));
+        dead.push(o);
+      }
+    }
+    const childFrozen = underFrozen || (!isRoot && (Boolean(o.userData?.explodeDir) || Boolean(o.userData?.animated)));
+    for (const c of o.children) walk(c, childFrozen, false);
+  };
+  walk(group, false, true);
+  if (!dead.length) return 0;
+  const mergedMeshes = [];
+  for (const { mat, cast, recv, geos } of buckets.values()) {
+    const merged = geos.length === 1 ? geos[0] : mergeGeometries(geos, false);
+    if (!merged) { for (const b of buckets.values()) for (const g of b.geos) g.dispose(); return 0; }
+    const mesh = new THREE.Mesh(merged, mat);
+    mesh.castShadow = cast;
+    mesh.receiveShadow = recv;
+    mesh.name = 'merged';
+    mergedMeshes.push(mesh);
+  }
+  for (const o of dead) o.parent?.remove(o);
+  for (const mesh of mergedMeshes) group.add(mesh);
+  for (const { geos } of buckets.values()) if (geos.length > 1) for (const g of geos) g.dispose();
+  return dead.length;
 }
 
 // 信号流：管路/线缆上流动的光点（数据在流动的观感）

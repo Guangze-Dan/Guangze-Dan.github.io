@@ -224,6 +224,7 @@ export default {
     const bagMat = new THREE.MeshStandardMaterial({ color: 0x1e1f21, roughness: 0.86, metalness: 0.02, side: THREE.DoubleSide });
     bagMat.userData.local = true;
     const bag = P.mesh(new THREE.CapsuleGeometry(0.2, 0.45, 12, 40), bagMat, { p: [0, 0.585, 0], recv: true });
+    bag.userData.animated = true; // 呼吸缩放逐帧驱动，禁止合并
     bagAsm.add(bag);
     // 玄武岩纤维布缠绕（直段下段）
     const wrap = new THREE.Mesh(
@@ -312,6 +313,8 @@ export default {
     barGeo.translate(0, 0.5, 0);
     const p1Bar = new THREE.Mesh(barGeo, new THREE.MeshBasicMaterial({ color: 0x5ab8ff, transparent: true, opacity: 0.85 }));
     const p2Bar = new THREE.Mesh(barGeo, new THREE.MeshBasicMaterial({ color: 0xd9ff58, transparent: true, opacity: 0.85 }));
+    p1Bar.userData.animated = true; // 量程柱随压力伸缩/变色，禁止合并
+    p2Bar.userData.animated = true;
     p1Bar.position.set(0.055, 1.55, 0.09);
     p2Bar.position.set(0.2, 1.55, 0.09);
     top.add(p1Bar, p2Bar);
@@ -467,6 +470,7 @@ export default {
       return Math.max(0.8, 5.3 - f * 4.3 - Math.sin(f * 22) * 0.15);
     };
 
+    P.mergeStatic(shell); P.mergeStatic(bagAsm); P.mergeStatic(top);
     return {
       clipTargets: [shell, bagAsm, supportG, top],
   root,

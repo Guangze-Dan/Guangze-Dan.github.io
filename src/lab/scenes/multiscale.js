@@ -465,6 +465,7 @@ export default {
     // 顶面测点随顶盖爆开（attach 保持世界变换）
     for (const o of [tBox, lvdt2, ...tcTop, ...aeSensors.slice(0, 6)]) cover.attach(o);
 
+    P.mergeStatic(box); P.mergeStatic(bricks);
     return {
       clipTargets: [box, rock, cavern, crackBands],
   root,
