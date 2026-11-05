@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import './majd-theme.css';
 import './reactbits-effects.css';
 import { getLang, setLang, subscribeLang } from './lang.js';
+import { localizeProjects } from './projects-en.js';
 import { SplitText, BlurText, ShinyText, GradientText, PressureWord, WordReveal, DecryptedText, TiltedCard, GlareHover, Magnet, ScrollProgress, Noise, ClickSpark, CustomCursor, TrailCursor } from './reactbits-effects.jsx';
 
 const LabPage = lazy(() => import('./lab/LabPage.jsx'));
@@ -32,6 +33,8 @@ Object.assign(projects[1], { title: 'The Wish', titleCn: '\u300a\u613f\u300b', i
 Object.assign(projects[2], { title: 'Road Crack Detection System', titleCn: '\u9053\u8def\u88c2\u7f1d\u68c0\u6d4b\u7cfb\u7edf', intro: '\u300a\u9053\u8def\u88c2\u7f1d\u68c0\u6d4b\u7cfb\u7edf\u300b\u5c06\u590d\u6742\u7684\u9053\u8def\u4fe1\u606f\u8f6c\u5316\u4e3a\u4e00\u4e2a\u53ef\u4ee5\u63a2\u7d22\u3001\u88ab\u6ce8\u610f\u548c\u88ab\u7406\u89e3\u7684\u6570\u5b57\u7a7a\u95f4\u3002' });
 Object.assign(projects[3], { title: 'Sanhe Daxian', titleCn: '\u4e09\u548c\u5927\u795e', intro: '\u300a\u4e09\u548c\u5927\u795e\u300b\u662f\u4e00\u6b21\u5173\u4e8e\u65e5\u5e38\u79fb\u52a8\u3001\u8ddd\u79bb\u548c\u5904\u4e8e\u4e24\u5730\u4e4b\u95f4\u611f\u53d7\u7684\u52a8\u6001\u5f71\u50cf\u7814\u7a76\u3002' });
 Object.assign(projects.find((project) => project.slug === 'the-most-of-us'), { titleCn: '\u5927\u591a\u6570' });
+
+// 初始语言：把作品数据切到当前语言
 
 const mediaBySlug = {
   'animating-the-invisible': { media: '/projects/media/animating-the-invisible.mp4', mediaType: 'video' },
@@ -114,6 +117,9 @@ const cardDescriptions = {
   'yun-house': '\u300a\u4e91\u5c4b\u300b\u662f\u4e00\u6b3e\u9762\u5411\u82f1\u56fd\u4e2d\u9910\u5385\u4e0e\u4e91\u5357\u9910\u996e\u54c1\u724c\u7684\u6570\u5b57\u5316\u70b9\u9910\u7cfb\u7edf\u3002'
 };
 projects.forEach((project) => { if (cardDescriptions[project.slug]) project.text = cardDescriptions[project.slug]; });
+
+// 作品数据装配完成后，按当前语言应用（英文：英文做主标题，中文做副标题）
+localizeProjects(projects, getLang());
 
 const overviewOrder = [
   'caes-multiscale-cavern', 'hp-flexible-sealing', 'abandoned-mine-caes', 'animating-the-invisible', 'wish', 'project', 'sanhe-drifters',
@@ -772,6 +778,11 @@ class AppErrorBoundary extends React.Component {
 function App() {
   const path = window.location.pathname.replace(/\/+$/, '') || '/';
   const [searchOpen, setSearchOpen] = useState(false);
+  const [, setLangTick] = useState(0);
+  useEffect(() => {
+    // 语言切换：先切换作品数据语言，再强制重渲染
+    return subscribeLang((l) => { localizeProjects(projects, l); setLangTick((n) => n + 1); });
+  }, []);
   useEffect(() => {
     const onKey = (event) => {
       const tag = (event.target && event.target.tagName) || '';
@@ -875,6 +886,9 @@ function App() {
 }
 
 createRoot(document.getElementById('root')).render(<AppErrorBoundary />);
+
+// 整站语言应用层（交换已有双语文案 + 词典翻译）
+import('./auto-translate.js').then((m) => m.initAutoTranslate());
 
 // 供 /lab 三维试验室页复用站点导航与页脚
 export { SiteNav, SiteFooter };
