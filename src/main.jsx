@@ -194,16 +194,16 @@ const searchIndex = projects.map((project) => ({
   haystack: [project.titleCn, project.title, project.type, project.role, project.intro, project.detail, project.text, project.year, categoryTitleBySlug[project.slug] || '', ...(searchTagsBySlug[project.slug] || [])].filter(Boolean).join('\n').toLowerCase()
 }));
 const searchTags = [
-  { label: `\u5b9a\u683c\u52a8\u753b`, kw: `\u5b9a\u683c` },
-  { label: `\u6e38\u620f\u8bbe\u8ba1`, kw: `\u6e38\u620f` },
-  { label: `\u58f0\u97f3\u53d9\u4e8b`, kw: `\u58f0\u97f3` },
-  { label: `\u535a\u7269\u9986`, kw: `\u535a\u7269\u9986` },
-  { label: `\u65e0\u969c\u788d`, kw: `\u65e0\u969c\u788d` },
-  { label: `\u8ba1\u7b97\u673a\u89c6\u89c9`, kw: `yolo` },
-  { label: `\u865a\u5e7b\u5f15\u64ce`, kw: `\u865a\u5e7b` },
-  { label: `AIGC`, kw: `aigc` },
-  { label: `BIM`, kw: `bim` },
-  { label: `Twine`, kw: `twine` }
+  { zh: '定格动画', en: 'Stop-motion', kw: '定格' },
+  { zh: '游戏设计', en: 'Game design', kw: '游戏' },
+  { zh: '声音叙事', en: 'Sound narrative', kw: '声音' },
+  { zh: '博物馆', en: 'Museum', kw: '博物馆' },
+  { zh: '无障碍', en: 'Accessibility', kw: '无障碍' },
+  { zh: '计算机视觉', en: 'Computer vision', kw: 'yolo' },
+  { zh: '虚幻引擎', en: 'Unreal Engine', kw: '虚幻' },
+  { zh: 'AIGC', en: 'AIGC', kw: 'aigc' },
+  { zh: 'BIM', en: 'BIM', kw: 'bim' },
+  { zh: 'Twine', en: 'Twine', kw: 'twine' }
 ];
 const openSearch = () => window.dispatchEvent(new CustomEvent('open-search'));
 
@@ -217,6 +217,8 @@ function Highlight({ text, q }) {
 function SearchOverlay({ open, onClose }) {
   const [query, setQuery] = useState('');
   const [active, setActive] = useState(0);
+  // 提示语言跟随输入：打了中文给中文 hint，打了英文给英文 hint；未输入时跟随界面语言
+  const hintEn = /[\u4e00-\u9fff]/.test(query.trim()) ? false : (query.trim() ? true : getLang() === 'en');
   const inputRef = useRef(null);
   const q = query.trim();
   const results = useMemo(() => (q ? searchIndex.filter((item) => item.haystack.includes(q.toLowerCase())).slice(0, 7) : []), [q]);
@@ -244,28 +246,28 @@ function SearchOverlay({ open, onClose }) {
       <div className="m-search-panel" onMouseDown={(event) => event.stopPropagation()} onClick={(event) => event.stopPropagation()}>
         <div className="m-search-head">
           <span className="m-search-kicker">/ {`\u641c\u7d22`} <small>SEARCH</small></span>
-          <input ref={inputRef} className="m-search-input" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={`\u5173\u952e\u8bcd\uff1a\u5b9a\u683c\u52a8\u753b\u3001\u58f0\u97f3\u3001YOLO\u2026`} aria-label={`\u641c\u7d22\u4f5c\u54c1\u5173\u952e\u8bcd`} />
+          <input ref={inputRef} className="m-search-input" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={TL('关键词：定格动画、声音、YOLO…', 'Keywords: stop-motion, sound, YOLO…')} aria-label={`\u641c\u7d22\u4f5c\u54c1\u5173\u952e\u8bcd`} />
           <button type="button" className="m-search-esc" onClick={onClose}>ESC</button>
         </div>
         {q === '' ? (
           <div className="m-search-tags">
-            <span>/ {`\u8054\u60f3\u8bcd`} <small>SUGGESTIONS</small></span>
-            {searchTags.map((tag) => <button type="button" key={tag.label} onClick={() => setQuery(tag.kw)}>{tag.label}</button>)}
+            <span>/ {TL('联想词', 'SUGGESTIONS')}</span>
+            {searchTags.map((tag) => <button type="button" key={tag.kw} onClick={() => setQuery(tag.kw)}>{hintEn ? tag.en : tag.zh}</button>)}
           </div>
         ) : results.length === 0 ? (
-          <div className="m-search-empty">{`\u6ca1\u6709\u627e\u5230\u4e0e\u300c${q}\u300d\u76f8\u5173\u7684\u4f5c\u54c1\uff0c\u6362\u4e2a\u5173\u952e\u8bcd\u8bd5\u8bd5\u3002`}</div>
+          <div className="m-search-empty">{hintEn ? 'No works found for "' + q + '" — try another keyword.' : '\u6ca1\u6709\u627e\u5230\u4e0e\u300c' + q + '\u300d\u76f8\u5173\u7684\u4f5c\u54c1\uff0c\u6362\u4e2a\u5173\u952e\u8bcd\u8bd5\u8bd5\u3002'}</div>
         ) : (
           <div className="m-search-results" role="listbox" aria-label={`\u641c\u7d22\u7ed3\u679c`}>
             {results.map((item, index) => (
               <a className={`m-search-item ${index === active ? 'is-active' : ''}`} role="option" aria-selected={index === active} href={`/work/${item.slug}`} key={item.slug} onMouseEnter={() => setActive(index)}>
                 <span className="m-search-num">{item.n}</span>
-                <span className="m-search-name"><Highlight text={item.cn} q={q} /><small><Highlight text={item.en} q={q} /></small></span>
+                <span className="m-search-name"><Highlight text={hintEn ? item.en : item.cn} q={q} /><small><Highlight text={hintEn ? item.cn : item.en} q={q} /></small></span>
                 <span className="m-search-meta"><Highlight text={item.type} q={q} /><small>{item.cat} / {item.year}</small></span>
               </a>
             ))}
           </div>
         )}
-        <div className="m-search-foot"><span>{`/ \u6216 CTRL K \u968f\u65f6\u5524\u8d77`}</span><span>{`\u2191\u2193 \u9009\u62e9 \u00b7 ENTER \u6253\u5f00 \u00b7 ESC \u6216\u70b9\u51fb\u7a7a\u767d\u5904\u5173\u95ed`}</span></div>
+        <div className="m-search-foot"><span>{TL('/ 或 CTRL K 随时唤起', '/ or press CTRL K anytime')}</span><span>{TL('↑↓ 选择 · ENTER 打开 · ESC 或点击空白处关闭', '↑↓ navigate · ENTER open · ESC or click blank to close')}</span></div>
       </div>
     </div>
   );
@@ -704,7 +706,7 @@ function ContactSection() {
 }
 
 function SiteFooter() {
-  return <footer className="m-footer"><div className="m-footer-top"><h2 dangerouslySetInnerHTML={{ __html: name }} /><p>{`\u4ea4\u4e92\u8bbe\u8ba1\u5e08 / \u521b\u610f\u6280\u672f\u5de5\u4f5c\u8005\u3002`}<br />{`\u521b\u9020\u53ef\u4ee5\u88ab\u4eba\u611f\u53d7\u7684\u6545\u4e8b\u3001\u4e16\u754c\u548c\u7cfb\u7edf\u3002`}</p></div><div className="m-footer-links"><span>/ {`\u5feb\u901f\u5bfc\u822a`}</span><a href="/#home">{`\u9996\u9875`}</a><a href="/#about">{`\u5173\u4e8e\u6211`}</a><a href="/#services">{`\u670d\u52a1`}</a><a href="/work">{`\u4f5c\u54c1`}</a><a href="/#contact">{`\u8054\u7cfb`}</a><button type="button" className="m-footer-search" onClick={openSearch}>{`\u641c\u7d22`}<small>SEARCH /</small></button></div><div className="m-footer-contact"><span>{TL('/ 联系方式', '/ CONTACT')}</span><a href="mailto:guangze.dan.24@alumni.ucl.ac.uk">guangze.dan.24@alumni.ucl.ac.uk</a><a href="tel:+8618083893420">+86 180 8389 3420</a><span>UCL - London / UOY - York / Wuhan</span></div><small>&copy; 2026 / <GradientText from="#d9ff58" via="#d56b83" to="#f1f0eb">{`\u4fdd\u6301\u597d\u5947\uff0c\u6301\u7eed\u521b\u4f5c\u3002`}</GradientText></small></footer>;
+  return <footer className="m-footer"><div className="m-footer-top"><h2 dangerouslySetInnerHTML={{ __html: name }} /><p>{`\u4ea4\u4e92\u8bbe\u8ba1\u5e08 / \u521b\u610f\u6280\u672f\u5de5\u4f5c\u8005\u3002`}<br />{`\u521b\u9020\u53ef\u4ee5\u88ab\u4eba\u611f\u53d7\u7684\u6545\u4e8b\u3001\u4e16\u754c\u548c\u7cfb\u7edf\u3002`}</p></div><div className="m-footer-links"><span>/ {`\u5feb\u901f\u5bfc\u822a`}</span><a href="/#home">{`\u9996\u9875`}</a><a href="/#about">{`\u5173\u4e8e\u6211`}</a><a href="/#services">{`\u670d\u52a1`}</a><a href="/work">{`\u4f5c\u54c1`}</a><a href="/#contact">{`\u8054\u7cfb`}</a><button type="button" className="m-footer-search" onClick={openSearch}>{TL('搜索', 'Search')}<small>{TL('SEARCH', '搜索')}</small></button></div><div className="m-footer-contact"><span>{TL('/ 联系方式', '/ CONTACT')}</span><a href="mailto:guangze.dan.24@alumni.ucl.ac.uk">guangze.dan.24@alumni.ucl.ac.uk</a><a href="tel:+8618083893420">+86 180 8389 3420</a><span>UCL - London / UOY - York / Wuhan</span></div><small>&copy; 2026 / <GradientText from="#d9ff58" via="#d56b83" to="#f1f0eb">{`\u4fdd\u6301\u597d\u5947\uff0c\u6301\u7eed\u521b\u4f5c\u3002`}</GradientText></small></footer>;
 }
 
 function WorkPage() {
