@@ -686,7 +686,14 @@ export class LabViewer {
     T.t = 0;
     T.from = { p: this.camera.position.clone(), t: this.controls.target.clone() };
     T.to = { p: toPos, t: toTarget };
-    this.onTourStep({ index: i, total: T.stops.length, label: st.macro ? '宏观全景' : this.hotspotObjs[st.focus ?? 0]?.data?.title, caption: st.caption });
+    const hsData = st.macro ? null : this.hotspotObjs[st.focus ?? 0]?.data;
+    const enLine = hsData?.lines?.find((l) => l.startsWith('@'));
+    this.onTourStep({
+      index: i, total: T.stops.length,
+      label: st.macro ? '宏观全景' : hsData?.title,
+      labelEn: st.macro ? 'Whole rig' : (enLine ? enLine.slice(1) : hsData?.title),
+      caption: st.caption,
+    });
   }
 
   #tourNext(i) {

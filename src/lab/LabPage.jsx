@@ -445,7 +445,7 @@ export default function LabPage() {
             {tour && tourStep && (
               <div className="lab-tour-caption">
                 <small>{T('线性巡游', 'Linear tour')} {tourStep.index + 1}/{tourStep.total}</small>
-                <b>{tourStep.label === '宏观全景' ? T('宏观全景', 'Whole rig') : tourStep.label}</b>
+                <b>{T(tourStep.label, tourStep.labelEn || tourStep.label)}</b>
               </div>
             )}
             {stepMode && stepInfo && (
