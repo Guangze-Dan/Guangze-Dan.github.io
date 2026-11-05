@@ -585,9 +585,45 @@ body:has(.lab-page) .rb-cursor, body:has(.lab-page) .rb-trail { display: none !i
   .lab-hero { padding-top: 100px; }
 }
 @media (max-width: 640px) {
-  .lab-hud-controls { left: 14px; }
-  .lab-hud-controls .lab-ctl[title^="导出"], .lab-hud-controls .lab-ctl[title^="回到"] { display: none; }
+  /* 控制条：单行横向滚动，不换行、不压读数 */
+  .lab-hud-controls {
+    top: 8px; right: 8px; left: auto;
+    max-width: calc(100% - 118px);
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 3px;
+    scrollbar-width: none;
+    justify-content: flex-start;
+  }
+  .lab-hud-controls::-webkit-scrollbar { display: none; }
+  .lab-hud-controls .lab-ctl { padding: 6px 9px; font-size: 10.5px; white-space: nowrap; }
+  .lab-ctl-sep { display: none; }
+  .lab-ctl-sep[data-g]::after { display: none; }
+  .lab-ctl-lab { display: none; }
+  .lab-hud-readout { top: 10px; left: 12px; }
+  .lab-hud-readout strong { font-size: 17px; }
+  .lab-hud-unit { display: none; }
+  .lab-hud-stage { font-size: 10px; }
+  .lab-hud-stage small { display: none; }
   .lab-viewport input[type='range'] { width: 80px; }
   .lab-facts { grid-template-columns: 1fr; }
   .lab-hotspot-card { display: none; }
+  /* 触屏无悬停：测点气泡改由下方列表承载，避免压住 HUD */
+  .lab-hs-tip { display: none !important; }
+  .lab-stepbar { bottom: 66px; padding: 8px 10px; }
+  .lab-stepbar-info b { font-size: 12.5px; }
+  .lab-stepbar-info span { font-size: 10px; }
+  .lab-step-card {
+    top: 54px; left: 8px; width: calc(100% - 16px);
+    max-height: 34vh; overflow-y: auto;
+    padding: 10px 12px;
+  }
+  .lab-step-card b { font-size: 12.5px; }
+  .lab-step-card span { font-size: 11px; }
+  .lab-line-legend, .lab-clip-legend { bottom: 150px; top: auto; left: 8px; padding: 8px 10px; }
+  .lab-viewport:has(.lab-stepbar) .lab-clip-legend { bottom: 172px; }
+  .lab-tree { bottom: 118px; width: calc(100% - 12px); padding: 8px 10px; }
+  .lab-tree-node { min-width: 116px; padding: 6px 8px; }
+  .lab-tree-node span { font-size: 10.5px; }
+  .lab-tree-node small { font-size: 9px; }
 }
