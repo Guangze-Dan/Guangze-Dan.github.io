@@ -551,7 +551,8 @@ function HomePage() {
     html('.m-logo', '\u4f46\u5149\u6cfd <small>Guangze Dan</small>');
     all('.m-menu-panel a', ['\u5173\u4e8e\u6211 <small>About Me</small> <span class="m-arrow">-&gt;</span>', '\u670d\u52a1 <small>Services</small> <span class="m-arrow">-&gt;</span>', '\u4f5c\u54c1 <small>Works</small> <span class="m-arrow">-&gt;</span>', '\u8054\u7cfb <small>Contact</small> <span class="m-arrow">-&gt;</span>']);
     all('.m-hero-orbit span', ['UCL - London', 'UOY - York, UK', 'Wuhan, China']);
-    html('.m-resume-button', '<strong>\u4e0b\u8f7d\u7b80\u5386<br><small>Download CV</small></strong><span class="m-arrow">-&gt;</span>');
+    html('.m-resume-button', '<strong>\u4e0b\u8f7d\u7b80\u5386<br><small>CV 中文版</small></strong><span class="m-arrow">-&gt;</span>');
+    html('.m-resume-button-en', '<strong>Download CV<br><small>English · Academic</small></strong><span class="m-arrow">-&gt;</span>');
     html('.m-avatar-back-name', '\u4f46\u5149\u6cfd<br><small>Guangze Dan</small>');
     html('.m-footer-top h2', '\u4f46\u5149\u6cfd<small>Guangze Dan</small>');
     html('.m-intro-lead p', '我是但光泽，新能源科学与工程博士研究生，研究方向为压缩空气储能地下储气库；在科研、设计与创作之间工作。<br><small>PhD researcher in new energy science and engineering, working on underground gas storage for CAES — across research, design and making.</small>');
@@ -631,7 +632,8 @@ function HomePage() {
           <div className="m-hero-side m-hero-side-left">&copy; 2026</div>
           <div className="m-hero-side m-hero-side-right"><ShinyText>/ {`\u8de8\u5a92\u4f53\u521b\u4f5c`}</ShinyText><br /><small>/ Transmedia Practice</small></div>
           <a className="m-hero-cta" href="#about">{`\u5411\u4e0b\u63a2\u7d22`} <Arrow /></a>
-          <a className="m-resume-button" href="/guangze-resume.pdf" download="Guangze-Resume.pdf"><strong>{`\u4e0b\u8f7d\u7b80\u5386`}<small>Download CV</small></strong><Arrow /></a>
+          <a className="m-resume-button" href="/guangze-resume.pdf" download="Guangze-Resume.pdf"><strong>{`\u4e0b\u8f7d\u7b80\u5386`}<small>{`CV 中文版`}</small></strong><Arrow /></a>
+          <a className="m-resume-button m-resume-button-en" href="/guangze-cv-en-york.pdf" download="Guangze-Dan-CV.pdf"><strong>{`Download CV`}<small>{`English · Academic`}</small></strong><Arrow /></a>
         </section>
 
         <section className="m-intro" id="about">

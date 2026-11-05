@@ -201,6 +201,7 @@ button, input, textarea { font: inherit; }
 .m-resume-button .m-arrow { grid-column: 2; grid-row: 1 / 3; align-self: center; color: #111; }
 .m-resume-button:hover { color: #f3f2eb; background: #111; transform: translateY(-5px); }
 .m-resume-button:hover small, .m-resume-button:hover .m-arrow { color: var(--acid); }
+.m-resume-button-en { top: 788px; }
 
 .m-intro-lead h2 small { display: block; margin-top: 15px; color: #77756d; font: 10px 'DM Mono'; letter-spacing: .06em; }
 .m-services h2 { display: flex; flex-direction: column; gap: 17px; }
@@ -253,11 +254,13 @@ button, input, textarea { font: inherit; }
 
 @media (max-width: 900px) {
   .m-resume-button { top: 735px; right: 20px; }
+  .m-resume-button-en { top: 803px; }
 }
 
 @media (max-width: 560px) {
   .m-resume-button { top: 645px; right: 20px; min-width: 130px; padding: 12px 13px 10px; }
   .m-resume-button strong { font-size: 13px; }
+  .m-resume-button-en { top: 713px; }
 }
 
 /* Match the reference site's long sticky avatar section. */
