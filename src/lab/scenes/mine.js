@@ -85,10 +85,13 @@ export default {
     frame.add(P.mesh(new THREE.BoxGeometry(2.6, 0.2, 0.24), mats.steelPaint, { p: [0, 0.14, 0], recv: true }));
     // 顶部 4 台伺服作动器压岩块
     const actuators = [];
+    const rods = []; // 活塞杆引用：合并会改变 children 顺序，动画必须走引用而非下标
     for (const x of [-0.75, -0.25, 0.25, 0.75]) {
       const jack = P.hydraulicJack(mats, { stroke: 0.16, r: 0.06 });
       jack.position.set(x, 1.75, 0);
       jack.rotation.x = Math.PI;
+      jack.children[1].userData.animated = true; // 活塞杆随循环升降，禁止合并
+      rods.push(jack.children[1]);
       frame.add(jack);
       actuators.push(jack);
       frame.add(P.mesh(new THREE.CylinderGeometry(0.09, 0.09, 0.05, 20), mats.steelMachined, { p: [x, 1.42, 0] }));
@@ -167,6 +170,7 @@ export default {
     for (const [x, y, z] of aePos) {
       const s = P.aeSensor(mats);
       s.position.set(x, y + 0.02, z);
+      s.children[1].userData.animated = true; // 浮动罩逐帧起伏，禁止合并
       mon.add(s);
       const f = new THREE.Mesh(new THREE.SphereGeometry(0.022, 10, 10), flashMat);
       f.position.set(x, y + 0.05, z); f.visible = false;
@@ -247,6 +251,8 @@ export default {
       '@Lining-defect leakage visualised for gas tightness']);
 
     let flashT = 0;
+    P.mergeStatic(frame);
+    P.mergeStatic(mon);
     return {
       clipTargets: [rock],
   root,
@@ -256,8 +262,8 @@ export default {
         oilFlow.userData.update(dt, true);
         const cyc = t * 22;
         // 作动器随循环微动
-        actuators.forEach((a, i) => {
-          a.children[1].position.y = 0.16 + Math.sin(cyc + i * 0.8) * 0.012;
+        rods.forEach((rod, i) => {
+          rod.position.y = 0.16 + Math.sin(cyc + i * 0.8) * 0.012;
         });
         // 疲劳裂缝随循环数扩展（裂纹纹理渐显）
         const fat = THREE.MathUtils.smoothstep(t, 0.35, 0.8);

@@ -216,6 +216,8 @@ export default {
 
     const lerp = THREE.MathUtils.lerp;
     const tempColor = new THREE.Color();
+    P.mergeStatic(model);
+    P.mergeStatic(skid);
     return {
       clipTargets: [model, jacket],
   root,
