@@ -327,6 +327,8 @@ export class LabViewer {
       if (en) {
         hs.title = LAB_EN[hs.title]?.title || hs.title;
         hs.lines = enLines(hs.lines);
+      } else {
+        hs.lines = hs.lines.filter((l) => !l.startsWith('@')); // 内页纯中文：'@' 行是英文摘要
       }
       const el = document.createElement('div');
       el.className = 'lab-hs' + (hs.tone === 'warn' ? ' lab-hs-warn' : '');

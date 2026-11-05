@@ -23,9 +23,9 @@ const COVER_VIEWS = {
 };
 
 const RELATED = [
-  { slug: 'caes-multiscale-cavern', label: '多尺度洞室试验' },
-  { slug: 'abandoned-mine-caes', label: '废弃矿硐储库' },
-  { slug: 'hp-flexible-sealing', label: '柔性密封试验' },
+  { slug: 'caes-multiscale-cavern', label: '多尺度洞室试验', en: 'Multiscale rig' },
+  { slug: 'abandoned-mine-caes', label: '废弃矿硐储库', en: 'Mine CAES' },
+  { slug: 'hp-flexible-sealing', label: '柔性密封试验', en: 'Flexible sealing' },
 ];
 
 function useEngine() {
@@ -426,7 +426,7 @@ export default function LabPage() {
         <SiteNav />
         <main>
           <section className="lab-hero">
-            <div className="m-section-kicker">/ 试验室 / 3D TESTBED</div>
+            <div className="m-section-kicker">{T('/ 试验室', '/ 3D TESTBED')}</div>
             <h1>当前环境<em>不支持 WebGL</em>。</h1>
             <p>三维试验室需要启用 WebGL 的浏览器（Chrome / Edge / Firefox / Safari 均可）。错误信息：{glError}</p>
           </section>
@@ -626,7 +626,6 @@ export default function LabPage() {
             <div className="lab-panel-head">
               <small>{scene.n} / {scene.kicker}</small>
               <h2>{scene.titleCn}</h2>
-              <i>{scene.titleEn}</i>
               <p>{scene.desc}</p>
               {scene.principle && <p className="lab-principle">{scene.principle}</p>}
             </div>
@@ -658,8 +657,8 @@ export default function LabPage() {
         </section>
 
         <section className="lab-related">
-          <span>{T('对应作品 / WORKS', 'RELATED WORKS')}</span>
-          {RELATED.map((r) => <a key={r.slug} href={`/work/${r.slug}`}>{r.label} →</a>)}
+          <span>{T('对应作品', 'RELATED WORKS')}</span>
+          {RELATED.map((r) => <a key={r.slug} href={`/work/${r.slug}`}>{T(r.label, r.en)} →</a>)}
         </section>
       </main>
       <SiteFooter />
