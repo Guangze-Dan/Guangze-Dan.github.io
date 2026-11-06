@@ -2,19 +2,19 @@
 // 只有这里列出的条目会切换；未列出的保持原样
 export const PROJECT_EN = {
   'animating-the-invisible': {
-    title: 'Making the Invisible Visible',
+    title: 'Animating the Invisible',
     type: 'MA project / audiovisual work',
     role: 'Research / motion / sound',
     text: 'A research-led moving image work that makes hidden forces and feelings perceptible.',
-    intro: 'Making the Invisible Visible asks how audiovisual experience can give form to forces that are usually only felt, never seen.',
+    intro: 'Animating the Invisible asks how audiovisual experience can give form to forces that are usually only felt, never seen.',
     detail: 'My MA graduation project: observation, animation, sound and creative coding turn an invisible system into an atmospheric journey you can sense.',
   },
   wish: {
-    title: 'The Wish',
+    title: 'Wish',
     type: 'Game / world building',
     role: 'Game design / world building / interaction',
     text: 'A playable world shaped by atmosphere, character and environmental storytelling.',
-    intro: 'The Wish is a game world about movement, encounters and small choices.',
+    intro: 'Wish is a game world about movement, encounters and small choices.',
     detail: 'Visual language, environmental logic and interaction rhythm were developed into one coherent system, so the story is discovered through play.',
   },
   project: {
@@ -34,7 +34,7 @@ export const PROJECT_EN = {
     detail: 'Fragments, rhythm and ambient sound replace a fixed storyline, letting a sense of place build up through observation.',
   },
   'caes-multiscale-cavern': {
-    title: 'Multi-scale Cavern Cyclic Pressure Test',
+    title: 'Multi-scale CAES Cavern Cyclic Pressure Test',
     type: 'Research engineering / physical model test',
     role: 'Project lead / test design',
     text: 'A combined UPVC main cavern, multi-scale flexible caverns and discontinuous precast crack zones that reproduces the loading environment of a CAES cavern group.',
@@ -58,7 +58,7 @@ export const PROJECT_EN = {
     detail: 'For PowerChina Chengdu Engineering I wrote the 20 MPa test plan and designed the platform: flexible sealing bag, polyurethane fill and steel reaction barrel. The 500 mm barrel was structurally calculated and its pressure boundary checked (22 MPa design, 24 × M48 studs). I defined stepped pressurisation (0.5–20 MPa), constant-pressure holds and cyclic loading, integrated pressure, humidity and strain channels with overpressure interlock, and set up the comparison of three candidate materials with failure criteria.',
   },
   'ds-final': {
-    title: 'DS Final',
+    title: 'Audio Storytelling',
     type: 'Sound design / audio case',
     role: 'Sound design',
     text: 'A sound design case study.',
@@ -70,7 +70,7 @@ export const PROJECT_EN = {
     text: 'An interactive Twine narrative about migration, labour and social mobility.',
   },
   'guangze-project-demo': {
-    title: 'GuangzeDan Project Demo',
+    title: 'BIM Digital Twin',
     type: 'Unreal Engine / BIM / animation',
     role: 'UE5 / BIM / animation',
     text: 'A Yorkshire BIM walkthrough built with a homemade animation editor in UE5.',

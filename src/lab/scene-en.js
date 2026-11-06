@@ -2,7 +2,7 @@
 // 只列需要翻译的字段；缺省则回落到中文。
 export const SCENE_EN = {
   multiscale: {
-    title: 'Multi-scale Cavern Cyclic Pressure Test',
+    title: 'Multi-scale CAES Cavern Cyclic Pressure Test',
     kicker: 'Research / Physical model test · Project lead',
     readoutLabel: 'Cavern pressure · prototype ×10',
     desc: 'A 10:1 scaled rig reproduces the loading environment of a CAES cavern group: a UPVC main cavern, multi-scale flexible caverns and discontinuous precast crack zones. 72 strain channels, FBG and AE share one time base, answering one question — can rock degradation be seen?',

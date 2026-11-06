@@ -22,17 +22,17 @@ const projects = [
 
 const makeArchiveProject = (slug, n, title, titleCn, type, text, mark, tone) => ({ slug, n, title, titleCn, type, text, mark, tone, year: '2024', role: type, intro: text, detail: text });
 projects.push(
-  makeArchiveProject('ds-final', '05', 'DS Final', '\u58f0\u97f3\u8bbe\u8ba1', '\u58f0\u97f3\u8bbe\u8ba1 / \u97f3\u9891\u6848\u4f8b', '\u6211\u7684\u58f0\u97f3\u8bbe\u8ba1\u6848\u4f8b\u3002', 'DS', 'project-dark'),
+  makeArchiveProject('ds-final', '05', 'Audio Storytelling', '\u58f0\u97f3\u8bbe\u8ba1', '\u58f0\u97f3\u8bbe\u8ba1 / \u97f3\u9891\u6848\u4f8b', '\u6211\u7684\u58f0\u97f3\u8bbe\u8ba1\u6848\u4f8b\u3002', 'DS', 'project-dark'),
   makeArchiveProject('the-most-of-us', '06', 'The Most of Us', '\u5927\u591a\u6570', '\u4ea4\u4e92\u6545\u4e8b / Twine', '\u4e00\u4e2a\u57fa\u4e8e Twine \u5236\u4f5c\u7684\u4ea4\u4e92\u6545\u4e8b\u3002', 'TW', 'project-acid'),
-  makeArchiveProject('guangze-project-demo', '07', 'GuangzeDan Project Demo', '\u7ea6\u514b\u90e1 BIM \u5b9e\u666f\u52a8\u753b\u5c55\u793a\u7cfb\u7edf', '\u865a\u5e7b\u5f15\u64ce / BIM / \u52a8\u753b', '\u57fa\u4e8e\u7ea6\u514b\u90e1\u5236\u4f5c\u7684 BIM \u5b9e\u666f\u52a8\u753b\u5c55\u793a\u7cfb\u7edf\uff0c\u4f7f\u7528 UE5 \u81ea\u5236\u52a8\u753b\u7f16\u8f91\u5668\u5b8c\u6210\u3002', 'UE5', 'project-blue'),
+  makeArchiveProject('guangze-project-demo', '07', 'BIM Digital Twin', '\u7ea6\u514b\u90e1 BIM \u5b9e\u666f\u52a8\u753b\u5c55\u793a\u7cfb\u7edf', '\u865a\u5e7b\u5f15\u64ce / BIM / \u52a8\u753b', '\u57fa\u4e8e\u7ea6\u514b\u90e1\u5236\u4f5c\u7684 BIM \u5b9e\u666f\u52a8\u753b\u5c55\u793a\u7cfb\u7edf\uff0c\u4f7f\u7528 UE5 \u81ea\u5236\u52a8\u753b\u7f16\u8f91\u5668\u5b8c\u6210\u3002', 'UE5', 'project-blue'),
   makeArchiveProject('solar-hater', '08', 'Solar Hater', '\u9010\u65e5\u8005', '\u52a8\u6001\u5f71\u50cf / \u89c6\u89c9\u5b9e\u9a8c', '\u56f4\u7ed5\u5149\u3001\u9634\u5f71\u4e0e\u73af\u5883\u5173\u7cfb\u7684\u89c6\u542c\u5b9e\u9a8c\u3002', 'SH', 'project-pink'),
   makeArchiveProject('student-roamer', '10', 'Student Roamer', '\u5b66\u751f\u6f2b\u6e38\u8005', '\u670d\u52a1\u8bbe\u8ba1 / \u754c\u9762', '\u4e3a\u5b66\u751f\u5728\u57ce\u5e02\u4e2d\u53d1\u73b0\u5730\u65b9\u7684\u4f53\u9a8c\u8bbe\u8ba1\u3002', 'SR', 'project-blue'),
   makeArchiveProject('railway-museum-storytelling', '12', 'Interactive Storytelling for National Railway Museum', '\u56fd\u5bb6\u94c1\u8def\u535a\u7269\u9986\u4ea4\u4e92\u53d9\u4e8b', '\u535a\u7269\u9986\u4ea4\u4e92 / \u516c\u5171\u4f53\u9a8c', '\u4e3a\u56fd\u5bb6\u94c1\u8def\u535a\u7269\u9986\u8bbe\u8ba1\u7684\u4ea4\u4e92\u53d9\u4e8b\u4f53\u9a8c\u3002', 'NRM', 'project-pink'),
   makeArchiveProject('yun-house', '16', 'Yun House', '\u4e91\u5c4b', '\u7f51\u9875\u4f53\u9a8c / \u6570\u5b57\u73af\u5883', '\u4e00\u4e2a\u4ee5\u7a7a\u95f4\u6c14\u8d28\u4e3a\u6838\u5fc3\u7684\u6570\u5b57\u73af\u5883\u3002', 'YH', 'project-pink')
 );
 
-Object.assign(projects[0], { title: 'Making the Invisible Visible', titleCn: '\u4f7f\u4e0d\u53ef\u89c1\u4e4b\u7269\u663e\u73b0', intro: '\u300a\u4f7f\u4e0d\u53ef\u89c1\u4e4b\u7269\u663e\u73b0\u300b\u601d\u8003\u5982\u4f55\u901a\u8fc7\u89c6\u542c\u4f53\u9a8c\uff0c\u8ba9\u90a3\u4e9b\u901a\u5e38\u53ea\u80fd\u88ab\u611f\u53d7\u3001\u5374\u65e0\u6cd5\u88ab\u770b\u89c1\u7684\u529b\u91cf\u83b7\u5f97\u5f62\u5f0f\u3002' });
-Object.assign(projects[1], { title: 'The Wish', titleCn: '\u300a\u613f\u300b', intro: '\u300a\u613f\u300b\u662f\u4e00\u4e2a\u5173\u4e8e\u79fb\u52a8\u3001\u76f8\u9047\u548c\u7ec6\u5c0f\u9009\u62e9\u7684\u6e38\u620f\u4e16\u754c\u3002' });
+Object.assign(projects[0], { title: 'Animating the Invisible', titleCn: '\u4f7f\u4e0d\u53ef\u89c1\u4e4b\u7269\u663e\u73b0', intro: '\u300a\u4f7f\u4e0d\u53ef\u89c1\u4e4b\u7269\u663e\u73b0\u300b\u601d\u8003\u5982\u4f55\u901a\u8fc7\u89c6\u542c\u4f53\u9a8c\uff0c\u8ba9\u90a3\u4e9b\u901a\u5e38\u53ea\u80fd\u88ab\u611f\u53d7\u3001\u5374\u65e0\u6cd5\u88ab\u770b\u89c1\u7684\u529b\u91cf\u83b7\u5f97\u5f62\u5f0f\u3002' });
+Object.assign(projects[1], { title: 'Wish', titleCn: '\u300a\u613f\u300b', intro: '\u300a\u613f\u300b\u662f\u4e00\u4e2a\u5173\u4e8e\u79fb\u52a8\u3001\u76f8\u9047\u548c\u7ec6\u5c0f\u9009\u62e9\u7684\u6e38\u620f\u4e16\u754c\u3002' });
 Object.assign(projects[2], { title: 'Road Crack Detection System', titleCn: '\u9053\u8def\u88c2\u7f1d\u68c0\u6d4b\u7cfb\u7edf', intro: '\u300a\u9053\u8def\u88c2\u7f1d\u68c0\u6d4b\u7cfb\u7edf\u300b\u5c06\u590d\u6742\u7684\u9053\u8def\u4fe1\u606f\u8f6c\u5316\u4e3a\u4e00\u4e2a\u53ef\u4ee5\u63a2\u7d22\u3001\u88ab\u6ce8\u610f\u548c\u88ab\u7406\u89e3\u7684\u6570\u5b57\u7a7a\u95f4\u3002' });
 Object.assign(projects[3], { title: 'Sanhe Daxian', titleCn: '\u4e09\u548c\u5927\u795e', intro: '\u300a\u4e09\u548c\u5927\u795e\u300b\u662f\u4e00\u6b21\u5173\u4e8e\u65e5\u5e38\u79fb\u52a8\u3001\u8ddd\u79bb\u548c\u5904\u4e8e\u4e24\u5730\u4e4b\u95f4\u611f\u53d7\u7684\u52a8\u6001\u5f71\u50cf\u7814\u7a76\u3002' });
 Object.assign(projects.find((project) => project.slug === 'the-most-of-us'), { titleCn: '\u5927\u591a\u6570' });
@@ -55,18 +55,18 @@ const mediaBySlug = {
 
 /* 博士期间科研项目：压缩空气储能地下储气库方向 */
 projects.push(
-  { slug: 'caes-multiscale-cavern', n: '17', title: 'Multi-scale Cavern Cyclic Pressure Test', titleCn: '多尺度洞室循环内压物理模型试验', type: '科研工程 / 物理模型试验', text: '主持"UPVC 主洞室—多尺度柔性小洞室—非连续预制裂缝围岩"组合试验体系，复现压气储能地下储气库洞室群受力环境。', tone: 'project-dark', mark: 'CAES', year: '2026', role: '项目总负责人 / 试验设计', mediaType: 'image', media: '/projects/covers/lab-1-multiscale.webp', intro: '依托国家自然科学基金区域创新发展联合基金开展延伸试验，以多尺度洞室群与非连续裂缝围岩为对象，研究循环内压下的围岩响应与损伤演化。', detail: '作为项目总负责人，主持构建"UPVC 主洞室—多尺度柔性小洞室—非连续预制裂缝围岩"组合试验体系，通过大型物理模型试验复现压气储能地下储气库洞室群实际受力环境。精准控制分级加压与循环充放压参数（压力路径、加载速率、循环次数），同步监测洞室群围岩应力应变传递与裂缝区段损伤演化，揭示多尺度洞室与裂缝构型对围岩响应的作用规律，为储气库洞室群稳定性评价与运行参数优化提供技术支持。' },
+  { slug: 'caes-multiscale-cavern', n: '17', title: 'Multi-scale CAES Cavern Cyclic Pressure Test', titleCn: '多尺度洞室循环内压物理模型试验', type: '科研工程 / 物理模型试验', text: '主持"UPVC 主洞室—多尺度柔性小洞室—非连续预制裂缝围岩"组合试验体系，复现压气储能地下储气库洞室群受力环境。', tone: 'project-dark', mark: 'CAES', year: '2026', role: '项目总负责人 / 试验设计', mediaType: 'image', media: '/projects/covers/lab-1-multiscale.webp', intro: '依托国家自然科学基金区域创新发展联合基金开展延伸试验，以多尺度洞室群与非连续裂缝围岩为对象，研究循环内压下的围岩响应与损伤演化。', detail: '作为项目总负责人，主持构建"UPVC 主洞室—多尺度柔性小洞室—非连续预制裂缝围岩"组合试验体系，通过大型物理模型试验复现压气储能地下储气库洞室群实际受力环境。精准控制分级加压与循环充放压参数（压力路径、加载速率、循环次数），同步监测洞室群围岩应力应变传递与裂缝区段损伤演化，揭示多尺度洞室与裂缝构型对围岩响应的作用规律，为储气库洞室群稳定性评价与运行参数优化提供技术支持。' },
   { slug: 'abandoned-mine-caes', n: '18', title: 'Abandoned Mine CAES Storage', titleCn: '废弃矿硐储库稳定与气密性研究', type: '科研工程 / 可靠性评价', text: '国家自然科学基金项目：搭建储气库围岩劣化大型模型试验平台，研究交变荷载下的劣化、疲劳与气密性能。', tone: 'project-blue', mark: 'NSFC', year: '2025', role: '技术骨干', mediaType: 'image', media: '/projects/covers/lab-4-mine.webp', intro: '废弃矿硐压缩空气储库稳定与气密性能研究与可靠性评价——国家自然科学基金区域创新发展联合基金项目。', detail: '本项目属于国家自然科学基金区域创新发展联合基金。作为技术骨干参与搭建储气库围岩劣化的大型模型试验平台，通过大型物理模型试验复现压气储能地下衬砌储气库实际受力环境，精准控制交变荷载参数（幅值、频率、循环次数）与加载速率，同步监测围岩力学响应与损伤演化，探究围岩在交变荷载作用下的劣化、疲劳和损伤以及裂缝分布情况，为储气库实际运行与可靠性评价提供技术支持。' },
   { slug: 'hp-flexible-sealing', n: '19', title: 'High-Pressure Flexible Sealing Test', titleCn: '高内压柔性密封防渗试验', type: '科研工程 / 试验方案与平台设计', text: '面向成勘院储气库密封需求，编制 20 MPa 高内压柔性密封材料防渗试验方案并设计试验平台。', tone: 'project-acid', mark: '20MPa', year: '2026', role: '试验方案编制 / 平台结构设计', mediaType: 'image', media: '/projects/covers/lab-2-sealing.webp', intro: '储气库高内压柔性密封体系防渗性能试验研究——中国电建集团成都勘测设计研究院有限公司委托项目。', detail: '面向中国电建集团成都勘测设计研究院有限公司（成勘院）储气库密封需求，编制 20 MPa 高内压柔性密封材料防渗性能试验方案。设计"柔性密封水囊—聚氨酯填充—钢制反力筒"试验平台，完成 500 mm 内径反力筒结构计算与承压边界校核（22 MPa 设计压力，24 根 M48 高强度螺柱）。制定分级加压（0.5–20 MPa）、恒压保压与循环加载程序，集成压力—湿度—应变多通道监测与超压联锁保护，比较增强丁基橡胶、EPDM 与 TPU 复合织物三种候选材料的抗渗性能并建立失效判据。' }
 );
 
 projects.forEach((project) => Object.assign(project, mediaBySlug[project.slug] || {}));
 Object.assign(projects[0], { title: 'Animating the Invisible' });
-Object.assign(projects[1], { title: 'WISH' });
+Object.assign(projects[1], { title: 'Wish' });
 Object.assign(projects[3], { title: 'Sanhe Drifters' });
-Object.assign(projects.find((project) => project.slug === 'ds-final'), { title: 'Hi!', titleCn: '\u55e8\uff01' });
+Object.assign(projects.find((project) => project.slug === 'ds-final'), { title: 'Audio Storytelling', titleCn: '\u55e8\uff01' });
 Object.assign(projects.find((project) => project.slug === 'the-most-of-us'), { title: 'The most of us' });
-Object.assign(projects.find((project) => project.slug === 'guangze-project-demo'), { title: 'Yorkshire BIM Visualisation & Real-Time Animation System' });
+Object.assign(projects.find((project) => project.slug === 'guangze-project-demo'), { title: 'BIM Digital Twin' });
 Object.assign(projects.find((project) => project.slug === 'solar-hater'), { title: '\u9010\u65e5\u8005' });
 Object.assign(projects.find((project) => project.slug === 'the-most-of-us'), {
   titleCn: '\u5927\u591a\u6570',

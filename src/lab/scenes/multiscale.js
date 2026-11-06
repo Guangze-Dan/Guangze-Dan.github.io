@@ -10,7 +10,7 @@ export default {
   id: 'multiscale',
   n: '01',
   titleCn: '多尺度洞室循环内压试验台',
-  titleEn: 'Multi-scale Cavern Cyclic Pressure Test',
+  titleEn: 'Multi-scale CAES Cavern Cyclic Pressure Test',
   kicker: '科研工程 / 物理模型试验 · 项目总负责人',
   desc: '10:1 缩尺复现压气储能地下储气库洞室群受力环境：UPVC 主洞室 — 多尺度柔性小洞室 — 非连续预制裂缝围岩。72 通道应变 + FBG + 声发射统一时基，回答"围岩劣化能不能被看见"。',
   principle: '原理一句话：内压使围岩应力重分布，裂缝带角点 2.058p 的集中先于洞壁（1.1677p）达到强度——先裂、才可测；可测、才可预警。',
