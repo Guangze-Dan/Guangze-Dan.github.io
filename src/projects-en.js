@@ -10,7 +10,7 @@ export const PROJECT_EN = {
     detail: 'My MA graduation project: observation, animation, sound and creative coding turn an invisible system into an atmospheric journey you can sense.',
   },
   wish: {
-    title: 'Wish',
+    title: 'WISH',
     type: 'Game / world building',
     role: 'Game design / world building / interaction',
     text: 'A playable world shaped by atmosphere, character and environmental storytelling.',
@@ -58,7 +58,7 @@ export const PROJECT_EN = {
     detail: 'For PowerChina Chengdu Engineering I wrote the 20 MPa test plan and designed the platform: flexible sealing bag, polyurethane fill and steel reaction barrel. The 500 mm barrel was structurally calculated and its pressure boundary checked (22 MPa design, 24 × M48 studs). I defined stepped pressurisation (0.5–20 MPa), constant-pressure holds and cyclic loading, integrated pressure, humidity and strain channels with overpressure interlock, and set up the comparison of three candidate materials with failure criteria.',
   },
   'ds-final': {
-    title: 'Audio Storytelling',
+    title: 'Hi!',
     type: 'Sound design / audio case',
     role: 'Sound design',
     text: 'A sound design case study.',

@@ -62,9 +62,9 @@ projects.push(
 
 projects.forEach((project) => Object.assign(project, mediaBySlug[project.slug] || {}));
 Object.assign(projects[0], { title: 'Animating the Invisible' });
-Object.assign(projects[1], { title: 'Wish' });
+Object.assign(projects[1], { title: 'WISH' });
 Object.assign(projects[3], { title: 'Sanhe Drifters' });
-Object.assign(projects.find((project) => project.slug === 'ds-final'), { title: 'Audio Storytelling', titleCn: '\u55e8\uff01' });
+Object.assign(projects.find((project) => project.slug === 'ds-final'), { title: 'Hi!', titleCn: '\u55e8\uff01' });
 Object.assign(projects.find((project) => project.slug === 'the-most-of-us'), { title: 'The most of us' });
 Object.assign(projects.find((project) => project.slug === 'guangze-project-demo'), { title: 'BIM Digital Twin' });
 Object.assign(projects.find((project) => project.slug === 'solar-hater'), { title: '\u9010\u65e5\u8005' });
