@@ -36,3 +36,6 @@ dist-ssr
 
 # Private outreach drafts (emails with personal content)
 outreach-drafts/
+
+# 申请材料（私有，勿公开）
+applications/

@@ -371,6 +371,7 @@ function SiteNav() {
         <a href="/#about" onClick={closeMenu}>{L('关于我', 'About')} <Arrow /></a>
         <a href="/#services" onClick={closeMenu}>{L('服务', 'Services')} <Arrow /></a>
         <a href="/work" onClick={closeMenu}>{L('作品', 'Work')} <Arrow /></a>
+        <a href="/#publications" onClick={closeMenu}>{L('学术', 'Academic')} <Arrow /></a>
         <a href="/lab" onClick={closeMenu}>{L('三维试验室', '3D Testbed')} <Arrow /></a>
         <a href="/#contact" onClick={closeMenu}>{L('联系', 'Contact')} <Arrow /></a>
       </nav>
@@ -694,10 +695,30 @@ function HomePage() {
 
         <section className="m-testimonials"><div className="m-section-kicker"><ShinyText>/ {`\u7cbe\u9009\u601d\u8003`} <small>SELECTED THOUGHTS</small></ShinyText></div><div className="m-testimonials-grid"><article className="m-reveal"><span>01 / {`\u65b9\u6cd5`}</span><h3>{`\u8ba9\u4e0d\u53ef\u89c1\u53d8\u5f97\u53ef\u89e6`}<small>MAKE THE INVISIBLE TANGIBLE</small></h3><p><WordReveal>{`\u4f5c\u54c1\u7ecf\u5e38\u4ece\u96be\u4ee5\u88ab\u63e1\u4f4f\u7684\u4e1c\u897f\u5f00\u59cb\uff1a\u4e00\u79cd\u6c1b\u56f4\u3001\u4e00\u6bb5\u8bb0\u5fc6\u3001\u4e00\u4e2a\u7cfb\u7edf\uff0c\u6216\u8005\u4e00\u79cd\u611f\u89c9\u3002`}</WordReveal></p></article><article className="m-reveal"><span>02 / {`\u8fc7\u7a0b`}</span><h3>{`\u7814\u7a76\u4e5f\u662f\u4e00\u79cd\u6750\u6599`}<small>RESEARCH IS A MATERIAL</small></h3><p><WordReveal>{`\u53c2\u8003\u3001\u5bf9\u8bdd\u548c\u89c2\u5bdf\u5e2e\u52a9\u6211\u5728\u786e\u5b9a\u89c6\u89c9\u4e4b\u524d\uff0c\u5148\u627e\u5230\u9879\u76ee\u7684\u8d28\u611f\u3002`}</WordReveal></p></article><article className="m-reveal"><span>03 / {`\u5f53\u4e0b`}</span><h3>{`\u57fa\u5730\uff1a\u6b66\u6c49`}<small>BASED IN WUHAN</small></h3><p><WordReveal>{`\u4f26\u6566 UCL \u548c\u7ea6\u514b\u662f\u6211\u91cd\u8981\u7684\u80cc\u666f\uff0c\u73b0\u5728\u6211\u6b63\u5728\u4e2d\u56fd\u5236\u4f5c\u4e0b\u4e00\u9636\u6bb5\u7684\u4f5c\u54c1\u3002`}</WordReveal></p></article></div></section>
 
+        <PublicationsSection />
+
         <ContactSection />
       </main>
       <SiteFooter />
     </div>
+  );
+}
+
+function PublicationsSection() {
+  const papers = [
+    { n: '01', title: 'A thin-shell model for densely packed pre-reinforcement shell structures in weak rock tunnels', authors: ['Zhongzhi Xie', 'Guangze Dan', 'Guohua Zhang', 'Shishu Zhang', 'Zhaoming Ma', 'Feng Xiong'], meta: ['Tunnelling and Underground Space Technology', '2026', '共同作者'], href: 'https://doi.org/10.1016/j.tust.2025.107406' },
+    { n: '02', title: 'Dynamic Identification of Layered Interfaces and Defect Zones for Tunnel-Ahead Geological Prediction Using Percussion–Rotary MWD Data and an MOE-Transformer Model', authors: ['Zhongzhi Xie', 'Zhaoyang Han', 'Guangze Dan', 'Guohua Zhang', 'Feng Xiong', 'Dongjie Hua'], meta: ['Rock Mechanics and Rock Engineering', '2026', '共同作者'], href: 'https://doi.org/10.1007/s00603-026-06004-x' }
+  ];
+  const renderAuthors = (list) => list.map((author, index) => <React.Fragment key={author}>{index > 0 ? ', ' : ''}{author === 'Guangze Dan' ? <b>{author}</b> : author}</React.Fragment>);
+  return (
+    <section className="m-pub" id="publications">
+      <div className="m-section-kicker"><ShinyText>/ {`学术成果`} <small>ACADEMIC RECORD</small></ShinyText></div>
+      <h2><SplitText>{`发表与荣誉`}</SplitText><i>PUBLICATIONS & HONORS</i></h2>
+      <div className="m-pub-list">
+        {papers.map((paper) => <a className="m-pub-item m-reveal" href={paper.href} target="_blank" rel="noreferrer" key={paper.n}><span>{paper.n}</span><div><h3>{paper.title}</h3><p className="m-pub-authors">{renderAuthors(paper.authors)}</p><div className="m-pub-meta">{paper.meta.map((tag) => <span key={tag}>{tag}</span>)}</div></div><Arrow /></a>)}
+        <a className="m-pub-item m-reveal" href="/guangze-certificate-ucl.pdf" target="_blank" rel="noreferrer"><span>03</span><div><h3>UCL Certificate of Achievement</h3><p className="m-pub-authors">{`数字叙事与教育课程成就证书（MA Digital Media: Production），获选为 UCL 官方平台策划永久线上学生作品展。`}</p><div className="m-pub-meta"><span>UCL</span><span>2024–2025</span><span>荣誉证书</span></div></div><Arrow /></a>
+      </div>
+    </section>
   );
 }
 
