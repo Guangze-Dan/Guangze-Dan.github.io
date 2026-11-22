@@ -377,7 +377,7 @@ body.worker .warn{top:76px}
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { CAESGame } from './game/game.js?v=20261123a';
-import { MISSION01 } from './game/mission01.js?v=20261122f';
+import { MISSION01 } from './game/mission01.js?v=20261123b';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
@@ -3493,6 +3493,12 @@ const FAULTS = {
     rows: [['crack width', '0.42 mm', 1], ['growth', '+9 mm / 100 cyc', 1],
            ['strain index', '1.54', 1], ['pressure', '5.31 MPa', 0]],
     pos: [-0.45, 1.46, 1.76], lbl: { t1: 'CRACK OPENING \u00b7 3C', big: '0.42 mm', s1: '+9 mm / 100 cyc', s2: 'CYCLE 287' } },
+  /* the schema's control class: a quiet round. Same HUD shape, nominal rows,
+     no overlays — the correct call is log & monitor. */
+  control: { warn: 'All channels nominal — cycle live', warnCls: 'blue',
+    rows: [['strain index', '1.04', 0], ['AE count', '4 / cycle', 0],
+           ['LVDT drift', '0.09 mm', 0], ['pressure', '5.31 MPa', 0]],
+    pos: [-0.68, 1.55, 1.76], lbl: { t1: 'MONITORING \u00b7 B2', big: 'NOMINAL', s1: 'no triggers met', s2: 'CYCLE 287' } },
 };
 const FAULT_MODES = ['ext', 'mission', 'xray', 'hatch', 'cut', 'seepage', 'conflict', 'growth', 'desktop'];
 const CUT_HIDE = Q.get('hidepump') !== '0';   /* the pump table is decluttered by default */
@@ -3929,6 +3935,215 @@ if (Q.get('clean') === '1') {
 }
 
 /* ------------------------------------------------------------------ */
+/* ------------------------------------------------------------------ */
+/* ------------------------------------------------------------------ */
+/* adaptive training: six condensed freeze-point rounds that respond   */
+/* to the operator's errors with the frozen rule set — measure, adapt, */
+/* re-measure. Every rule fire is logged onto the trial it adjusted.   */
+/* ------------------------------------------------------------------ */
+{
+  const AT = { active: false, i: 0, hist: [], salience: 0, easy: 0, seq: [], picked: null };
+  const AT_FAMILIES = ['crown', 'crack', 'seam', 'support', 'conflict', 'control'];
+  const AT_LABELS = { crown: 'CROWN VOIDING', crack: 'LINING CRACK', seam: 'SEAM SEEPAGE',
+                      support: 'BACK-SUPPORT LOSS', conflict: 'CONFLICTING EVIDENCE', control: 'ALL NOMINAL' };
+  const AT_ACTIONS = ['Log & monitor', 'Increase sweep', 'Emergency vent'];
+
+  /* rule-driven fault selection: rotate families, insert the conflict class
+     by trial 3, close with the control round, never repeat the previous */
+  function atNextFault(i2, hist) {
+    if (i2 === 2 && !hist.some(h => h.fault === 'conflict')) return 'conflict';
+    if (i2 === 5) return 'control';
+    const used = hist.length ? hist[hist.length - 1].fault : null;
+    const pool = AT_FAMILIES.filter(f => f !== used && f !== 'conflict' && f !== 'control');
+    return pool[(i2 + 1) % pool.length];
+  }
+
+  /* channel readings for one freeze point; salience/easy shift how far the
+     signature sits from the escalation thresholds */
+  function atMakeReadings(fault, salience, easy) {
+    const push = salience * 0.18 + easy * 0.06;
+    let index = 1.04, ae = 4, lvdt = 0.09, seep = 0, note = '';
+    if (fault === 'crown')    { index = 1.42 + push; ae = 12 + push * 14; lvdt = 0.18; }
+    if (fault === 'crack')    { index = 1.36 + push; ae = 10 + push * 12; lvdt = 0.14; }
+    if (fault === 'seam')     { index = 1.18; ae = 6; lvdt = 0.36 + push * 0.4; seep = 0.5 + push * 0.5; }
+    if (fault === 'support')  { index = 1.06; ae = 5; lvdt = 0.44 + push * 0.5; }
+    if (fault === 'conflict') { index = 1.05; ae = 14 + push * 8; lvdt = 0.08;
+                                note = 'strain nominal but AE elevated — channels disagree'; }
+    if (fault === 'control')  { index = 1.02; ae = 3 + push * 2; lvdt = 0.08; }
+    const pf = fault === 'control' ? 0.08 + easy * 0.04 : Math.min(0.94, 0.45 + push * 0.6);
+    const band = 0.22 - salience * 0.04;
+    const rows = [
+      ['strain index', index.toFixed(2), index >= 1.60 ? 'hot' : (index >= 1.30 ? 'mid' : '')],
+      ['acoustic events', Math.round(ae) + ' / cycle', ae >= 15 ? 'hot' : (ae >= 8 ? 'mid' : '')],
+      ['LVDT drift', lvdt.toFixed(2) + ' mm', lvdt >= 0.50 ? 'hot' : ''],
+      ['cavity pressure', '5.31 MPa', '']
+    ];
+    if (seep > 0) rows.push(['seepage', seep.toFixed(1) + ' L/min', 'mid']);
+    return { rows, pf, band, index, ae, lvdt, seep, note };
+  }
+
+  /* the correct call, by the same thresholds the main flow uses */
+  function atGroundTruth(r) {
+    if (r.index >= 1.60 || r.ae >= 15 || r.lvdt >= 0.50 || r.seep >= 0.8) return 2;
+    if (r.index >= 1.30 || r.ae >= 8 || r.lvdt >= 0.30 || r.seep >= 0.3) return 1;
+    return 0;
+  }
+
+  function atStart() {
+    if (AT.active) return;
+    AT.active = true; AT.i = 0; AT.hist = []; AT.salience = 0; AT.easy = 0;
+    AT.seq = [{ fault: atNextFault(0, []), salience: 0, easy: 0 }];
+    const old = document.getElementById('trainbtn');
+    if (old) old.style.display = 'none';
+    atRender();
+  }
+
+  function atRender() {
+    const prev = document.getElementById('atcard');
+    if (prev) prev.remove();
+    const tr = AT.seq[AT.i];
+    if (!tr.readings) tr.readings = atMakeReadings(tr.fault, tr.salience, tr.easy);
+    const card = document.createElement('div');
+    card.id = 'atcard';
+    card.className = 'glass';
+    card.style.cssText = 'position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);' +
+      'z-index:40;width:560px;max-width:92vw;padding:20px 26px';
+    const lastRule = AT.hist.length ? AT.hist[AT.hist.length - 1].rule : null;
+    const fired = lastRule
+      ? '<div style="margin:-6px 0 12px;font:700 12px " + "Segoe UI",sans-serif;' +
+        'color:#ffb900;letter-spacing:.08em">RULE FIRED \u00b7 ' + lastRule.toUpperCase() +
+        ' \u2014 this round adjusted</div>'
+      : '';
+    const rowsHtml = tr.readings.rows.map(r => {
+      const col = r[2] === 'hot' ? '#ff8f70' : (r[2] === 'mid' ? '#fce288' : '#c6d4e2');
+      const tag = (AT.salience > 0 && r[0] === 'strain index') ? ' \u00b7THRESHOLD' : '';
+      return '<div style="display:flex;justify-content:space-between;padding:5px 0;font-size:14px;color:' + col + '">' +
+        '<span>' + r[0] + tag + '</span><b style="font-variant-numeric:tabular-nums">' + r[1] + '</b></div>';
+    }).join('');
+    const note = tr.readings.note
+      ? '<div style="margin-top:8px;font-size:12px;color:#9fb0c0">' + tr.readings.note + '</div>' : '';
+    card.innerHTML =
+      '<div style="display:flex;justify-content:space-between;align-items:baseline">' +
+        '<span style="font:600 11px " + "Segoe UI",sans-serif;color:#5b7086;letter-spacing:.1em">' +
+        'ADAPTIVE TRAINING \u00b7 TRIAL ' + (AT.i + 1) + ' / ' + AT.seq.length + '</span>' +
+        '<span style="font:700 12px " + "Segoe UI",sans-serif;color:#ffb900">' + AT_LABELS[tr.fault] + '</span>' +
+      '</div>' + fired +
+      '<div style="margin-top:10px;font-size:15px;line-height:1.5;color:#eaf2fb">' +
+        tr.readings.rows[0][1] + ' strain \u00b7 ' + tr.readings.rows[1][1] + ' AE \u00b7 the model estimates <b>P(fault) = ' +
+        (tr.readings.pf * 100).toFixed(0) + '%</b> \u00b1 ' + (tr.readings.band * 100).toFixed(0) + '%</div>' +
+      '<div style="margin-top:10px;border-top:1px solid rgba(255,255,255,.1);padding-top:8px">' + rowsHtml + '</div>' + note +
+      '<div style="margin-top:14px;font-weight:600;color:#cfe0ef">Your call</div>' +
+      '<div style="display:flex;gap:8px;margin-top:8px">' +
+        [0, 1, 2].map(i => '<span class="at-act" data-i="' + i + '" style="flex:1;text-align:center;' +
+          'padding:9px 6px;border-radius:6px;font-size:12.5px;cursor:pointer;' +
+          'border:1px solid rgba(255,255,255,.16);color:#c6d4e2">' + AT_ACTIONS[i] + '</span>').join('') +
+      '</div>' +
+      '<div style="margin-top:12px;font-weight:600;color:#cfe0ef;font-size:13px">Confidence \u2014 <span id="atcv">60%</span></div>' +
+      '<input id="atcr" type="range" min="0" max="100" value="60" style="width:100%;accent-color:#60cdff">' +
+      '<div class="at-commit" style="margin-top:12px;text-align:center;padding:9px 0;border-radius:6px;' +
+        'font:600 13.5px " + "Segoe UI",sans-serif;color:#fff;background:#0067c0;cursor:pointer">COMMIT</div>';
+    document.body.appendChild(card);
+    card.querySelectorAll('.at-act').forEach(x => x.addEventListener('click', () => {
+      card.querySelectorAll('.at-act').forEach(y => { y.style.background = 'rgba(255,255,255,.05)'; y.style.color = '#c6d4e2'; });
+      x.style.background = 'rgba(0,103,192,.4)'; x.style.color = '#fff';
+      AT.picked = +x.dataset.i;
+    }));
+    AT.picked = null;
+    const cr = card.querySelector('#atcr');
+    cr.addEventListener('input', () => { card.querySelector('#atcv').textContent = cr.value + '%'; });
+    card.querySelector('.at-commit').addEventListener('click', () => {
+      if (AT.picked === null) { card.querySelector('.at-commit').textContent = 'Pick an action first'; return; }
+      atCommit(+cr.value);
+    });
+  }
+
+  function atCommit(conf) {
+    const tr = AT.seq[AT.i];
+    const gt = atGroundTruth(tr.readings);
+    const fold = (tr.fault === 'control')
+      ? (AT.picked === 0 ? 'correct_rejection' : 'false_alarm')
+      : (AT.picked === 0 ? 'miss' : 'hit');
+    const outcome = tr.fault === 'control' ? 0 : 1;
+    const brier = +Math.pow(conf / 100 - outcome, 2).toFixed(4);
+    /* rules from the frozen spec, evaluated on the running history */
+    const last2 = AT.hist.slice(-2);
+    const misses = last2.filter(h => h.fold === 'miss').length;
+    const lowWrong = last2.filter(h => h.fold !== 'hit' && h.conf < 50).length;
+    let rule = null;
+    if (AT.picked !== gt && conf >= 80) rule = 'R-OVERCONF';
+    else if (misses >= 2) rule = 'R-SALIENCE-UP';
+    else if (lowWrong >= 2) rule = 'R-DIFF-DOWN';
+    AT.hist.push({ fault: tr.fault, fold, conf, rule, brier,
+      response: AT_ACTIONS[AT.picked], gt: AT_ACTIONS[gt] });
+    if (rule === 'R-OVERCONF') AT.salience = Math.min(2, AT.salience + 1);
+    if (rule === 'R-SALIENCE-UP') AT.salience = Math.min(2, AT.salience + 1);
+    if (fold === 'hit') AT.easy = Math.max(0, AT.easy - 1);
+    AT.i++;
+    if (AT.i >= AT.seq.length) { atSummary(); return; }
+    AT.seq[AT.i] = { fault: atNextFault(AT.i, AT.hist), salience: AT.salience, easy: AT.easy };
+    atRender();
+  }
+
+  function atSummary() {
+    const prev = document.getElementById('atcard');
+    if (prev) prev.remove();
+    function probit(pp) {
+      pp = Math.min(0.999999, Math.max(0.000001, pp));
+      const s = pp < 0.5 ? -1 : 1;
+      const q = pp < 0.5 ? pp : 1 - pp;
+      const tt = Math.sqrt(-2 * Math.log(q));
+      return s * (2.515517 + 0.802853 * tt + 0.010328 * tt * tt) /
+             (1 + 1.432788 * tt + 0.189269 * tt * tt + 0.001308 * tt * tt * tt);
+    }
+    const hits = AT.hist.filter(h => h.fold === 'hit').length;
+    const misses = AT.hist.filter(h => h.fold === 'miss').length;
+    const fas = AT.hist.filter(h => h.fold === 'false_alarm').length;
+    const nSig = AT.hist.filter(h => h.fault !== 'control').length;
+    const nCtl = AT.hist.length - nSig;
+    const hp = (hits + 0.5) / (nSig + 1), fp = (fas + 0.5) / (nCtl + 1);
+    const dp = probit(hp) - probit(fp);
+    const crit = -0.5 * (probit(hp) + probit(fp));
+    const mb = AT.hist.reduce((a, h) => a + h.brier, 0) / AT.hist.length;
+    const rules = AT.hist.filter(h => h.rule).map(h => h.rule.toUpperCase());
+    const card = document.createElement('div');
+    card.id = 'atcard';
+    card.className = 'glass';
+    card.style.cssText = 'position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);' +
+      'z-index:40;width:560px;max-width:92vw;padding:20px 26px';
+    card.innerHTML =
+      '<div style="font:600 11px " + "Segoe UI",sans-serif;color:#5b7086;letter-spacing:.1em">ADAPTIVE SESSION COMPLETE</div>' +
+      '<div style="margin-top:10px;font:700 26px " + "Segoe UI",sans-serif;color:#fff">\u2032d ' + dp.toFixed(2) +
+      ' \u00b7 criterion ' + crit.toFixed(2) + '</div>' +
+      '<div style="margin-top:8px;font-size:13.5px;color:#c6d4e2;line-height:1.7">' +
+        'hits ' + hits + ' / ' + nSig + ' \u00b7 false alarms ' + fas + ' / ' + nCtl + ' \u00b7 misses ' + misses +
+        '<br>mean Brier ' + mb.toFixed(3) +
+        (rules.length ? '<br><span style="color:#ffb900;font-weight:600">rules fired: ' + rules.join(', ') + '</span>' : '') +
+      '</div>' +
+      '<div style="margin-top:14px;font-size:12px;color:#9fb0c0;line-height:1.6">' +
+        'Every adjustment this session made is traceable to a rule and to the trial that triggered it \u2014 ' +
+        'the same trail the scored experiment exports.</div>' +
+      '<div class="at-close" style="margin-top:14px;text-align:center;padding:9px 0;border-radius:6px;' +
+        'font:600 13px " + "Segoe UI",sans-serif;color:#fff;background:#0067c0;cursor:pointer">CLOSE</div>';
+    document.body.appendChild(card);
+    card.querySelector('.at-close').addEventListener('click', () => {
+      card.remove(); AT.active = false;
+      const db = document.getElementById('trainbtn');
+      if (db) db.style.display = '';
+    });
+  }
+
+  /* entry chip, stacked under the demo button */
+  const tb = document.createElement('div');
+  tb.id = 'trainbtn';
+  tb.className = 'glass';
+  tb.style.cssText = 'position:fixed;left:14px;bottom:36px;z-index:6;padding:9px 18px;' +
+    'border-radius:8px;font:600 12.5px "Segoe UI",sans-serif;color:#dff2fb;cursor:pointer;pointer-events:auto';
+  tb.textContent = '\u25B6 Adaptive training \u2014 6 rounds';
+  tb.onclick = atStart;
+  document.body.appendChild(tb);
+  window.__adaptive = AT;
+}
+
 /* uncertainty conditions (hidden / bands / explorable)                */
 /* ------------------------------------------------------------------ */
 if (UNC !== 'hidden' && MODE !== 'dashboard') {
