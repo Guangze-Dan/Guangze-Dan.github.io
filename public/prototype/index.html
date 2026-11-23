@@ -2,7 +2,19 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<link rel="modulepreload" href="./app.bundle.js?v=20261123i">
+<script>
+/* design stage: 1600x900, scaled by the smaller axis, letterboxed */
+(function () {
+  var VW = 1600, VH = 900;
+  function fit() {
+    var s2 = Math.min(innerWidth / VW, innerHeight / VH);
+    document.documentElement.style.setProperty('--stage-scale', String(s2));
+  }
+  addEventListener('resize', fit);
+  fit();
+})();
+</script>
+<link rel="modulepreload" href="./app.bundle.js?v=20261123k">
 <title>CAES · Immersive Training Simulator</title>
 <script>
 /* any uncaught error becomes a visible banner — a black screen must never be
@@ -62,7 +74,13 @@ window.__bootOk = false;
   --r:8px; --r2:4px;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{width:100%;height:100%;overflow:hidden;background:#0b0b0b}
+html{background:#000;overflow:hidden;height:100%}
+/* fixed design stage: one canonical 1600x900 frame, uniformly scaled to fit.
+   Every screen shows identical framing; no responsive reflow anywhere. */
+body{width:1600px;height:900px;overflow:hidden;background:#0b0b0b;
+     position:absolute;left:50%;top:50%;margin:0;
+     transform:translate(-50%,-50%) scale(var(--stage-scale,1));
+     transform-origin:center center}
 body{font-family:"Segoe UI Variable Display","Segoe UI Variable Text","Segoe UI",system-ui,sans-serif;
      color:var(--txt);-webkit-font-smoothing:antialiased;font-size:14px}
 canvas{display:block}
@@ -280,9 +298,18 @@ body.nohud .faultchips,body.nohud .agencychips,body.nohud .phase{display:none!im
 /* ---- 2D dashboard condition (diegetic, kept) ---- */
 .dash{position:fixed;inset:0;z-index:2;background:#0d1420;color:#cfe2f5;display:none;
       font-family:"Segoe UI",system-ui,sans-serif;padding:26px 30px;overflow:hidden}
-.dash.show{display:block}
+.dash.show{display:flex;flex-direction:column}
 .dash h2{font-size:19px;font-weight:700;color:#e8f2fb;letter-spacing:.02em}
 .dash .dh{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #243447;padding-bottom:12px}
+/* the dashboard is a fixed-height application screen: stretch the plot row
+   so the layout fills the 1600x900 stage instead of hugging the top */
+.dash{display:flex;flex-direction:column}
+.dash .dashrow2{flex:1;min-height:0}
+.dash .dashrow2 > div{display:flex;flex-direction:column;min-height:0}
+.dash .dashrow2 svg{flex:1;height:auto;min-height:120px}
+.dash .foot{margin-top:auto;padding-top:14px}
+.dash .dh{position:relative}
+.dash .dh .cug-exit{position:absolute;right:0;top:0}
 .dash .dh .c2{font-size:10.5px;font-weight:700;letter-spacing:.14em;color:#0b1420;background:#64d2ff;
               padding:5px 12px;border-radius:6px}
 .dash .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:18px}
@@ -310,6 +337,20 @@ body.worker .row b.num{font-size:22px;font-variant-numeric:tabular-nums}
 body.worker .spark{display:none}
 body.worker .seg span{padding:13px 14px;font-size:15.5px}
 body.worker .bar{height:6px}
+.cug-exit{position:absolute;top:10px;right:18px;z-index:5;padding:7px 16px;border-radius:7px;
+  border:1px solid rgba(120,180,220,.35);background:rgba(18,32,44,.9);color:#cfe6f7;
+  font:600 12px "Segoe UI",system-ui,sans-serif;letter-spacing:.04em;cursor:pointer;
+  transition:background-color .16s ease,border-color .16s ease,color .16s ease}
+.cug-exit:hover{background:rgba(96,205,255,.22);border-color:rgba(96,205,255,.6);color:#fff}
+/* the acquisition screen is a separate application: no simulator chrome,
+   and its panels fill the 1600x900 stage instead of hugging the top */
+body.nohud #demobtn, body.nohud #trainbtn, body.nohud #vrbtn,
+body.nohud #wbtn, body.nohud #walkbtn, body.nohud #buildtag{display:none!important}
+.cug .cbar{padding-right:178px}
+.cug.show{display:flex;flex-direction:column}
+.cug .cbody{flex:1;min-height:0}
+.cug .cleft,.cug .cmid,.cug .cright{display:flex;flex-direction:column;min-height:0}
+.cug .cmid #cstr{width:100%;height:auto}
 
 /* ---- interaction affordance ---------------------------------------- */
 /* Every clickable control answers on hover and dips on press. The chips and
@@ -371,7 +412,7 @@ body.worker .warn{top:76px}
   <!-- build stamp: if this does not match the latest change, the tab is stale -->
   <span class="tb-chip" id="buildtag" title="build — Ctrl+Shift+R to reload"
     style="background:rgba(100,210,255,.12);border-color:rgba(100,210,255,.35);color:#9fd8f2">
-    <i style="background:#60cdff"></i>BUILD 20261123i</span>
+    <i style="background:#60cdff"></i>BUILD 20261123k</span>
   <div class="tb-drag"></div>
   <div class="meta">
     <span><b>5.31</b> MPa</span><span class="sep"></span>
@@ -439,6 +480,6 @@ body.worker .warn{top:76px}
 <link rel="preload" as="image" href="./assets/tex/Metal041A_2K_normalgl.webp">
 
 
-<script type="module" src="./app.bundle.js?v=20261123i"></script>
+<script type="module" src="./app.bundle.js?v=20261123k"></script>
 </body>
 </html>
