@@ -118,6 +118,123 @@ export const MISSION01 = {
         title: 'Shift log: north support settled — LVDT drift with modest strain, channels disagree',
         note: 'The classic cross-reading case: deformation without strain.'
       }
+    },
+    /* the schema's control class: a quiet round. The correct call is to log
+       and monitor — no escalation triggers are met. The physics keys kF to
+       zero for this fault, so every channel runs nominal. */
+    mine_gas: {
+      area: [0.10, 1.42, 1.75],
+      log: [
+        'SHIFT LOG — CAES-04 · CYCLE 480',
+        '',
+        '04:10  Cycle 478 complete. All channels nominal.',
+        '06:35  Cycle 479: trace methane detected at the north end.',
+        '        Background 0.2% LEL — monitored, not actionable.',
+        '09:02  Cycle 480 in progress. Methane at 1.8% LEL at the',
+        '        crown area. Gas likely migrating from adjacent',
+        '        abandoned workings through the fracture zone.',
+        '09:20  AE showing diffuse pattern — no localised cluster.',
+        '',
+        'FLAG   ESCALATE if LEL > 2.5% or AE localises.',
+        '',
+        'North end = boundary with abandoned workings.'
+      ],
+      evidence: {
+        id: 'ev_log',
+        title: 'Shift log: methane migrating from abandoned workings — LEL climbing',
+        note: 'Gas infiltration is a mine-conversion-specific hazard: the rock mass has a mining history.'
+      }
+    },
+    mine_water: {
+      area: [-2.05, 1.10, 1.75],
+      log: [
+        'SHIFT LOG — CAES-04 · CYCLE 480',
+        '',
+        '04:10  Cycle 478 complete. Groundwater table rising after',
+        '        weekend rainfall — monitored, seasonal pattern.',
+        '06:35  Cycle 479: water ingress at the SEAM, 0.2 L/min.',
+        '        Consistent with historical mining drainage records.',
+        '09:02  Cycle 480 in progress. Water ingress increased to',
+        '        1.1 L/min at the SEAM. Pressure head suggests',
+        '        connection to the old mine drainage gallery.',
+        '09:20  Ingress steady at 1.1 L/min. Index 1.15. No AE change.',
+        '',
+        'FLAG   ESCALATE if ingress > 1.5 L/min or pore pressure spikes.',
+        '',
+        'Water chemistry confirms mine drainage origin.'
+      ],
+      evidence: {
+        id: 'ev_log',
+        title: 'Shift log: water ingress connected to old mine drainage gallery — rate climbing',
+        note: 'Water in a converted mine is expected; the question is whether the rate and pressure are stable.'
+      }
+    },
+    bladder_leak: {
+      area: [-0.68, 1.55, 1.75],
+      log: [
+        'SHIFT LOG — CAES-04 · CYCLE 480',
+        '',
+        '04:10  Cycle 478 complete. All channels nominal.',
+        '06:35  Cycle 479: HP sealing bladder pressure dropped 0.3 MPa',
+        '        during hold phase. Auto-recharge compensated.',
+        '09:02  Cycle 480 in progress. Bladder pressure dropped again',
+        '        — 0.8 MPa this time. Auto-recharge did NOT compensate.',
+        '        Cavity pressure unaffected so far.',
+        '09:20  Bladder pressure 2.1 MPa (nominal 3.5). Index 1.32.',
+        '',
+        'FLAG   ESCALATE if bladder < 2.0 MPa or cavity pressure drops.',
+        '',
+        'HP flexible sealing bladder — direct pressure boundary element.'
+      ],
+      evidence: {
+        id: 'ev_log',
+        title: 'Shift log: HP sealing bladder pressure dropping — auto-recharge failing to compensate',
+        note: 'The bladder IS the pressure boundary. If it goes, the cavern vents.'
+      }
+    },
+    seal_interface: {
+      area: [-1.55, 1.05, 1.74],
+      log: [
+        'SHIFT LOG — CAES-04 · CYCLE 480',
+        '',
+        '04:10  Cycle 478 complete. All channels nominal.',
+        '06:35  Cycle 479: humidity at the seal-rock interface 68%.',
+        '        Monitored — interface moisture is normal during cycling.',
+        '09:02  Cycle 480 in progress. Interface humidity 82%. LVDT at',
+        '        the seal anchor shows 0.41 mm lateral displacement.',
+        '        Suggests micro-movement at the seal-rock interface.',
+        '09:20  Interface humidity 85%. LVDT 0.48 mm. No AE response.',
+        '',
+        'FLAG   ESCALATE if LVDT > 0.55 mm or humidity > 90%.',
+        '',
+        'HP flexible seal — interface with the host rock at the anchor.'
+      ],
+      evidence: {
+        id: 'ev_log',
+        title: 'Shift log: micro-movement at the HP seal-rock interface — humidity and LVDT both climbing',
+        note: 'The seal-rock interface is where flexible sealing meets rigid geology. Both must hold.'
+      }
+    },
+    control: {
+      area: [-0.68, 1.90, 1.75],
+      log: [
+        'SHIFT LOG — CAES-04 · CYCLE 480',
+        '',
+        '04:10  Cycle 478 complete. All channels nominal.',
+        '06:35  Cycle 479: all channels nominal. No marking,',
+        '        no seepage, no visual anomalies on the liner.',
+        '09:02  Cycle 480 in progress. Index 1.04 — within band.',
+        '        AE 4 / cycle. LVDT 0.09 mm. Humidity 61%.',
+        '',
+        'FLAG   Log and monitor. No escalation triggers met.',
+        '',
+        'Section B2 = second panel from the north end.'
+      ],
+      evidence: {
+        id: 'ev_log',
+        title: 'Shift log: all channels nominal, no escalation triggers met',
+        note: 'A quiet round: the correct call is to log and monitor.'
+      }
     }
   },
 
