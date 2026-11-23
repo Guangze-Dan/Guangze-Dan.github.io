@@ -34,6 +34,22 @@ window.addEventListener('unhandledrejection', function (e) {
   }
   b.textContent = 'PROMISE ERROR: ' + window.__err;
 });
+
+/* boot failsafe: if the module graph never arrives (offline, blocked CDN,
+   dead proxy) the loader must say so instead of sitting on a black screen */
+window.__bootOk = false;
+(function () {
+  var t0 = Date.now();
+  var timer = setInterval(function () {
+    if (window.__bootOk) { clearInterval(timer); return; }
+    if (Date.now() - t0 < 15000) return;
+    clearInterval(timer);
+    var m = document.getElementById('bootmsg');
+    if (m) m.innerHTML = 'Still loading after 15 s — the engine files are slow to arrive.<br>' +
+      '<a href="javascript:location.reload()">Reload</a> &nbsp;&middot;&nbsp; ' +
+      '<a href="https://guangze-dan.github.io/evidence/">Open the evidence page instead</a>';
+  }, 1000);
+})();
 </script>
 <style>
 :root{
@@ -224,7 +240,14 @@ body::after{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;opac
   padding:4px 12px;border-radius:var(--r2);margin:0 2px}
 .phase span.on{background:rgba(100,210,255,.14);color:#dff2fb}
 .boot{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#0b0b0b;
-  color:var(--txt2);font-size:12px;letter-spacing:.3em;z-index:9}
+  color:var(--txt2);font-size:12px;letter-spacing:.3em;z-index:99;transition:opacity .5s ease}
+.bootcard{text-align:center;transform:translateY(-4vh)}
+.bootlogo{font:700 22px/1.2 "Segoe UI",sans-serif;color:#eaf4fc;letter-spacing:.12em}
+.bootsub{margin-top:10px;font:400 11px/1.4 "Segoe UI",sans-serif;color:#6d8095;letter-spacing:.22em;text-transform:uppercase}
+#bootbar{margin:26px auto 0;width:240px;height:3px;border-radius:2px;background:rgba(255,255,255,.1);overflow:hidden}
+#bootbar i{display:block;height:100%;width:6%;background:#60cdff;border-radius:2px;transition:width .25s ease}
+#bootmsg{margin-top:14px;font:400 11px/1.6 "Segoe UI",sans-serif;color:#7f95ad;letter-spacing:.06em}
+#bootmsg a{color:#60cdff;text-decoration:none;border-bottom:1px solid rgba(96,205,255,.4)}
 body.nohud .hud,body.nohud .menubtn,body.nohud .timeline,body.nohud .condchip,
 body.nohud .faultchips,body.nohud .agencychips,body.nohud .phase{display:none!important}
 
@@ -290,7 +313,14 @@ body.worker .warn{top:76px}
 </style>
 </head>
 <body>
-<div id="boot">LOADING SCENE</div>
+<div id="boot">
+  <div class="bootcard">
+    <div class="bootlogo">CAES &middot; Immersive Training</div>
+    <div class="bootsub">Lined cavern &middot; seal leak module</div>
+    <div id="bootbar"><i></i></div>
+    <div id="bootmsg">Starting engine&hellip;</div>
+  </div>
+</div>
 
 <div class="titlebar">
   <button class="tb-menu" id="tbmenu" title="Scenario menu" style="font-family:'Segoe MDL2 Assets','Segoe UI Symbol';display:none">&#xE700;</button>
@@ -300,7 +330,7 @@ body.worker .warn{top:76px}
   <!-- build stamp: if this does not match the latest change, the tab is stale -->
   <span class="tb-chip" id="buildtag" title="build — Ctrl+Shift+R to reload"
     style="background:rgba(100,210,255,.12);border-color:rgba(100,210,255,.35);color:#9fd8f2">
-    <i style="background:#60cdff"></i>BUILD 20261123b</span>
+    <i style="background:#60cdff"></i>BUILD 20261123d</span>
   <div class="tb-drag"></div>
   <div class="meta">
     <span><b>5.31</b> MPa</span><span class="sep"></span>
@@ -362,13 +392,11 @@ body.worker .warn{top:76px}
   <div class="ret"></div>
 </div>
 
-<div id="bootfade" style="position:fixed;inset:0;background:#000;z-index:99;pointer-events:none;opacity:1;transition:opacity 1.25s ease"></div>
-
 <script type="importmap">
 {
   "imports": {
-    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    "three": "./vendor/three/three.module.min.js",
+    "three/addons/": "./vendor/three/addons/"
   }
 }
 </script>
@@ -376,8 +404,8 @@ body.worker .warn{top:76px}
 <script type="module">
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { CAESGame } from './game/game.js?v=20261123a';
-import { MISSION01 } from './game/mission01.js?v=20261123c';
+import { CAESGame } from './game/game.js?v=20261123d';
+import { MISSION01 } from './game/mission01.js?v=20261123d';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
@@ -396,13 +424,28 @@ import { BokehPass } from 'three/addons/postprocessing/BokehPass.js';
 /* ------------------------------------------------------------------ */
 const Q = new URLSearchParams(location.search);
 /* build identity — the diag panel reads this to prove which module is live */
-const BUILD_ID = '20261123b';
-{ /* boot fade: hold black ~1.1 s while the rig and props stream in */
-  const bf = document.getElementById('bootfade');
-  if (bf) setTimeout(() => {
-    bf.style.opacity = '0';
-    setTimeout(() => bf.remove(), 1700);
-  }, 1100);
+const BUILD_ID = '20261123d';
+
+/* ------------------------------------------------------------------ */
+/* boot progress — DefaultLoadingManager drives the loading bar.       */
+/* The panel stays up until the rig and the first textures are in, so  */
+/* a slow connection reads as "loading", never as a dead black screen. */
+/* ------------------------------------------------------------------ */
+const bootEl = document.getElementById('boot');
+const bootBar = document.querySelector('#bootbar i');
+const bootMsg = document.getElementById('bootmsg');
+function bootSet(p, msg) {
+  if (bootBar) bootBar.style.width = Math.round(Math.max(0.06, Math.min(1, p)) * 100) + '%';
+  if (msg && bootMsg) bootMsg.textContent = msg;
+}
+bootSet(0.08, 'Engine loaded — fetching rig and textures\u2026');
+let bootResolve;
+const bootAssets = new Promise(r => { bootResolve = r; });
+{
+  const DM = THREE.DefaultLoadingManager;
+  DM.onProgress = (u, l, t) => bootSet(0.1 + 0.84 * (t ? l / t : 0), `Loaded ${l} of ${t} assets\u2026`);
+  DM.onLoad = () => { bootSet(0.97, 'Compiling shaders\u2026'); bootResolve(); };
+  DM.onError = (u) => console.warn('[boot] asset failed:', u);
 }
 window.__buildId = BUILD_ID;
 
@@ -5277,8 +5320,20 @@ scene.add(xrRig);
 xrRig.add(camera);
 
 const SHOW_HANDS = !['dashboard', 'desktop'].includes(MODE);
-const ctrlL = SHOW_HANDS ? loadController('left', new THREE.Vector3(-0.265, -0.225, -0.64), [-0.16, 0.34, -0.12]) : Promise.resolve(null);
-const ctrlR = SHOW_HANDS ? loadController('right', new THREE.Vector3(0.265, -0.225, -0.64), [-0.16, -0.34, 0.12]) : Promise.resolve(null);
+/* The controller models are an invisible first-person affordance on desktop
+   (hands only show in walk mode / a headset), so they load AFTER the boot
+   gate settles — 1.5 MB that no longer delays the first frame. */
+const deferPostBoot = (fn) => new Promise((res) => {
+  const go = () => res(fn());
+  if (window.__bootOk) setTimeout(go, 900);
+  else {
+    const ivc = setInterval(() => {
+      if (window.__bootOk) { clearInterval(ivc); setTimeout(go, 900); }
+    }, 250);
+  }
+});
+const ctrlL = SHOW_HANDS ? deferPostBoot(() => loadController('left', new THREE.Vector3(-0.265, -0.225, -0.64), [-0.16, 0.34, -0.12])) : Promise.resolve(null);
+const ctrlR = SHOW_HANDS ? deferPostBoot(() => loadController('right', new THREE.Vector3(0.265, -0.225, -0.64), [-0.16, -0.34, 0.12])) : Promise.resolve(null);
 
 /* The controller models are a first-person affordance. In the orbit view they
    hang in mid-air with nothing holding them, which reads as a bug; they belong
@@ -7057,10 +7112,30 @@ if (Q.get('audit') === 'pick') {
   }, 2200));
 }
 
-Promise.all([rigReady, ctrlL, ctrlR]).then(() => {
-  const b = document.getElementById('boot');
-  if (b) b.remove();
-  renderer.setAnimationLoop(tick);
+Promise.all([rigReady, Promise.race([bootAssets, new Promise(r => setTimeout(r, 9000))])]).then(() => {
+  /* First frame compiles every shader program synchronously (9 s on a warm
+     GPU). Compile ahead of time — async where the driver supports it — and
+     keep the loading panel up with "Compiling shaders…" while it runs. */
+  const startScene = () => {
+    window.__bootOk = true;
+    if (bootEl) {
+      bootEl.style.opacity = '0';
+      setTimeout(() => bootEl.remove(), 650);
+    }
+    renderer.setAnimationLoop(tick);
+    scheduleProbe();
+  };
+  bootSet(0.98, 'Compiling GPU shaders \u2014 first visit only; later visits are instant\u2026');
+  const compileAll = () => {
+    try { composer.render(); } catch (e) { console.warn('[boot] warm render failed', e); }
+    return true;
+  };
+  const pre = renderer.compileAsync
+    ? renderer.compileAsync(scene, camera).then(compileAll, compileAll)
+    : Promise.resolve().then(() => { renderer.compile(scene, camera); }).then(compileAll);
+  pre.then(startScene, startScene);
+
+  function scheduleProbe() {
 
   /* --- local reflection probe ----------------------------------------
      The metals should reflect this hall, not a generic studio. Bake a cube
@@ -7113,10 +7188,13 @@ Promise.all([rigReady, ctrlL, ctrlR]).then(() => {
   addAssetDecals();
   setTimeout(bakeProbe, 400);
   setTimeout(bakeProbe, 2200);
+  }
 }).catch(err => {
-  const b = document.getElementById('boot');
-  if (b) b.innerHTML = '<div style="text-align:center;line-height:2">SCENE FAILED TO LOAD<br>' +
-    '<span style="font-size:11px;color:#c0736a">serve this folder over http — run start-vr.cmd</span></div>';
+  if (bootMsg) {
+    bootMsg.innerHTML = 'SCENE FAILED TO LOAD<br>' +
+      '<span style="font-size:11px;color:#c0736a">' + String(err && err.message || err).slice(0, 160) + '</span><br>' +
+      '<a href="javascript:location.reload()">Reload</a>';
+  }
   console.error(err);
   /* keep the reason on the page: a black screen with no message is unusable */
   window.__bootErr = (err && (err.message + '\n' + String(err.stack || '').split('\n').slice(0, 4).join('\n'))) || String(err);

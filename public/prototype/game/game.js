@@ -8,7 +8,7 @@
    entry points, and logs. Everything it adds is new code in this file. */
 
 import * as THREE from 'three';
-import { MISSION01 } from './mission01.js?v=20261117a';
+import { MISSION01 } from './mission01.js?v=20261123d';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 const CSS = `
@@ -254,10 +254,21 @@ export const CAESGame = {
         ctx.scene.add(o);
       }, undefined, () => { /* a missing model is never a blocker */ });
     };
-    placeModel('metal_toolbox', [-0.30, 0, 4.50], 0.48, -0.5);
-    placeModel('korean_fire_extinguisher_01', [-5.15, 0, 3.55], 0.30, 0.4);
-    placeModel('plastic_crate_01', [-3.35, 0, 4.75], 0.60, 0.2);
-    placeModel('industrial_storage_cart', [4.35, 0, 2.20], 0.62, 0.35);
+    /* The four CC0 props are decoration: they stream in after the first
+       frame so they never sit on the critical path of the loading bar. */
+    const propQueue = [
+      ['metal_toolbox', [-0.30, 0, 4.50], 0.48, -0.5],
+      ['korean_fire_extinguisher_01', [-5.15, 0, 3.55], 0.30, 0.4],
+      ['plastic_crate_01', [-3.35, 0, 4.75], 0.60, 0.2],
+      ['industrial_storage_cart', [4.35, 0, 2.20], 0.62, 0.35],
+    ];
+    const loadProps = () => propQueue.forEach(([id, p, f, r]) => placeModel(id, p, f, r));
+    if (window.__bootOk) setTimeout(loadProps, 1400);
+    else {
+      const ivp = setInterval(() => {
+        if (window.__bootOk) { clearInterval(ivp); setTimeout(loadProps, 1400); }
+      }, 250);
+    }
 
     /* ---------- the workbench: bench-level props need a bench ---------- */
     const TEX = {};
