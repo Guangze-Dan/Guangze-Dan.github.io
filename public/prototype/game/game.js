@@ -7,9 +7,9 @@
    groundTruth / commitTrial). It reads them, drives them through their public
    entry points, and logs. Everything it adds is new code in this file. */
 
-import * as THREE from 'three';
-import { MISSION01 } from './mission01.js?v=20261123g';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import * as THREE from '../vendor/three/three.module.min.js';
+import { MISSION01 } from './mission01.js';
+import { GLTFLoader } from '../vendor/three/addons/loaders/GLTFLoader.js';
 
 const CSS = `
 #missionKeys{position:fixed;left:14px;bottom:12px;z-index:36;
