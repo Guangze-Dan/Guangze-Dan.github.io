@@ -372,7 +372,6 @@ function SiteNav() {
         <a href="/#about" onClick={closeMenu}>{L('关于我', 'About')} <Arrow /></a>
         <a href="/#services" onClick={closeMenu}>{L('服务', 'Services')} <Arrow /></a>
         <a href="/work" onClick={closeMenu}>{L('作品', 'Work')} <Arrow /></a>
-        <a className="m-nav-proto" href="/prototype/" target="_blank" rel="noreferrer"><i className="m-nav-dot" aria-hidden="true" />{L('可玩原型', 'Live Prototype')} <Arrow /></a>
         <a href="/#publications" onClick={closeMenu}>{L('学术', 'Academic')} <Arrow /></a>
         <a href="/lab" onClick={closeMenu}>{L('三维试验室', '3D Testbed')} <Arrow /></a>
         <a href="/#contact" onClick={closeMenu}>{L('联系', 'Contact')} <Arrow /></a>
@@ -563,26 +562,6 @@ function HeroWordOne({ idx }) {
   return <span className="m-word-anim" data-no-i18n="1">{HERO_WORDS[idx].zh}</span>;
 }
 
-function PrototypeBand() {
-  return (
-    <section className="m-proto-band" id="prototype">
-      <div className="m-proto-copy">
-        <div className="m-proto-kicker"><i className="m-nav-dot" aria-hidden="true" />LIVE · 可玩原型 <small>PLAYABLE PROTOTYPE</small></div>
-        <h2>CAES 地下储气库 · 沉浸式训练模拟器<small>Underground gas storage — immersive training simulator</small></h2>
-        <p>九类故障场景、四通道监测信号、从检测到决策的完整训练闭环，浏览器直接运行。无需安装，打开即玩。<small>Nine fault scenarios, four signal channels, the full detect-to-decide loop — running in the browser, no install.</small></p>
-        <div className="m-proto-actions">
-          <a className="m-proto-btn" href="/prototype/" target="_blank" rel="noreferrer">▶ 打开原型<small>OPEN PROTOTYPE</small></a>
-          <a className="m-proto-link" href="/work/caes-multiscale-cavern">项目详情 <Arrow /></a>
-        </div>
-      </div>
-      <a className="m-proto-shot" href="/prototype/" target="_blank" rel="noreferrer" aria-label="Open the live prototype">
-        <img src="/prototype-shot.webp" alt="CAES training simulator screenshot" loading="lazy" width="1280" height="720" />
-        <span className="m-proto-play" aria-hidden="true">▶</span>
-      </a>
-    </section>
-  );
-}
-
 function HomePage() {
   const avatarRotation = usePageMotion(true);
   const [heroWord, setHeroWord] = useState(2); // 落地仍是「创意技术」，随后轮换
@@ -682,8 +661,6 @@ function HomePage() {
           <a className="m-resume-button m-resume-button-en" href="/guangze-cv-en-york.pdf" download="Guangze-Dan-CV.pdf"><strong>{`Download CV`}<small>{`English · Academic`}</small></strong><Arrow /></a>
         </section>
 
-        <PrototypeBand />
-
         <section className="m-intro" id="about">
           <div className="m-section-kicker"><ShinyText>/ {`\u5173\u4e8e\u6211`} <small>About Me</small></ShinyText></div>
           <div className="m-intro-grid">
@@ -763,7 +740,11 @@ function WorkPage() {
     const slug = window.location.hash.slice(1);
     if (slug) requestAnimationFrame(() => (document.getElementById(slug) || document.querySelector(`a[href="/work/${slug}"]`))?.scrollIntoView({ block: 'center', behavior: 'smooth' }));
   }, []);
-  return <div className="majd-site m-work-page"><SiteNav /><main><section className="m-archive-hero"><div className="m-section-kicker"><ShinyText>{TL('/ 作品', '/ SELECTED PROJECTS')}</ShinyText></div><h1><SplitText>{TL('精选', 'SELECTED PROJECTS')}</SplitText></h1><p>{`这里按科研工程、交互体验、游戏世界、视听创作和创意技术编排作品，从我当前的博士科研工作开始，全面了解我的实践。`}</p><div className="m-archive-index">{`\u4f7f\u4e0d\u53ef\u89c1\u4e4b\u7269\u663e\u73b0 / \u613f / \u9053\u8def\u88c2\u7f1d\u68c0\u6d4b\u7cfb\u7edf / \u4e09\u548c\u5927\u795e`}</div><nav className="m-category-nav" aria-label={`作品分类`}><a href="#research-engineering">{TL('科研工程', 'RESEARCH')}</a><a href="#interactive-experiences">{TL('交互体验', 'INTERACTIVE')}</a><a href="#game-worlds">{TL('游戏世界', 'GAME WORLDS')}</a><a href="#audiovisual-creation">{TL('视听创作', 'AUDIOVISUAL')}</a><a href="#creative-technology">{TL('创意技术', 'CREATIVE TECH')}</a></nav></section><div className="m-archive-groups">{archiveGroups.map((group) => <section className="m-archive-group" id={group.id} key={group.id}><div className="m-archive-group-heading"><span>{TL(group.title, group.english)}</span></div><div className="m-archive-grid">{group.slugs.map((slug) => overviewProjects.find((project) => project.slug === slug)).filter(Boolean).map((project) => <ProjectCard project={project} key={project.slug} />)}</div></section>)}</div><section className="m-archive-footer"><a href="/#contact">{`\u6709\u60f3\u6cd5\uff1f`} <Arrow /></a><span>{`UCL / \u4f26\u6566 / \u7ea6\u514b / \u6b66\u6c49`}</span></section></main><SiteFooter /></div>;
+  return <div className="majd-site m-work-page"><SiteNav /><main><section className="m-archive-hero"><div className="m-section-kicker"><ShinyText>{TL('/ 作品', '/ SELECTED PROJECTS')}</ShinyText></div><h1><SplitText>{TL('精选', 'SELECTED PROJECTS')}</SplitText></h1><p>{`这里按科研工程、交互体验、游戏世界、视听创作和创意技术编排作品，从我当前的博士科研工作开始，全面了解我的实践。`}</p><div className="m-archive-index">{`\u4f7f\u4e0d\u53ef\u89c1\u4e4b\u7269\u663e\u73b0 / \u613f / \u9053\u8def\u88c2\u7f1d\u68c0\u6d4b\u7cfb\u7edf / \u4e09\u548c\u5927\u795e`}</div><nav className="m-category-nav" aria-label={`作品分类`}><a href="#research-engineering">{TL('科研工程', 'RESEARCH')}</a><a href="#interactive-experiences">{TL('交互体验', 'INTERACTIVE')}</a><a href="#game-worlds">{TL('游戏世界', 'GAME WORLDS')}</a><a href="#audiovisual-creation">{TL('视听创作', 'AUDIOVISUAL')}</a><a href="#creative-technology">{TL('创意技术', 'CREATIVE TECH')}</a></nav></section><section className="m-work-proto">
+<a className="m-work-proto-thumb" href="/prototype/" target="_blank" rel="noreferrer" aria-hidden="true" tabIndex={-1}><img src="/prototype-shot.webp" alt="" loading="lazy" width="1280" height="720" /><i>{'▶'}</i></a>
+<div className="m-work-proto-copy"><span className="m-work-proto-kicker"><i className="m-live-dot" aria-hidden="true" />{'LIVE · 可玩原型 / PLAYABLE PROTOTYPE'}</span><strong>{'CAES 地下储气库 · 沉浸式训练模拟器'}</strong><small>{'九类故障场景 · 浏览器直接运行，无需安装'}</small></div>
+<a className="m-work-proto-cta" href="/prototype/" target="_blank" rel="noreferrer">{'打开原型'} <Arrow /></a>
+</section><div className="m-archive-groups">{archiveGroups.map((group) => <section className="m-archive-group" id={group.id} key={group.id}><div className="m-archive-group-heading"><span>{TL(group.title, group.english)}</span></div><div className="m-archive-grid">{group.slugs.map((slug) => overviewProjects.find((project) => project.slug === slug)).filter(Boolean).map((project) => <ProjectCard project={project} key={project.slug} />)}</div></section>)}</div><section className="m-archive-footer"><a href="/#contact">{`\u6709\u60f3\u6cd5\uff1f`} <Arrow /></a><span>{`UCL / \u4f26\u6566 / \u7ea6\u514b / \u6b66\u6c49`}</span></section></main><SiteFooter /></div>;
 }
 
 function mediaCaption(project) {
