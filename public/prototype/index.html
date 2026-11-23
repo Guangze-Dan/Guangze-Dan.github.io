@@ -309,6 +309,46 @@ body.worker .row b.num{font-size:22px;font-variant-numeric:tabular-nums}
 body.worker .spark{display:none}
 body.worker .seg span{padding:13px 14px;font-size:15.5px}
 body.worker .bar{height:6px}
+
+/* ---- interaction affordance ---------------------------------------- */
+/* Every clickable control answers on hover and dips on press. The chips and
+   option rows are translucent glass, so a tint + accent border reads better
+   than a brightness filter on a near-black panel. */
+#demobtn, #trainbtn, #vrbtn, #wbtn, #walkbtn, .condchip, .commit, .export,
+.export2, .debrief .close, .tb-menu, .tb-cap span, .faultchips span,
+.agencychips span, .seg span, .tab, .at-act, .at-commit, .missionKeys span,
+.card button, .debrief button {
+  transition: background-color .16s ease, border-color .16s ease, color .16s ease,
+              box-shadow .16s ease, transform .12s ease;
+}
+#demobtn:hover, #trainbtn:hover, .condchip:hover, .tb-menu:hover,
+.tb-cap span:hover, .faultchips span:hover, .agencychips span:hover,
+.tab:hover, .missionKeys span:hover {
+  background-color: rgba(96,205,255,.16);
+  border-color: rgba(96,205,255,.45);
+  color: #fff;
+}
+#vrbtn:hover, #wbtn:hover, #walkbtn:hover {
+  background: rgba(28,42,58,.92) !important;
+  border-color: rgba(96,205,255,.55) !important;
+  box-shadow: 0 0 0 1px rgba(96,205,255,.18), 0 6px 22px rgba(0,0,0,.35);
+  transform: translateY(-1px);
+}
+.seg span:hover { background: rgba(96,205,255,.14); border-color: rgba(96,205,255,.40); color: #eaf4fc; }
+.seg span.ok:hover { background: rgba(48,209,88,.14); border-color: rgba(48,209,88,.40); }
+.seg span.mid:hover { background: rgba(255,185,0,.16); border-color: rgba(255,185,0,.42); }
+.seg span.on:hover { background: rgba(96,205,255,.22); border-color: rgba(96,205,255,.55); }
+.at-act:hover, .at-commit:hover { filter: brightness(1.25); }
+.card button:hover, .debrief button:hover, .export:hover, .export2:hover,
+.debrief .close:hover, .commit:hover { filter: brightness(1.12); }
+#demobtn:active, #trainbtn:active, #vrbtn:active, #wbtn:active, #walkbtn:active,
+.seg span:active, .tab:active, .at-act:active, .at-commit:active,
+.commit:active, .card button:active {
+  transform: translateY(1px) scale(.99);
+}
+#demobtn, #trainbtn, #vrbtn, #wbtn, #walkbtn, .seg span, .tab, .at-act,
+.at-commit, .commit, .card button { cursor: pointer; }
+:focus-visible { outline: 2px solid rgba(96,205,255,.7); outline-offset: 2px; }
 body.worker .warn{top:76px}
 </style>
 </head>
@@ -330,7 +370,7 @@ body.worker .warn{top:76px}
   <!-- build stamp: if this does not match the latest change, the tab is stale -->
   <span class="tb-chip" id="buildtag" title="build — Ctrl+Shift+R to reload"
     style="background:rgba(100,210,255,.12);border-color:rgba(100,210,255,.35);color:#9fd8f2">
-    <i style="background:#60cdff"></i>BUILD 20261123e</span>
+    <i style="background:#60cdff"></i>BUILD 20261123g</span>
   <div class="tb-drag"></div>
   <div class="meta">
     <span><b>5.31</b> MPa</span><span class="sep"></span>
@@ -392,6 +432,40 @@ body.worker .warn{top:76px}
   <div class="ret"></div>
 </div>
 
+<link rel="modulepreload" href="./vendor/three/addons/environments/RoomEnvironment.js">
+<link rel="modulepreload" href="./vendor/three/addons/geometries/RoundedBoxGeometry.js">
+<link rel="modulepreload" href="./vendor/three/addons/loaders/GLTFLoader.js">
+<link rel="modulepreload" href="./vendor/three/addons/math/SimplexNoise.js">
+<link rel="modulepreload" href="./vendor/three/addons/objects/Reflector.js">
+<link rel="modulepreload" href="./vendor/three/addons/postprocessing/BokehPass.js">
+<link rel="modulepreload" href="./vendor/three/addons/postprocessing/EffectComposer.js">
+<link rel="modulepreload" href="./vendor/three/addons/postprocessing/GTAOPass.js">
+<link rel="modulepreload" href="./vendor/three/addons/postprocessing/MaskPass.js">
+<link rel="modulepreload" href="./vendor/three/addons/postprocessing/OutputPass.js">
+<link rel="modulepreload" href="./vendor/three/addons/postprocessing/Pass.js">
+<link rel="modulepreload" href="./vendor/three/addons/postprocessing/RenderPass.js">
+<link rel="modulepreload" href="./vendor/three/addons/postprocessing/SMAAPass.js">
+<link rel="modulepreload" href="./vendor/three/addons/postprocessing/SSAOPass.js">
+<link rel="modulepreload" href="./vendor/three/addons/postprocessing/ShaderPass.js">
+<link rel="modulepreload" href="./vendor/three/addons/postprocessing/UnrealBloomPass.js">
+<link rel="modulepreload" href="./vendor/three/addons/shaders/BokehShader.js">
+<link rel="modulepreload" href="./vendor/three/addons/shaders/CopyShader.js">
+<link rel="modulepreload" href="./vendor/three/addons/shaders/GTAOShader.js">
+<link rel="modulepreload" href="./vendor/three/addons/shaders/LuminosityHighPassShader.js">
+<link rel="modulepreload" href="./vendor/three/addons/shaders/OutputShader.js">
+<link rel="modulepreload" href="./vendor/three/addons/shaders/PoissonDenoiseShader.js">
+<link rel="modulepreload" href="./vendor/three/addons/shaders/SMAAShader.js">
+<link rel="modulepreload" href="./vendor/three/addons/shaders/SSAOShader.js">
+<link rel="modulepreload" href="./vendor/three/addons/utils/BufferGeometryUtils.js">
+<link rel="modulepreload" href="./vendor/three/three.module.js">
+<link rel="modulepreload" href="./vendor/three/three.module.min.js">
+<link rel="modulepreload" href="./game/game.js?v=20261123g">
+<link rel="modulepreload" href="./game/mission01.js?v=20261123g">
+<link rel="preload" as="image" href="./assets/tex/Concrete016_2K_color.jpg">
+<link rel="preload" as="image" href="./assets/tex/Concrete016_2K_normalgl.jpg">
+<link rel="preload" as="image" href="./assets/tex/Metal041A_2K_color.jpg">
+<link rel="preload" as="image" href="./assets/tex/Metal041A_2K_normalgl.jpg">
+
 <script type="importmap">
 {
   "imports": {
@@ -404,8 +478,8 @@ body.worker .warn{top:76px}
 <script type="module">
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { CAESGame } from './game/game.js?v=20261123e';
-import { MISSION01 } from './game/mission01.js?v=20261123e';
+import { CAESGame } from './game/game.js?v=20261123g';
+import { MISSION01 } from './game/mission01.js?v=20261123g';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
@@ -424,7 +498,7 @@ import { BokehPass } from 'three/addons/postprocessing/BokehPass.js';
 /* ------------------------------------------------------------------ */
 const Q = new URLSearchParams(location.search);
 /* build identity — the diag panel reads this to prove which module is live */
-const BUILD_ID = '20261123e';
+const BUILD_ID = '20261123g';
 
 /* ------------------------------------------------------------------ */
 /* boot progress — DefaultLoadingManager drives the loading bar.       */
@@ -441,10 +515,14 @@ function bootSet(p, msg) {
 bootSet(0.08, 'Engine loaded — fetching rig and textures\u2026');
 let bootResolve;
 const bootAssets = new Promise(r => { bootResolve = r; });
+window.__bootMarks = { t0: Math.round(performance.now()) };
 {
   const DM = THREE.DefaultLoadingManager;
-  DM.onProgress = (u, l, t) => bootSet(0.1 + 0.84 * (t ? l / t : 0), `Loaded ${l} of ${t} assets\u2026`);
-  DM.onLoad = () => { bootSet(0.97, 'Compiling shaders\u2026'); bootResolve(); };
+  DM.onProgress = (u, l, t) => {
+    bootSet(0.1 + 0.84 * (t ? l / t : 0), 'Loaded ' + l + ' of ' + t + ' assets...');
+    window.__bootMarks.lastProgress = { t: Math.round(performance.now()), l: l, total: t, url: String(u).split('/').pop() };
+  };
+  DM.onLoad = () => { bootSet(0.97, 'Compiling shaders...'); window.__bootMarks.dmLoad = Math.round(performance.now()); bootResolve(); };
   DM.onError = (u) => console.warn('[boot] asset failed:', u);
 }
 window.__buildId = BUILD_ID;
@@ -606,6 +684,7 @@ camera.lookAt(TGT[0], TGT[1], TGT[2]);
 window.__cam = camera;    /* capture probe: read the camera pose */
 
 const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+window.__renderer = renderer;   /* diagnostics: program count, render info */
 renderer.setSize(innerWidth, innerHeight);
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.shadowMap.enabled = true;
@@ -2430,6 +2509,7 @@ scene.add(rig);
 
 const rigReady = (async () => {
   const buf = await (await fetch('assets/rig.bin')).arrayBuffer();
+rigReady.then(() => { window.__bootMarks.rig = Math.round(performance.now()); });
   const j = await (await fetch('assets/rig.json')).json();
   const N = buf.byteLength / 16;
   const pos = new Float32Array(buf, 0, N * 3);
@@ -3542,41 +3622,41 @@ window.__clickHandler = (obj, uv) => {
 /* ------------------------------------------------------------------ */
 const FAULTS = {
   crown: { warn: 'Crown voiding — AE cluster at crown', warnCls: '',
-    rows: [['AE cluster', 'crown · 0.4 m\u00b2', 1], ['strain index', '1.94', 1],
+    rows: [['strain index', '1.94', 1], ['AE', '17 / cycle', 1],
            ['LVDT drift', '0.31 mm', 0], ['pressure', '5.31 MPa', 0]],
     pos: [-0.66, 1.55, 1.74], lbl: { t1: 'CROWN VOIDING \u00b7 B2', big: 'AE 2.3\u00d7', s1: 'cluster 0.4 m\u00b2', s2: 'CYCLE 287' } },
   seam: { warn: 'Seam weakness — S2/S3 casting joint', warnCls: 'amber',
-    rows: [['seam flow', '0.3 L/min', 1], ['strain index', '1.21', 0],
-           ['LVDT drift', '0.08 mm', 0], ['pressure', '5.31 MPa', 0]],
+    rows: [['strain index', '1.21', 0], ['AE', '9 / cycle', 0],
+           ['LVDT drift', '0.36 mm', 0], ['pressure', '5.31 MPa', 0]],
     pos: [0.10, 1.10, 1.74], lbl: { t1: 'SEAM WEAKNESS \u00b7 S2/S3', big: '0.3 L/min', s1: 'seepage at joint', s2: 'CYCLE 287', edge: 'rgba(255,159,10,.9)', t1c: '#ffe2b0' } },
   support: { warn: 'Loss of back-support — local', warnCls: 'amber',
-    rows: [['radial deform.', '0.62 mm \u25b2', 1], ['contact loss', '0.18 m\u00b2', 1],
-           ['strain index', '1.08', 0], ['pressure', '5.31 MPa', 0]],
+    rows: [['strain index', '1.24', 0], ['AE', '7 / cycle', 0],
+           ['LVDT drift', '0.58 mm', 1], ['pressure', '5.31 MPa', 0]],
     pos: [-1.55, 1.05, 1.74], lbl: { t1: 'BACK-SUPPORT LOSS \u00b7 B2', big: '0.62 mm', s1: 'radial \u00b7 local', s2: 'CYCLE 287', edge: 'rgba(255,159,10,.9)', t1c: '#ffe2b0' } },
   crack: { warn: 'Lining crack opening — band 3C', warnCls: '',
-    rows: [['crack width', '0.42 mm', 1], ['growth', '+9 mm / 100 cyc', 1],
-           ['strain index', '1.54', 1], ['pressure', '5.31 MPa', 0]],
+    rows: [['strain index', '1.54', 0], ['AE', '14 / cycle', 1],
+           ['LVDT drift', '0.24 mm', 0], ['pressure', '5.31 MPa', 0]],
     pos: [-0.45, 1.46, 1.76], lbl: { t1: 'CRACK OPENING \u00b7 3C', big: '0.42 mm', s1: '+9 mm / 100 cyc', s2: 'CYCLE 287' } },
   mine_gas: { warn: 'Methane infiltration — abandoned workings', warnCls: 'amber',
-    rows: [['methane LEL', '1.8%', 1], ['AE pattern', 'diffuse', 0],
-           ['strain index', '1.12', 0], ['pressure', '5.31 MPa', 0]],
+    rows: [['strain index', '1.12', 0], ['AE', '6 / cycle', 0],
+           ['LVDT drift', '0.12 mm', 0], ['pressure', '5.31 MPa', 0]],
     pos: [0.10, 1.42, 1.76], lbl: { t1: 'GAS INFILTRATION \u00b7 B2', big: '1.8% LEL', s1: 'from abandoned workings', s2: 'CYCLE 287' } },
   mine_water: { warn: 'Water ingress — mine drainage gallery', warnCls: 'blue',
-    rows: [['ingress rate', '1.1 L/min', 1], ['index', '1.15', 0],
-           ['AE', 'no change', 0], ['pressure', '5.31 MPa', 0]],
+    rows: [['strain index', '1.15', 0], ['AE', '8 / cycle', 0],
+           ['LVDT drift', '0.18 mm', 0], ['pressure', '5.31 MPa', 0]],
     pos: [-2.05, 1.10, 1.76], lbl: { t1: 'WATER INGRESS \u00b7 SEAM', big: '1.1 L/min', s1: 'mine drainage connection', s2: 'CYCLE 287' } },
   bladder_leak: { warn: 'HP bladder pressure dropping — boundary at risk', warnCls: 'red',
-    rows: [['bladder pressure', '2.1 MPa', 1], ['nominal', '3.5 MPa', 0],
-           ['cavity pressure', '5.31 MPa', 0], ['auto-recharge', 'failed', 1]],
+    rows: [['strain index', '1.32', 0], ['AE', '11 / cycle', 0],
+           ['LVDT drift', '0.14 mm', 0], ['pressure', '5.31 MPa', 0]],
     pos: [-0.68, 1.55, 1.76], lbl: { t1: 'BLADDER LEAK \u00b7 HP SEAL', big: '2.1 / 3.5 MPa', s1: 'auto-recharge failed', s2: 'CYCLE 287', edge: 'rgba(255,69,58,.9)', t1c: '#ffd7cc' } },
   seal_interface: { warn: 'Micro-movement at the seal-rock interface', warnCls: 'amber',
-    rows: [['LVDT (lateral)', '0.48 mm', 1], ['humidity', '85%', 1],
-           ['AE response', 'none', 0], ['pressure', '5.31 MPa', 0]],
+    rows: [['strain index', '1.26', 0], ['AE', '10 / cycle', 0],
+           ['LVDT drift', '0.48 mm', 0], ['pressure', '5.31 MPa', 0]],
     pos: [-1.55, 1.05, 1.74], lbl: { t1: 'INTERFACE MOVEMENT \u00b7 HP SEAL', big: '0.48 mm', s1: 'seal-rock interface', s2: 'CYCLE 287' } },
   /* the schema's control class: a quiet round. Same HUD shape, nominal rows,
      no overlays — the correct call is log & monitor. */
   control: { warn: 'All channels nominal — cycle live', warnCls: 'blue',
-    rows: [['strain index', '1.04', 0], ['AE count', '4 / cycle', 0],
+    rows: [['strain index', '1.04', 0], ['AE', '4 / cycle', 0],
            ['LVDT drift', '0.09 mm', 0], ['pressure', '5.31 MPa', 0]],
     pos: [-0.68, 1.55, 1.76], lbl: { t1: 'MONITORING \u00b7 B2', big: 'NOMINAL', s1: 'no triggers met', s2: 'CYCLE 287' } },
 };
@@ -5461,7 +5541,11 @@ applyWorker(workerPref);
 /* workers start on their feet, not in orbit.
    Deferred: the walk state is declared further down the module. */
 if (workerPref && Q.get('walk') !== '0') {
-  setTimeout(() => { try { setWalk(true); } catch (e) {} }, 0);
+  const startOnFoot = () => setTimeout(() => { try { setWalk(true); } catch (e) {} }, 0);
+  if (window.__bootOk) startOnFoot();
+  else {
+    const ivw = setInterval(() => { if (window.__bootOk) { clearInterval(ivw); startOnFoot(); } }, 250);
+  }
 }
 
 if (navigator.xr && navigator.xr.isSessionSupported) {
@@ -6527,7 +6611,9 @@ function addAssetDecals() {
 /* post + animate                                                      */
 /* ------------------------------------------------------------------ */
 const composer = new EffectComposer(renderer);
-composer.addPass(new RenderPass(scene, camera));
+window.__composer = composer;   /* diagnostics: per-pass compile profiling */
+const scenePass = new RenderPass(scene, camera);
+composer.addPass(scenePass);
 
 /* ambient occlusion: GTAO — horizon-based, horizons away better than the
    old SSAO band pass, and setSceneClipBox pins it to the hall so the far
@@ -6733,7 +6819,8 @@ if (CINE && !LOWQ) {
   composer.addPass(bokeh);
 }
 
-composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.38, 0.55, 0.90));
+const bloomPass = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.38, 0.55, 0.90);
+composer.addPass(bloomPass);
 /* threshold 0.93 + tight radius: at 0.86/0.62 the far fence rails — a sub-pixel
    grazing-angle line at 12 m — and the lamp mouths just above the frame bloomed
    into floating silver saucers */
@@ -6742,7 +6829,8 @@ composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight),
 const smaa = new SMAAPass(innerWidth * renderer.getPixelRatio(), innerHeight * renderer.getPixelRatio());
 if (!LOWQ) composer.addPass(smaa);
 
-composer.addPass(new OutputPass());
+const outputPass = new OutputPass();
+composer.addPass(outputPass);
 
 /* display-referred grade: a gentle S-curve, a touch of saturation, vignette
    and fine grain. Applied after tone mapping, so it grades what the eye sees */
@@ -6788,11 +6876,24 @@ const GradeShader = {
 const gradePass = new ShaderPass(GradeShader);
 composer.addPass(gradePass);
 
+/* Heavy FX compile as a bundle the first time the whole chain renders, which
+   measured 8 s of driver shader work in front of the first frame. Rendered
+   individually each pass costs 100-300 ms, so the core chain (scene + tone
+   map + grade) runs from frame one and the rest switch on after boot, one
+   per ~450 ms. The loading panel no longer waits for them. */
+const FX_HEAVY = composer.passes.filter(p =>
+  p !== scenePass && p !== outputPass && p !== gradePass);
+if (!CINE) FX_HEAVY.forEach(p => { p.enabled = false; });
+
 /* the hall bakes itself into the reflection environment: one CubeCamera
    capture (linear, tone mapping off) turned into a PMREM — flanges, gauges
    and bolt heads now reflect the actual room, not a stand-in box */
 window.__envBaking = true;
-rigReady.then(() => {
+/* The bake renders the whole hall six times (cube faces) and therefore
+   compiles every scene shader. Doing that on rigReady blocked the boot for
+   ~10 s BEFORE the loading bar could finish. It now runs after the first
+   frame, once compileAsync has warmed the programs, so it costs ~0.5 s. */
+function bakeHallEnv() {
   if (window.__seepEvidence) window.__seepEvidence.place();   /* measure the real slab top */
   setTimeout(() => { if (window.__seepEvidence) window.__seepEvidence.place(); }, 1500);   /* second pass: matrices settled after the first frames */
   const rt = new THREE.WebGLCubeRenderTarget(256, {
@@ -6811,7 +6912,13 @@ rigReady.then(() => {
   renderer.toneMapping = tm; renderer.toneMappingExposure = ex;
   scene.environment = pmrem.fromCubemap(rt.texture).texture;
   window.__envBaking = false;
-});
+}
+if (window.__bootOk) setTimeout(bakeHallEnv, 700);
+else {
+  const ivh = setInterval(() => {
+    if (window.__bootOk) { clearInterval(ivh); setTimeout(bakeHallEnv, 700); }
+  }, 200);
+}
 
 let t0 = performance.now();
 let lastMs = 0;
@@ -7124,15 +7231,73 @@ Promise.all([rigReady, Promise.race([bootAssets, new Promise(r => setTimeout(r, 
     }
     renderer.setAnimationLoop(tick);
     scheduleProbe();
+    /* switch the heavy FX back on one at a time, after the scene is live */
+    if (!CINE && FX_HEAVY.length) {
+      let fi = 0;
+      const stepFx = () => {
+        if (fi >= FX_HEAVY.length) return;
+        FX_HEAVY[fi++].enabled = true;
+        setTimeout(stepFx, 450);
+      };
+      setTimeout(stepFx, 800);
+    }
   };
-  bootSet(0.98, 'Compiling GPU shaders \u2014 first visit only; later visits are instant\u2026');
+  bootSet(0.98, 'Compiling GPU shaders — first visit only; later visits are instant…');
+  const T0 = performance.now();
+  window.__bootTimings = {};
   const compileAll = () => {
-    try { composer.render(); } catch (e) { console.warn('[boot] warm render failed', e); }
+    window.__bootTimings.compileAsync = Math.round(performance.now() - T0);
+    const tW = performance.now();
+    try {
+      if (Q.get('warm') === 'scene') renderer.render(scene, camera);
+      else if (Q.get('warm') === 'both') {
+        const tA = performance.now();
+        renderer.render(scene, camera);
+        window.__bootTimings.sceneToCanvas = Math.round(performance.now() - tA);
+        const tB = performance.now();
+        composer.render();
+        window.__bootTimings.thenComposer = Math.round(performance.now() - tB);
+        const tC = performance.now();
+        renderer.render(scene, camera);
+        window.__bootTimings.sceneAgain = Math.round(performance.now() - tC);
+      }
+      else if (Q.get('passprof') === '1') {
+        const ps = composer.passes, vis = ps.map(x => x.enabled), out = [];
+        ps.forEach(x => { x.enabled = false; });
+        for (let i = 0; i < ps.length; i++) {
+          ps[i].enabled = true;
+          const tP = performance.now();
+          try { composer.render(); } catch (e2) {}
+          out.push([ps[i].constructor.name, Math.round(performance.now() - tP)]);
+          ps[i].enabled = false;
+        }
+        ps.forEach((x, i) => { x.enabled = vis[i]; });
+        window.__passProf = out;
+        composer.render();
+      }
+      else composer.render();
+    } catch (e) { console.warn('[boot] warm render failed', e); }
+    window.__bootTimings.warmRender = Math.round(performance.now() - tW);
+    const tW2 = performance.now();
+    try { composer.render(); } catch (e3) {}
+    window.__bootTimings.warmRender2 = Math.round(performance.now() - tW2);
+    window.__bootTimings.programs = renderer.info.programs ? renderer.info.programs.length : -1;
     return true;
   };
-  const pre = renderer.compileAsync
-    ? renderer.compileAsync(scene, camera).then(compileAll, compileAll)
-    : Promise.resolve().then(() => { renderer.compile(scene, camera); }).then(compileAll);
+  /* Compile the variants the COMPOSER will use. Rendering into the composer's
+     offscreen target selects different program variants than rendering to the
+     canvas (three drops tone mapping when a render target is bound), and that
+     second set cost ~8 s when it compiled lazily on the first frame. Binding
+     the target here lets compileAsync prewarm exactly those variants. */
+  const compileDepth = () => {
+    const prev = renderer.getRenderTarget();
+    renderer.setRenderTarget(composer.renderTarget1);
+    const p2 = renderer.compileAsync
+      ? renderer.compileAsync(scene, camera)
+      : Promise.resolve(renderer.compile(scene, camera));
+    return Promise.resolve(p2).finally(() => renderer.setRenderTarget(prev));
+  };
+  const pre = compileDepth().then(compileAll, compileAll);
   pre.then(startScene, startScene);
 
   function scheduleProbe() {
