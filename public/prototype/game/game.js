@@ -8,7 +8,7 @@
    entry points, and logs. Everything it adds is new code in this file. */
 
 import * as THREE from 'three';
-import { MISSION01 } from './mission01.js?v=20261123d';
+import { MISSION01 } from './mission01.js?v=20261123e';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 const CSS = `
