@@ -2,6 +2,7 @@ import React, { lazy, Suspense, useEffect, useLayoutEffect, useMemo, useRef, use
 import { createRoot } from 'react-dom/client';
 import './majd-theme.css';
 import './reactbits-effects.css';
+import './prototype-band.css';
 import { getLang, setLang, subscribeLang } from './lang.js';
 
 // 内页单语渲染助手（首页保持双语设计，不走此函数）
@@ -371,6 +372,7 @@ function SiteNav() {
         <a href="/#about" onClick={closeMenu}>{L('关于我', 'About')} <Arrow /></a>
         <a href="/#services" onClick={closeMenu}>{L('服务', 'Services')} <Arrow /></a>
         <a href="/work" onClick={closeMenu}>{L('作品', 'Work')} <Arrow /></a>
+        <a className="m-nav-proto" href="/prototype/" target="_blank" rel="noreferrer"><i className="m-nav-dot" aria-hidden="true" />{L('可玩原型', 'Live Prototype')} <Arrow /></a>
         <a href="/#publications" onClick={closeMenu}>{L('学术', 'Academic')} <Arrow /></a>
         <a href="/lab" onClick={closeMenu}>{L('三维试验室', '3D Testbed')} <Arrow /></a>
         <a href="/#contact" onClick={closeMenu}>{L('联系', 'Contact')} <Arrow /></a>
@@ -455,6 +457,7 @@ function ProjectCard({ project }) {
   return (
     <a ref={cardRef} id={project.categoryAnchor} data-category={project.category} className={`m-project m-reveal rb-star-border ${project.tone}`} href={`/work/${project.slug}`}>
       <span className="rb-card-spotlight" aria-hidden="true" />
+      {project.playable && <span className="m-live-badge"><i />LIVE · 可玩原型</span>}
       <ProjectVisual project={project} />
       <div className="m-project-meta">
         <div><small>{project.type}</small><h3><DecryptedText text={project.titleCn} /><small>{project.title}</small></h3></div>
@@ -560,6 +563,26 @@ function HeroWordOne({ idx }) {
   return <span className="m-word-anim" data-no-i18n="1">{HERO_WORDS[idx].zh}</span>;
 }
 
+function PrototypeBand() {
+  return (
+    <section className="m-proto-band" id="prototype">
+      <div className="m-proto-copy">
+        <div className="m-proto-kicker"><i className="m-nav-dot" aria-hidden="true" />LIVE · 可玩原型 <small>PLAYABLE PROTOTYPE</small></div>
+        <h2>CAES 地下储气库 · 沉浸式训练模拟器<small>Underground gas storage — immersive training simulator</small></h2>
+        <p>九类故障场景、四通道监测信号、从检测到决策的完整训练闭环，浏览器直接运行。无需安装，打开即玩。<small>Nine fault scenarios, four signal channels, the full detect-to-decide loop — running in the browser, no install.</small></p>
+        <div className="m-proto-actions">
+          <a className="m-proto-btn" href="/prototype/" target="_blank" rel="noreferrer">▶ 打开原型<small>OPEN PROTOTYPE</small></a>
+          <a className="m-proto-link" href="/work/caes-multiscale-cavern">项目详情 <Arrow /></a>
+        </div>
+      </div>
+      <a className="m-proto-shot" href="/prototype/" target="_blank" rel="noreferrer" aria-label="Open the live prototype">
+        <img src="/prototype-shot.webp" alt="CAES training simulator screenshot" loading="lazy" width="1280" height="720" />
+        <span className="m-proto-play" aria-hidden="true">▶</span>
+      </a>
+    </section>
+  );
+}
+
 function HomePage() {
   const avatarRotation = usePageMotion(true);
   const [heroWord, setHeroWord] = useState(2); // 落地仍是「创意技术」，随后轮换
@@ -658,6 +681,8 @@ function HomePage() {
           <a className="m-resume-button" href="/guangze-resume.pdf" download="Guangze-Resume.pdf"><strong>{`\u4e0b\u8f7d\u7b80\u5386`}<small>{`CV 中文版`}</small></strong><Arrow /></a>
           <a className="m-resume-button m-resume-button-en" href="/guangze-cv-en-york.pdf" download="Guangze-Dan-CV.pdf"><strong>{`Download CV`}<small>{`English · Academic`}</small></strong><Arrow /></a>
         </section>
+
+        <PrototypeBand />
 
         <section className="m-intro" id="about">
           <div className="m-section-kicker"><ShinyText>/ {`\u5173\u4e8e\u6211`} <small>About Me</small></ShinyText></div>
