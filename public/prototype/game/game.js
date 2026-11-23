@@ -281,8 +281,8 @@ export const CAESGame = {
       t.anisotropy = 8;
       return t;
     };
-    TEX.benchTop = loadTex('Metal041A_2K_color.jpg', true, 2, 1);
-    TEX.benchFrame = loadTex('Metal041A_2K_color.jpg', true, 1, 1);
+    TEX.benchTop = loadTex('Metal041A_2K_color.webp', true, 2, 1);
+    TEX.benchFrame = loadTex('Metal041A_2K_color.webp', true, 1, 1);
     const benchTopY = 0.90;
     {
       /* ink frame + steel top: chunky joined members, shelf resting ON the
